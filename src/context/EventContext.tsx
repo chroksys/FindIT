@@ -156,6 +156,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const addEvent = async (eventData: Omit<Event, 'id' | 'isPaused' | 'organizer' | 'gallery' | 'reviews'>) => {
+    console.log('[addEvent] called. profile:', profile);
     if (!profile?.id) {
       alert('You must be logged in as a Host to create live events.');
       return;
@@ -187,7 +188,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       payload.collaborations = (eventData as any).collaborations;
     }
 
-    const { error } = await supabase.from('events').insert([payload]);
+    console.log('[addEvent] inserting payload:', payload);
+    const { data: insertData, error } = await supabase.from('events').insert([payload]).select();
+    console.log('[addEvent] insert result — data:', insertData, '| error:', error);
 
     if (error) {
       console.error('Supabase insert error:', error);
@@ -195,7 +198,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return;
     }
 
+    console.log('[addEvent] insert succeeded, refreshing events...');
     await fetchEvents();
+    console.log('[addEvent] fetchEvents done');
   };
 
   const updateEvent = async (id: string, updatedData: Partial<Event>) => {
