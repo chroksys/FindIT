@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -25,7 +25,7 @@ export default async function handler(req: any, res: any) {
         <p><strong>Host Email:</strong> ${hostEmail}</p>
         <h3>Uploaded Documents:</h3>
         <ul>
-          ${documentUrls.map((url: string) => `<li><a href="${url}" target="_blank">View Document</a></li>`).join('')}
+          ${documentUrls.map(url => `<li><a href="${url}" target="_blank">View Document</a></li>`).join('')}
         </ul>
         <p>Log in to your Supabase dashboard to verify this user.</p>
       `,
