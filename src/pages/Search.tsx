@@ -3,10 +3,15 @@ import { useLocation } from 'react-router-dom';
 import { useEventContext } from '../context/EventContext';
 import { EventCard } from '../components/EventCard';
 import { SkeletonCard } from '../components/SkeletonCard';
-import { MagnifyingGlass, Palette, Briefcase, AirplaneTilt, UsersThree, PersonSimpleRun, GameController, HandsClapping, Books, MusicNote, Star } from '@phosphor-icons/react';
+import { MagnifyingGlass, Palette, Briefcase, AirplaneTilt, UsersThree, PersonSimpleRun, GameController, HandsClapping, Books, MusicNote, Star, Gift, Heart, Wine } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
 const CATEGORIES = [
+  { name: 'Birthday', icon: <Gift size={32} weight="fill" /> },
+  { name: 'Music', icon: <MusicNote size={32} weight="fill" /> },
+  { name: 'Games', icon: <GameController size={32} weight="fill" /> },
+  { name: 'Anniversary', icon: <Heart size={32} weight="fill" /> },
+  { name: 'Wedding', icon: <Wine size={32} weight="fill" /> },
   { name: 'Art', icon: <Palette size={32} weight="fill" /> },
   { name: 'Business', icon: <Briefcase size={32} weight="fill" /> },
   { name: 'Travel', icon: <AirplaneTilt size={32} weight="fill" /> },
@@ -14,9 +19,7 @@ const CATEGORIES = [
   { name: 'Sport', icon: <PersonSimpleRun size={32} weight="fill" /> },
   { name: 'Hobbies', icon: <Star size={32} weight="fill" /> },
   { name: 'Community', icon: <HandsClapping size={32} weight="fill" /> },
-  { name: 'Games', icon: <GameController size={32} weight="fill" /> },
   { name: 'Education', icon: <Books size={32} weight="fill" /> },
-  { name: 'Music', icon: <MusicNote size={32} weight="fill" /> },
 ];
 
 export const Search = () => {
@@ -26,9 +29,10 @@ export const Search = () => {
   
   const queryParams = new URLSearchParams(location.search);
   const initialKeyword = queryParams.get('q') || '';
+  const initialCategory = queryParams.get('category') || 'All';
   
   const [keyword, setKeyword] = useState(initialKeyword);
-  const [category, setCategory] = useState('All');
+  const [category, setCategory] = useState(initialCategory);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

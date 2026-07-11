@@ -166,20 +166,24 @@ export const Home = () => {
             animationDelay: '0.2s' 
           }}>
             {['All', 'Birthday', 'Music', 'Games', 'Anniversary', 'Wedding', 'Art'].map((cat, i) => (
-              <button key={cat} className="hover-scale" style={{
-                background: i === 0 ? '#ffffff' : 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: i === 0 ? '#000000' : 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                padding: '10px 24px',
-                borderRadius: '999px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+              <button 
+                key={cat} 
+                onClick={() => navigate(cat === 'All' ? '/search' : `/search?category=${encodeURIComponent(cat)}`)}
+                className="hover-scale" 
+                style={{
+                  background: i === 0 ? '#ffffff' : 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  color: i === 0 ? '#000000' : 'var(--text-secondary)',
+                  fontWeight: 600,
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  padding: '10px 24px',
+                  borderRadius: '999px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
                 {cat}
               </button>
             ))}
