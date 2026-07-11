@@ -62,10 +62,12 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   const fetchEvents = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('events')
       .select('*, profiles(id, name, avatar_url, subscription)')
       .order('created_at', { ascending: false });
+
+    console.log('[fetchEvents] data count:', data?.length, '| error:', error, '| raw:', data);
 
     if (data && data.length > 0) {
       // Fetch all reviews in one query
@@ -106,8 +108,10 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         collaborations: d.collaborations || [],
         coordinates: d.coordinates_lat && d.coordinates_lng ? { lat: Number(d.coordinates_lat), lng: Number(d.coordinates_lng) } : undefined
       }));
+      console.log('[fetchEvents] setting', mappedEvents.length, 'events in state');
       setEvents(mappedEvents);
     } else {
+      console.log('[fetchEvents] no data returned, setting empty events. error:', error);
       setEvents([]);
     }
   };
