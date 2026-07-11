@@ -40,6 +40,7 @@ function App() {
                 <Route path="/login" element={<Auth />} />
                 <Route path="/register" element={<Auth />} />
                 <Route path="/host" element={<HostEvent />} />
+                <Route path="/host/live/:id" element={<HostControlCenter />} />
                 <Route path="/host/:id" element={<HostEvent />} />
                 <Route path="/verify" element={<PromoterVerification />} />
                 <Route path="/admin" element={<AdminDashboard />} />

@@ -177,7 +177,7 @@ export const Navbar: React.FC = () => {
           <CalendarBlank size={24} weight={location.pathname === '/calendar' ? 'fill' : 'regular'} />
           <span>Calendar</span>
         </Link>
-        <Link to="/host/create" className={`nav-item-mobile center-btn ${location.pathname.startsWith('/host') ? 'active' : ''}`}>
+        <Link to="/host" className={`nav-item-mobile center-btn ${location.pathname.startsWith('/host') ? 'active' : ''}`}>
           <Plus size={28} weight="bold" />
           <span>{t('host_event')}</span>
         </Link>
