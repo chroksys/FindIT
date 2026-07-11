@@ -19,6 +19,7 @@ export const HostEvent: React.FC = () => {
   const isLimitReached = !isEditing && activeEventsCount >= getEventLimit();
 
   const [step, setStep] = useState(1);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [bannerUploadError, setBannerUploadError] = useState('');
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -124,9 +125,13 @@ export const HostEvent: React.FC = () => {
     }
 
     if (isEditing && id) {
+      setIsPublishing(true);
       await updateEvent(id, eventPayload);
+      setIsPublishing(false);
     } else {
+      setIsPublishing(true);
       await addEvent(eventPayload);
+      setIsPublishing(false);
     }
 
     navigate('/dashboard');
@@ -274,7 +279,7 @@ export const HostEvent: React.FC = () => {
                     <label className="form-label">Date</label>
                     <div style={{ position: 'relative' }}>
                       <CalendarBlank size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                      <input name="date" value={formData.date} onChange={handleChange} type="date" style={{ paddingLeft: '40px' }} required />
+                      <input name="date" value={formData.date} onChange={handleChange} type="date" min={new Date().toISOString().split('T')[0]} style={{ paddingLeft: '40px' }} required />
                     </div>
                   </div>
                   <div className="form-group">
@@ -386,8 +391,8 @@ export const HostEvent: React.FC = () => {
                   Next <ArrowRight size={20} />
                 </button>
               ) : (
-                <button type="submit" disabled={isLimitReached} className={`btn-accent hover-scale ${isLimitReached ? 'disabled' : ''}`} style={{ padding: '12px 32px', opacity: isLimitReached ? 0.5 : 1, cursor: isLimitReached ? 'not-allowed' : 'pointer' }}>
-                  {isEditing ? 'Save Changes' : 'Publish Event'}
+                <button type="submit" disabled={isLimitReached || isPublishing} className={`btn-accent hover-scale ${(isLimitReached || isPublishing) ? 'disabled' : ''}`} style={{ padding: '12px 32px', opacity: (isLimitReached || isPublishing) ? 0.7 : 1, cursor: (isLimitReached || isPublishing) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {isPublishing ? <><Spinner size={18} style={{ animation: 'spin 1s linear infinite' }} /> Publishing...</> : (isEditing ? 'Save Changes' : 'Publish Event')}
                 </button>
               )}
             </div>
