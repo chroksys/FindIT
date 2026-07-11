@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../components/EventCard';
 import { MapPin, MagnifyingGlass, CaretDown } from '@phosphor-icons/react';
