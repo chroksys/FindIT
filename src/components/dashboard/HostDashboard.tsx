@@ -121,25 +121,26 @@ export const HostDashboard: React.FC = () => {
 
       {/* Analytics Peek */}
       <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', marginBottom: 'var(--spacing-xlarge)' }}>
-        <h3 className="text-card-title" style={{ marginBottom: 'var(--spacing-base)' }}>Analytics Peek: This Month</h3>
+        <h3 className="text-card-title" style={{ marginBottom: 'var(--spacing-base)' }}>Analytics</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-base)', textAlign: 'center' }}>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>1,240</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{userEvents.length}</div>
+            <div className="text-caption">Events</div>
+          </div>
+          <div style={{ borderLeft: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
             <div className="text-caption">Views</div>
           </div>
           <div style={{ borderLeft: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>87</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
             <div className="text-caption">Saves</div>
           </div>
           <div style={{ borderLeft: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>23</div>
-            <div className="text-caption">Shares</div>
-          </div>
-          <div style={{ borderLeft: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-pin-orange)' }}>150</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-pin-orange)' }}>0</div>
             <div className="text-caption">Followers</div>
           </div>
         </div>
+        <Link to="/analytics" className="btn-secondary hover-scale" style={{ display: 'inline-flex', marginTop: '16px', padding: '8px 16px', fontSize: '14px' }}>View Full Analytics</Link>
       </div>
 
       <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>Your Events</h2>

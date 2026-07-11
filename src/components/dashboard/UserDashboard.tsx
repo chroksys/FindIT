@@ -16,7 +16,6 @@ import {
   Sun, 
   Question, 
   SignOut,
-  Star,
   Translate
 } from '@phosphor-icons/react';
 
@@ -41,19 +40,7 @@ export const UserDashboard: React.FC = () => {
 
   // Data
   const savedEvents = events.filter(e => savedEventIds?.includes(e.id));
-  const attendedEvents = events.slice(2, 5);
-  
-  const followedHosts = [
-    { id: '1', name: 'Talent Africa', logo: 'https://images.unsplash.com/photo-1549492423-400259a2e574?auto=format&fit=crop&q=80&w=100' },
-    { id: '2', name: 'Nyege Nyege', logo: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=100' },
-    { id: '3', name: 'Swangz Ave', logo: 'https://images.unsplash.com/photo-1493225457124-a1a2a4af7894?auto=format&fit=crop&q=80&w=100' },
-    { id: '4', name: 'Comedy Store', logo: 'https://images.unsplash.com/photo-1585699324551-f6c309eedeca?auto=format&fit=crop&q=80&w=100' },
-  ];
-
-  const recentReviews = [
-    { id: '1', event: 'Kampala Jazz Night', rating: 4, comment: 'Amazing atmosphere, will definitely go again', date: '15 July 2026' },
-    { id: '2', event: 'Startup Grind Kampala', rating: 3, comment: 'Good content but venue was too small', date: '2 July 2026' },
-  ];
+  const attendedEvents: any[] = [];
 
   const handleLogout = () => {
     logout();
@@ -85,15 +72,15 @@ export const UserDashboard: React.FC = () => {
       <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', textAlign: 'center' }}>
           <div style={{ borderRight: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>12</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{savedEvents.length}</div>
             <div className="text-caption">Saved</div>
           </div>
           <div style={{ borderRight: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>5</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
             <div className="text-caption">Following</div>
           </div>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>28</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
             <div className="text-caption">Reviews</div>
           </div>
         </div>
@@ -176,48 +163,6 @@ export const UserDashboard: React.FC = () => {
                 <h4 className="text-body" style={{ fontWeight: 600, marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{event.title}</h4>
                 <div className="text-caption" style={{ color: 'var(--color-pin-orange)', fontWeight: 600 }}>{event.displayDate}</div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 5: Following */}
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
-          <h3 className="text-card-title">Following</h3>
-          <button onClick={() => setViewAllData({title: 'Following', items: followedHosts, type: 'host'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
-        </div>
-        <div className="horizontal-scroll gap-large" style={{ paddingBottom: 'var(--spacing-small)', paddingLeft: '4px', paddingTop: '8px' }}>
-          {followedHosts.map(host => (
-            <div key={host.id} className="hover-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <img src={host.logo} alt={host.name} style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-color)' }} />
-              <span className="text-caption" style={{ fontWeight: 600, textAlign: 'center', width: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{host.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 6: My Reviews */}
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
-          <h3 className="text-card-title">My Reviews</h3>
-          <button onClick={() => setViewAllData({title: 'My Reviews', items: recentReviews, type: 'review'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
-          {recentReviews.map(review => (
-            <div key={review.id} className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                <div>
-                  <div style={{ display: 'flex', gap: '2px', color: 'var(--color-pin-orange)', marginBottom: '4px' }}>
-                    {[1,2,3,4,5].map(star => (
-                      <Star key={star} size={16} weight={star <= review.rating ? 'fill' : 'regular'} />
-                    ))}
-                  </div>
-                  <h4 className="text-body" style={{ fontWeight: 600 }}>{review.event}</h4>
-                </div>
-                <span className="text-caption" style={{ color: 'var(--text-secondary)' }}>{review.date}</span>
-              </div>
-              <p className="text-body" style={{ color: 'var(--text-secondary)' }}>"{review.comment}"</p>
             </div>
           ))}
         </div>

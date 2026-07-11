@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, CaretLeft, Heart, CalendarBlank } from '@phosphor-icons/react';
+import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, CaretLeft, Bell, CalendarBlank } from '@phosphor-icons/react';
 import { useTheme } from '../context/ThemeContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -9,16 +9,12 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   useTheme();
-  const { role } = useUserContext();
+  const { role, profile } = useUserContext();
   const { t } = useLanguage();
   const isHome = location.pathname === '/';
   
   const [showNotifications, setShowNotifications] = useState(false);
-  const mockNotifications = [
-    { id: 1, text: "🎟️ Someone bought 2 tickets to Nyege Nyege", time: "2m ago", read: false, link: "/dashboard" },
-    { id: 2, text: "🔥 Koffee is LIVE now!", time: "15m ago", read: false, link: "/live/1" },
-    { id: 3, text: "⭐ You have a new 5-star review", time: "1h ago", read: true, link: "/dashboard" }
-  ];
+  const mockNotifications: any[] = [];
   
   const unreadCount = mockNotifications.filter(n => !n.read).length;
   
@@ -92,7 +88,7 @@ export const Navbar: React.FC = () => {
                 onClick={() => setShowNotifications(!showNotifications)}
                 style={{ padding: '8px', position: 'relative' }}
               >
-                <Heart size={24} weight="fill" color="var(--color-pin-orange)" />
+                <Bell size={24} color="var(--text-primary)" />
                 {unreadCount > 0 && (
                   <span style={{ 
                     position: 'absolute', top: '2px', right: '2px', 
@@ -122,7 +118,7 @@ export const Navbar: React.FC = () => {
                     <button className="text-caption" style={{ color: 'var(--color-pin-orange)', background: 'none', border: 'none', cursor: 'pointer' }}>{t('mark_all_read')}</button>
                   </div>
                   <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                    {mockNotifications.map(notification => (
+                    {mockNotifications.length > 0 ? mockNotifications.map(notification => (
                       <div key={notification.id} onClick={() => { navigate(notification.link); setShowNotifications(false); }} style={{ 
                         padding: 'var(--spacing-base)', 
                         borderBottom: '1px solid var(--border-color)',
@@ -132,7 +128,11 @@ export const Navbar: React.FC = () => {
                         <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px' }}>{notification.text}</div>
                         <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{notification.time}</div>
                       </div>
-                    ))}
+                    )) : (
+                      <div style={{ padding: 'var(--spacing-large)', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                        No new notifications
+                      </div>
+                    )}
                   </div>
                   <div style={{ padding: 'var(--spacing-small)', textAlign: 'center', backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-color)' }}>
                     <Link to="/notifications" onClick={() => setShowNotifications(false)} className="text-caption hover-scale" style={{ color: 'var(--text-primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, display: 'inline-block' }}>{t('view_all')}</Link>
@@ -153,7 +153,11 @@ export const Navbar: React.FC = () => {
                 </Link>
               ) : (
                 <Link to="/account" className="btn-secondary hover-scale" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                  <UserCircle size={20} />
+                  {profile?.avatarUrl ? (
+                    <img src={profile.avatarUrl} alt="Profile" style={{ width: '20px', height: '20px', borderRadius: '50%', objectFit: 'cover' }} />
+                  ) : (
+                    <UserCircle size={20} />
+                  )}
                   {t('account')}
                 </Link>
               )}
@@ -210,10 +214,14 @@ export const Navbar: React.FC = () => {
             <span>{t('log_in')}</span>
           </Link>
         ) : (
-          <Link to="/dashboard" className={`nav-item-mobile ${location.pathname === '/dashboard' ? 'active' : ''}`}>
-            <User size={24} weight={location.pathname === '/dashboard' ? 'fill' : 'regular'} />
-            <span>{t('profile')}</span>
-          </Link>
+          <Link to="/dashboard" className="text-body hover-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: location.pathname === '/dashboard' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+              {profile?.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <UserCircle size={24} weight={location.pathname === '/dashboard' ? 'fill' : 'regular'} />
+              )}
+              <span style={{ fontSize: '10px' }}>{t('profile')}</span>
+            </Link>
         )}
       </nav>
     </>
