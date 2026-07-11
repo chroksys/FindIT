@@ -215,7 +215,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Trigger the email notification to the admin via Vercel Serverless Function
       try {
-        await fetch('/api/notify-admin', {
+        console.log('Sending notification email to admin...');
+        const res = await fetch('/api/notify-admin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -224,8 +225,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             documentUrls: data.documentUrls || []
           })
         });
+        
+        const responseData = await res.json();
+        
+        if (!res.ok) {
+          console.error('Vercel API returned an error:', responseData);
+        } else {
+          console.log('Successfully sent admin email:', responseData);
+        }
       } catch (err) {
-        console.error('Failed to send admin notification:', err);
+        console.error('Failed to send admin notification (Network error):', err);
       }
     }
   };
