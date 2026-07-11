@@ -1,24 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../components/EventCard';
 import { MapPin, MagnifyingGlass, CaretDown } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
 import { useLanguage } from '../context/LanguageContext';
 
-export const CATEGORIES = ['All', 'Birthday', 'Music', 'Games', 'Anniversary', 'Wedding', 'Art'];
-
 export const Home = () => {
   const { events, selectedCity, setSelectedCity } = useEventContext();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const CITIES = ['All', 'Kampala', 'Nairobi', 'Jinja'];
 
   const activeEvents = events.filter(e => {
     if (e.isPaused) return false;
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
-    if (selectedCategory !== 'All' && e.category !== selectedCategory) return false;
     return true;
   });
 
@@ -169,14 +165,11 @@ export const Home = () => {
             width: '100%',
             animationDelay: '0.2s' 
           }}>
-            {CATEGORIES.map((cat) => (
-              <button 
-                key={cat} 
-                onClick={() => setSelectedCategory(cat)}
-                className="hover-scale" style={{
-                background: selectedCategory === cat ? '#ffffff' : 'rgba(255,255,255,0.08)',
+            {['All', 'Birthday', 'Music', 'Games', 'Anniversary', 'Wedding', 'Art'].map((cat, i) => (
+              <button key={cat} className="hover-scale" style={{
+                background: i === 0 ? '#ffffff' : 'rgba(255,255,255,0.08)',
                 border: '1px solid rgba(255,255,255,0.15)',
-                color: selectedCategory === cat ? '#000000' : 'var(--text-secondary)',
+                color: i === 0 ? '#000000' : 'var(--text-secondary)',
                 fontWeight: 600,
                 fontSize: '15px',
                 cursor: 'pointer',

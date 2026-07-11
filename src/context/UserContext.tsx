@@ -36,7 +36,6 @@ type AnyProfile = UserProfile | HostProfile;
 interface UserContextType {
   role: Role;
   profile: AnyProfile | null;
-  isLoading: boolean;
   registerUser: (data: UserProfile, password: string) => Promise<void>;
   registerHost: (data: HostProfile, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -58,16 +57,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [role, setRole] = useState<Role>('guest');
   const [profile, setProfile] = useState<AnyProfile | null>(null);
   const [savedEventIds, setSavedEventIds] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [pendingPromoters] = useState<HostProfile[]>([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        fetchProfile(session.user.id, session.user.email || '').finally(() => setIsLoading(false));
-      } else {
-        setIsLoading(false);
+        fetchProfile(session.user.id, session.user.email || '');
       }
     });
 
@@ -262,7 +258,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const rejectPromoter = (_email: string) => {};
 
   return (
-    <UserContext.Provider value={{ role, profile, isLoading, registerUser, registerHost, logout, updateProfile, updateSubscription, getEventLimit, loginMock, submitKyb, pendingPromoters, approvePromoter, rejectPromoter, savedEventIds, toggleSaveEvent }}>
+    <UserContext.Provider value={{ role, profile, registerUser, registerHost, logout, updateProfile, updateSubscription, getEventLimit, loginMock, submitKyb, pendingPromoters, approvePromoter, rejectPromoter, savedEventIds, toggleSaveEvent }}>
       {children}
     </UserContext.Provider>
   );

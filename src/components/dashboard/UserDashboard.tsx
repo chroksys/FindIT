@@ -16,6 +16,7 @@ import {
   Sun, 
   Question, 
   SignOut,
+  Star,
   Translate
 } from '@phosphor-icons/react';
 
@@ -38,10 +39,21 @@ export const UserDashboard: React.FC = () => {
   // Type assertion since we know it's a user profile if this renders
   const userProfile = profile as UserProfile;
 
-  // Data — only real data from context
+  // Data
   const savedEvents = events.filter(e => savedEventIds?.includes(e.id));
-  // Following and reviews are not yet implemented in the backend — show empty state
+  const attendedEvents = events.slice(2, 5);
+  
+  const followedHosts = [
+    { id: '1', name: 'Talent Africa', logo: 'https://images.unsplash.com/photo-1549492423-400259a2e574?auto=format&fit=crop&q=80&w=100' },
+    { id: '2', name: 'Nyege Nyege', logo: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=100' },
+    { id: '3', name: 'Swangz Ave', logo: 'https://images.unsplash.com/photo-1493225457124-a1a2a4af7894?auto=format&fit=crop&q=80&w=100' },
+    { id: '4', name: 'Comedy Store', logo: 'https://images.unsplash.com/photo-1585699324551-f6c309eedeca?auto=format&fit=crop&q=80&w=100' },
+  ];
 
+  const recentReviews = [
+    { id: '1', event: 'Kampala Jazz Night', rating: 4, comment: 'Amazing atmosphere, will definitely go again', date: '15 July 2026' },
+    { id: '2', event: 'Startup Grind Kampala', rating: 3, comment: 'Good content but venue was too small', date: '2 July 2026' },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -71,14 +83,18 @@ export const UserDashboard: React.FC = () => {
 
       {/* Section 2: Stats Grid */}
       <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', textAlign: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', textAlign: 'center' }}>
           <div style={{ borderRight: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{savedEvents.length}</div>
-            <div className="text-caption">Saved Events</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>12</div>
+            <div className="text-caption">Saved</div>
+          </div>
+          <div style={{ borderRight: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>5</div>
+            <div className="text-caption">Following</div>
           </div>
           <div>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{savedEventIds?.length || 0}</div>
-            <div className="text-caption">Bookmarks</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>28</div>
+            <div className="text-caption">Reviews</div>
           </div>
         </div>
       </div>
@@ -167,18 +183,70 @@ export const UserDashboard: React.FC = () => {
 
       {/* Section 5: Following */}
       <div>
-        <h3 className="text-card-title" style={{ marginBottom: 'var(--spacing-base)' }}>Following</h3>
-        <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px dashed var(--border-color)', textAlign: 'center' }}>
-          <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>You're not following any organizers yet.</p>
-          <Link to="/search" className="btn-secondary hover-scale" style={{ display: 'inline-flex', marginTop: '12px', padding: '8px 16px', fontSize: '14px' }}>Discover Organizers</Link>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
+          <h3 className="text-card-title">Following</h3>
+          <button onClick={() => setViewAllData({title: 'Following', items: followedHosts, type: 'host'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
+        </div>
+        <div className="horizontal-scroll gap-large" style={{ paddingBottom: 'var(--spacing-small)', paddingLeft: '4px', paddingTop: '8px' }}>
+          {followedHosts.map(host => (
+            <div key={host.id} className="hover-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <img src={host.logo} alt={host.name} style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-color)' }} />
+              <span className="text-caption" style={{ fontWeight: 600, textAlign: 'center', width: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{host.name}</span>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Section 6: My Reviews */}
       <div>
-        <h3 className="text-card-title" style={{ marginBottom: 'var(--spacing-base)' }}>My Reviews</h3>
-        <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px dashed var(--border-color)', textAlign: 'center' }}>
-          <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>You haven't left any reviews yet.</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
+          <h3 className="text-card-title">My Reviews</h3>
+          <button onClick={() => setViewAllData({title: 'My Reviews', items: recentReviews, type: 'review'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
+          {recentReviews.map(review => (
+            <div key={review.id} className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <div>
+                  <div style={{ display: 'flex', gap: '2px', color: 'var(--color-pin-orange)', marginBottom: '4px' }}>
+                    {[1,2,3,4,5].map(star => (
+                      <Star key={star} size={16} weight={star <= review.rating ? 'fill' : 'regular'} />
+                    ))}
+                  </div>
+                  <h4 className="text-body" style={{ fontWeight: 600 }}>{review.event}</h4>
+                </div>
+                <span className="text-caption" style={{ color: 'var(--text-secondary)' }}>{review.date}</span>
+              </div>
+              <p className="text-body" style={{ color: 'var(--text-secondary)' }}>"{review.comment}"</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7: Attended Events */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
+          <h3 className="text-card-title">Events I've Attended</h3>
+          <button onClick={() => setViewAllData({title: 'Events I\'ve Attended', items: attendedEvents, type: 'attended'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
+        </div>
+        <div className="horizontal-scroll gap-base" style={{ paddingBottom: 'var(--spacing-base)', paddingTop: '8px' }}>
+          {attendedEvents.map(event => (
+            <div key={`attended-${event.id}`} className="hover-lift" style={{ 
+              width: '240px', 
+              backgroundColor: 'var(--bg-card)', 
+              borderRadius: 'var(--radius-card)', 
+              border: '1px solid var(--border-color)',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              opacity: 0.8 // slight fade for past events
+            }} onClick={() => navigate(`/events/${event.id}`)}>
+              <img src={event.bannerUrl} alt={event.title} style={{ width: '100%', height: '120px', objectFit: 'cover', filter: 'grayscale(30%)' }} />
+              <div style={{ padding: 'var(--spacing-small)' }}>
+                <h4 className="text-body" style={{ fontWeight: 600, marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{event.title}</h4>
+                <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.displayDate}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

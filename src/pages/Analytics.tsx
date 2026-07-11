@@ -12,20 +12,45 @@ export const Analytics = () => {
 
       {/* Stats Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--spacing-large)' }}>
-        <StatCard title="Total Views" value="0" change="0%" isPositive={true} icon={<Eye size={24} />} delay="0.1s" />
-        <StatCard title="Ticket Sales (Est)" value="UGX 0" change="0%" isPositive={true} icon={<ChartBar size={24} />} delay="0.2s" />
-        <StatCard title="Event Saves" value="0" change="0%" isPositive={true} icon={<Heart size={24} />} delay="0.3s" />
-        <StatCard title="Followers" value="0" change="0%" isPositive={true} icon={<UserPlus size={24} />} delay="0.4s" />
-        <StatCard title="Profile Visits" value="0" change="0%" isPositive={true} icon={<Users size={24} />} delay="0.5s" />
+        <StatCard title="Total Views" value="12,450" change="+14.5%" isPositive={true} icon={<Eye size={24} />} delay="0.1s" />
+        <StatCard title="Ticket Sales (Est)" value="UGX 4.2M" change="+5.2%" isPositive={true} icon={<ChartBar size={24} />} delay="0.2s" />
+        <StatCard title="Event Saves" value="842" change="-2.1%" isPositive={false} icon={<Heart size={24} />} delay="0.3s" />
+        <StatCard title="Followers" value="150" change="+12.0%" isPositive={true} icon={<UserPlus size={24} />} delay="0.4s" />
+        <StatCard title="Profile Visits" value="3,120" change="+8.4%" isPositive={true} icon={<Users size={24} />} delay="0.5s" />
       </div>
 
       {/* Mock Chart Area */}
       <div className="card-padding animate-fade-in-up" style={{ animationDelay: '0.5s', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-large)' }}>
           <h3 className="text-card-title">Audience Engagement over Time</h3>
+          <select className="btn-secondary" style={{ padding: '8px 12px', borderRadius: 'var(--radius-pill)', backgroundColor: 'transparent', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}>
+            <option>Last 30 Days</option>
+            <option>Last 3 Months</option>
+            <option>This Year</option>
+          </select>
         </div>
-        <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', textAlign: 'center' }}>
-          Live analytics coming soon — publish events to start tracking.
+
+        {/* CSS Chart Mockup */}
+        <div style={{ flexGrow: 1, display: 'flex', alignItems: 'flex-end', gap: '10%', padding: 'var(--spacing-large) 0', borderBottom: '1px solid var(--border-color)' }}>
+          {[40, 70, 45, 90, 60, 100, 85].map((height, i) => (
+            <div key={i} style={{ 
+              flex: 1, 
+              height: `${height}%`, 
+              backgroundColor: 'var(--color-pin-orange)', 
+              borderRadius: '4px 4px 0 0',
+              opacity: 0.8,
+              transition: 'height 1s ease-out'
+            }}></div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--spacing-small)', color: 'var(--text-secondary)', fontSize: '12px' }}>
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+          <span>Sun</span>
         </div>
       </div>
 

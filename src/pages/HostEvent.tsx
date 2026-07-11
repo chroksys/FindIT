@@ -240,15 +240,10 @@ export const HostEvent: React.FC = () => {
                     <label className="form-label">Category</label>
                     <select name="category" value={formData.category} onChange={handleChange} required>
                       <option value="" disabled>Select category</option>
-                      <option value="Birthday">Birthday</option>
-                      <option value="Music">Music</option>
-                      <option value="Games">Games</option>
-                      <option value="Anniversary">Anniversary</option>
-                      <option value="Wedding">Wedding</option>
-                      <option value="Art">Art</option>
                       <option value="Music Festival">Music Festival</option>
                       <option value="Conference">Conference</option>
                       <option value="Lifestyle">Lifestyle</option>
+                      <option value="Arts">Arts</option>
                     </select>
                   </div>
                 </div>
