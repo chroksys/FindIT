@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, CaretLeft, Bell, CalendarBlank } from '@phosphor-icons/react';
+import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank } from '@phosphor-icons/react';
 import { useTheme } from '../context/ThemeContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -166,29 +166,7 @@ export const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Floating Back Button (Mobile Only) */}
-      {!isHome && (
-        <button 
-          className="btn-accent hide-on-desktop hover-scale" 
-          onClick={() => navigate(-1)}
-          style={{ 
-            position: 'fixed', 
-            bottom: '80px', 
-            left: '16px',
-            zIndex: 1000, 
-            borderRadius: '50%', 
-            width: '48px', 
-            height: '48px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
-          }}
-          aria-label="Go Back"
-        >
-          <CaretLeft size={24} weight="bold" />
-        </button>
-      )}
+
 
       {/* Mobile Bottom Navigation */}
       <nav className="navbar-bottom hide-on-desktop">
