@@ -212,6 +212,21 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const updatedProfile = { ...profile, ...data, verificationStatus: 'pending_review' } as HostProfile;
       setProfile(updatedProfile);
+
+      // Trigger the email notification to the admin via Vercel Serverless Function
+      try {
+        await fetch('/api/notify-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessName: data.businessName || profile.name || 'Unknown Business',
+            hostEmail: profile.email,
+            documentUrls: data.documentUrls || []
+          })
+        });
+      } catch (err) {
+        console.error('Failed to send admin notification:', err);
+      }
     }
   };
 
