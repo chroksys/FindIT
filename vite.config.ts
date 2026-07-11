@@ -17,7 +17,7 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: 'logo(Dark).svg',
+            src: 'logo(Light).svg',
             sizes: 'any',
             type: 'image/svg+xml'
           }
