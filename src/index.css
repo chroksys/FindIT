@@ -64,6 +64,12 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
+}
 
 body {
   font-family: var(--font-body);
@@ -77,6 +83,12 @@ body {
   -webkit-font-smoothing: antialiased;
   font-size: 16px;
   overscroll-behavior-y: none;
+}
+
+@media (max-width: 768px) {
+  body:has(input:focus, textarea:focus) .navbar-bottom {
+    display: none !important;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
