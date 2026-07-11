@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, Bell, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, ToggleRight, ToggleLeft, CheckCircle } from '@phosphor-icons/react';
+import { ChangePasswordModal } from '../ChangePasswordModal';
 
 export const HostDashboard: React.FC = () => {
   const { events, deleteEvent, togglePauseEvent, getEventStatus } = useEventContext();
@@ -548,54 +549,7 @@ export const HostDashboard: React.FC = () => {
 
       {/* Settings Modals */}
       
-      {/* Password Modal */}
-      {passwordModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-        }}>
-          <div className="animate-fade-in-up" style={{
-            backgroundColor: 'var(--color-deep-navy)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)',
-            padding: '32px', maxWidth: '400px', width: '100%', textAlign: 'center', position: 'relative'
-          }}>
-            {passwordStep !== 'processing' && (
-              <button onClick={() => setPasswordModalOpen(false)} className="hover-scale" style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}>
-                <X size={24} />
-              </button>
-            )}
-
-            {passwordStep === 'form' && (
-              <>
-                <LockKey size={48} color="var(--text-primary)" style={{ marginBottom: '16px' }} />
-                <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px' }}>Change Password</h3>
-                <input type="password" placeholder="Current Password" style={{ width: '100%', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#ffffff', marginBottom: '12px', outline: 'none' }} />
-                <input type="password" placeholder="New Password" style={{ width: '100%', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#ffffff', marginBottom: '12px', outline: 'none' }} />
-                <input type="password" placeholder="Confirm New Password" style={{ width: '100%', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#ffffff', marginBottom: '24px', outline: 'none' }} />
-                <button onClick={() => { setPasswordStep('processing'); setTimeout(() => setPasswordStep('success'), 1500); }} className="btn-primary hover-scale" style={{ width: '100%', justifyContent: 'center' }}>
-                  Update Password
-                </button>
-              </>
-            )}
-
-            {passwordStep === 'processing' && (
-              <div style={{ padding: '40px 0' }}>
-                <div style={{ width: '40px', height: '40px', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--color-success)', borderRadius: '50%', margin: '0 auto 24px', animation: 'spin 1s linear infinite' }} />
-                <h3 style={{ fontSize: '20px', fontWeight: 600 }}>Securing Account...</h3>
-              </div>
-            )}
-
-            {passwordStep === 'success' && (
-              <div className="animate-fade-in-up">
-                <CheckCircle size={48} color="var(--color-success)" weight="fill" style={{ marginBottom: '16px' }} />
-                <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '16px' }}>Password Updated!</h3>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Your account is secure with your new password.</p>
-                <button onClick={() => setPasswordModalOpen(false)} className="btn-primary hover-scale" style={{ width: '100%', justifyContent: 'center' }}>Done</button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {passwordModalOpen && <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />}
 
       {/* Email Modal */}
       {emailModalOpen && (

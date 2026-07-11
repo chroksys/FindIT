@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TicketModal } from '../TicketModal';
 import { ViewAllModal } from '../ViewAllModal';
+import { ChangePasswordModal } from '../ChangePasswordModal';
 import { useUserContext, type UserProfile } from '../../context/UserContext';
 import { useEventContext } from '../../context/EventContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -27,13 +28,15 @@ const INTEREST_ICONS: Record<string, string> = {
 };
 
 export const UserDashboard: React.FC = () => {
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
-  const [viewAllData, setViewAllData] = useState<{title: string, items: any[], type: 'event' | 'ticket' | 'host' | 'review' | 'attended'} | null>(null);
-  const { profile, logout, savedEventIds } = useUserContext();
   const { events } = useEventContext();
+  const { profile, logout, savedEventIds } = useUserContext();
   const { resolvedTheme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
+
+  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [viewAllData, setViewAllData] = useState<{ title: string, items: any[], type: 'event' | 'ticket' | 'payment' } | null>(null);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   // Type assertion since we know it's a user profile if this renders
   const userProfile = profile as UserProfile;
@@ -228,7 +231,7 @@ export const UserDashboard: React.FC = () => {
               <span className="text-body" style={{ fontWeight: 500 }}>{t('push_notifications')}</span>
             </button>
             
-            <button className="settings-item hover-scale">
+            <button onClick={() => setPasswordModalOpen(true)} className="settings-item hover-scale">
               <LockKey size={20} color="var(--text-secondary)" />
               <span className="text-body" style={{ fontWeight: 500 }}>Change Password</span>
             </button>
@@ -258,6 +261,7 @@ export const UserDashboard: React.FC = () => {
 
     {selectedTicket && <TicketModal event={selectedTicket} onClose={() => setSelectedTicket(null)} />}
     {viewAllData && <ViewAllModal title={viewAllData.title} items={viewAllData.items} type={viewAllData.type} onClose={() => setViewAllData(null)} onItemClick={viewAllData.type === 'ticket' ? (item) => setSelectedTicket(item) : undefined} />}
+    {passwordModalOpen && <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />}
     </div>
   );
 };
