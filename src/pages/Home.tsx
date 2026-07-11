@@ -10,11 +10,13 @@ export const Home = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const CITIES = ['All', 'Kampala', 'Nairobi', 'Jinja'];
 
   const activeEvents = events.filter(e => {
     if (e.isPaused) return false;
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
+    if (selectedCategory !== 'All' && e.category !== selectedCategory) return false;
     return true;
   });
 
@@ -165,28 +167,31 @@ export const Home = () => {
             width: '100%',
             animationDelay: '0.2s' 
           }}>
-            {['All', 'Birthday', 'Music', 'Games', 'Anniversary', 'Wedding', 'Art'].map((cat, i) => (
-              <button 
-                key={cat} 
-                onClick={() => navigate(cat === 'All' ? '/search' : `/search?category=${encodeURIComponent(cat)}`)}
-                className="hover-scale" 
-                style={{
-                  background: i === 0 ? '#ffffff' : 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: i === 0 ? '#000000' : 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '15px',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  padding: '10px 24px',
-                  borderRadius: '999px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                {cat}
-              </button>
-            ))}
+            {['All', 'Birthday', 'Music', 'Games', 'Anniversary', 'Wedding', 'Art', 'Business', 'Travel', 'Family', 'Sport', 'Hobbies', 'Community', 'Education'].map((cat) => {
+              const isActive = selectedCategory === cat;
+              return (
+                <button 
+                  key={cat} 
+                  onClick={() => setSelectedCategory(cat)}
+                  className="hover-scale" 
+                  style={{
+                    background: isActive ? '#ffffff' : 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: isActive ? '#000000' : 'var(--text-secondary)',
+                    fontWeight: 600,
+                    fontSize: '15px',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    padding: '10px 24px',
+                    borderRadius: '999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                  {cat}
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
