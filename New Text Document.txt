@@ -1,0 +1,35 @@
+12:21:59.106 src/components/CheckoutModal.tsx(17,9): error TS6133: 't' is declared but its value is never read.
+12:21:59.107 src/components/EventCard.tsx(4,1): error TS6133: 'useState' is declared but its value is never read.
+12:21:59.107 src/components/Navbar.tsx(3,89): error TS6133: 'Ticket' is declared but its value is never read.
+12:21:59.108 src/components/Navbar.tsx(29,9): error TS6133: 'toggleTheme' is declared but its value is never read.
+12:21:59.108 src/components/ViewAllModal.tsx(53,33): error TS6133: 'index' is declared but its value is never read.
+12:21:59.108 src/components/auth/HostOnboarding.tsx(83,26): error TS2345: Argument of type '{ name: string; email: string; phone: string; businessName: string; organizerType: string; website: string; bio: string; city: string; subscription: SubscriptionTier; avatarUrl: string | undefined; }' is not assignable to parameter of type 'HostProfile'.
+12:21:59.117 src/context/UserContext.tsx(61,28): error TS6133: 'setPendingPromoters' is declared but its value is never read.
+12:21:59.117 src/context/UserContext.tsx(258,28): error TS6133: 'email' is declared but its value is never read.
+12:21:59.117 src/context/UserContext.tsx(259,27): error TS6133: 'email' is declared but its value is never read.
+12:21:59.118 src/context/UserContext.tsx(262,137): error TS2322: Type '(email: string, password: string) => Promise<void>' is not assignable to type '(email: string, password?: string | undefined) => Promise<void>'.
+12:21:59.119 src/pages/AdminDashboard.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+12:21:59.119 src/pages/AdminDashboard.tsx(73,53): error TS6133: 'url' is declared but its value is never read.
+12:21:59.119 src/pages/Auth.tsx(5,10): error TS6133: 'Link' is declared but its value is never read.
+12:21:59.119 src/pages/Calendar.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+12:21:59.121 src/pages/Calendar.tsx(2,1): error TS6133: 'EventCard' is declared but its value is never read.
+12:21:59.121 src/pages/Calendar.tsx(22,9): error TS6133: 'nextMonth' is declared but its value is never read.
+12:21:59.121 src/pages/Calendar.tsx(23,9): error TS6133: 'nextMonthYear' is declared but its value is never read.
+12:21:59.122 src/pages/Home.tsx(4,1): error TS6133: 'SkeletonCard' is declared but its value is never read.
+12:21:59.122 src/pages/Home.tsx(5,10): error TS6133: 'Funnel' is declared but its value is never read.
+12:21:59.125 src/pages/Home.tsx(5,54): error TS6133: 'Star' is declared but its value is never read.
+12:21:59.125 src/pages/Home.tsx(5,60): error TS6133: 'TrendUp' is declared but its value is never read.
+12:21:59.129 src/pages/Home.tsx(5,69): error TS6133: 'Compass' is declared but its value is never read.
+12:21:59.129 src/pages/Home.tsx(5,78): error TS6133: 'Fire' is declared but its value is never read.
+12:21:59.129 src/pages/Home.tsx(5,84): error TS6133: 'Heart' is declared but its value is never read.
+12:21:59.130 src/pages/Home.tsx(13,19): error TS6133: 'setKeyword' is declared but its value is never read.
+12:21:59.133 src/pages/Home.tsx(14,10): error TS6133: 'isLoading' is declared but its value is never read.
+12:21:59.133 src/pages/Home.tsx(31,50): error TS2367: This comparison appears to be unintentional because the types '"Starter" | "Growth" | "Pro" | "Free" | undefined' and '"Premium"' have no overlap.
+12:21:59.134 src/pages/Home.tsx(37,9): error TS6133: 'handleSearch' is declared but its value is never read.
+12:21:59.135 src/pages/HostEvent.tsx(10,26): error TS6133: 'profile' is declared but its value is never read.
+12:21:59.135 src/pages/LiveEvents.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+12:21:59.136 src/pages/Notifications.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+12:21:59.136 src/pages/OrganizerProfile.tsx(2,21): error TS6133: 'Link' is declared but its value is never read.
+12:21:59.136 src/pages/Pricing.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+12:21:59.136 src/pages/Search.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+12:21:59.809 Error: Command "npm run build" exited with 2
