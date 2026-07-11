@@ -56,6 +56,17 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ onClos
       return;
     }
 
+    // Trigger confirmation email
+    try {
+      await fetch('/api/notify-password-change', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: profile?.email })
+      });
+    } catch (err) {
+      console.error('Failed to trigger confirmation email', err);
+    }
+
     setStep('success');
   };
 
