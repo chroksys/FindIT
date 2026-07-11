@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { 
   MapPin, CalendarBlank, Star, Ticket, CheckCircle, ThumbsUp, CaretLeft, 
   ShareNetwork, WhatsappLogo, FacebookLogo, InstagramLogo, TwitterLogo, LinkedinLogo, EnvelopeSimple,
-  Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap
+  Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar
 } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
@@ -486,16 +486,35 @@ export const EventDetail = () => {
                 )}
               </div>
               
-              {event.ticketLink ? (
-                <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
-                  <button className="btn-accent hover-scale" style={{ width: '100%', padding: '16px', fontSize: '16px' }}>
+              {event.organizer.verified ? (
+                // Verified organizer: show online Buy Tickets button
+                event.ticketLink ? (
+                  <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
+                    <button className="btn-accent hover-scale" style={{ width: '100%', padding: '16px', fontSize: '16px' }}>
+                      {t('buy_tickets')}
+                    </button>
+                  </a>
+                ) : (
+                  <button className="btn-accent hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ width: '100%', padding: '16px', fontSize: '16px' }}>
                     {t('buy_tickets')}
                   </button>
-                </a>
+                )
               ) : (
-                <button className="btn-accent hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ width: '100%', padding: '16px', fontSize: '16px' }}>
-                  {t('buy_tickets')}
-                </button>
+                // Unverified organizer: Pay at Gate only
+                <div style={{ borderRadius: 'var(--radius-card)', border: '1px solid rgba(255,107,0,0.35)', backgroundColor: 'rgba(255,107,0,0.07)', padding: '16px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                    <CurrencyDollar size={22} color="var(--color-pin-orange)" weight="fill" />
+                    <span style={{ fontWeight: 700, fontSize: '15px', color: 'var(--color-pin-orange)' }}>Pay at the Gate</span>
+                  </div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                    Online ticket sales are not available for this event. Purchase your ticket at the venue entrance on the event day.
+                  </p>
+                  {event.price && (
+                    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
+                      Entry: <span style={{ color: 'var(--color-pin-orange)' }}>{event.price}</span>
+                    </div>
+                  )}
+                </div>
               )}
 
               <div style={{ marginTop: 'var(--spacing-base)' }}>

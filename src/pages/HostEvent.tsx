@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, CurrencyDollar, WarningCircle, ArrowRight, CaretLeft, Spinner } from '@phosphor-icons/react';
+import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, CurrencyDollar, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey } from '@phosphor-icons/react';
+import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import { useNavigate, useParams, Link } from 'react-router-dom';
@@ -7,7 +8,9 @@ import { uploadFile } from '../lib/uploadFile';
 
 export const HostEvent: React.FC = () => {
   const { addEvent, updateEvent, events } = useEventContext();
-  const { getEventLimit, role } = useUserContext();
+  const { getEventLimit, role, profile } = useUserContext();
+  const hostProfile = profile as HostProfile;
+  const isVerified = hostProfile?.verificationStatus === 'verified';
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = Boolean(id);
@@ -292,31 +295,52 @@ export const HostEvent: React.FC = () => {
 
             {step === 3 && (
               <>
-                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)' }}>
+                {/* Verification gate banner */}
+                {!isVerified ? (
+                  <div style={{ backgroundColor: 'rgba(255, 107, 0, 0.08)', border: '1px solid rgba(255,107,0,0.4)', borderRadius: 'var(--radius-card)', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                    <LockKey size={32} color="var(--color-pin-orange)" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--color-pin-orange)', marginBottom: '6px' }}>Online Ticket Sales Locked</h3>
+                      <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                        Online ticket sales are exclusively available to <strong style={{ color: 'var(--text-primary)' }}>verified organizers</strong>. You can still publish this event — attendees will pay in cash / at the gate.
+                      </p>
+                      <Link to="/verify" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '12px', color: 'var(--color-pin-orange)', fontWeight: 600, fontSize: '14px' }}>
+                        <ShieldCheck size={16} /> Get Verified to Unlock
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ backgroundColor: 'rgba(46, 213, 115, 0.08)', border: '1px solid rgba(46,213,115,0.3)', borderRadius: 'var(--radius-card)', padding: '14px 18px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <ShieldCheck size={22} color="var(--color-success)" weight="fill" />
+                    <span style={{ fontSize: '14px', color: 'var(--color-success)', fontWeight: 600 }}>Verified Organizer — Online ticket sales enabled</span>
+                  </div>
+                )}
+
+                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', opacity: isVerified ? 1 : 0.4, pointerEvents: isVerified ? 'auto' : 'none' }}>
                   <div className="form-group">
                     <label className="form-label">Ticket Link (Optional)</label>
                     <div style={{ position: 'relative' }}>
                       <LinkIcon size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                      <input name="ticketLink" value={formData.ticketLink} onChange={handleChange} type="url" placeholder="https://..." style={{ paddingLeft: '40px' }} />
+                      <input name="ticketLink" value={formData.ticketLink} onChange={handleChange} type="url" placeholder="https://..." style={{ paddingLeft: '40px' }} disabled={!isVerified} />
                     </div>
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Price (Optional)</label>
+                    <label className="form-label">Price (for online sales)</label>
                     <div style={{ position: 'relative' }}>
                       <CurrencyDollar size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                      <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="e.g. 50,000 UGX" style={{ paddingLeft: '40px' }} />
+                      <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="e.g. 50,000 UGX" style={{ paddingLeft: '40px' }} disabled={!isVerified} />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', marginBottom: 'var(--spacing-large)' }}>
+                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', marginBottom: 'var(--spacing-large)', opacity: isVerified ? 1 : 0.4, pointerEvents: isVerified ? 'auto' : 'none' }}>
                   <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
                     <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Deadline (Optional)</label>
-                    <input name="earlyBirdDeadline" value={formData.earlyBirdDeadline} onChange={handleChange} type="datetime-local" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
+                    <input name="earlyBirdDeadline" value={formData.earlyBirdDeadline} onChange={handleChange} type="datetime-local" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} disabled={!isVerified} />
                   </div>
                   <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
                     <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Price (Optional)</label>
-                    <input name="earlyBirdPrice" value={formData.earlyBirdPrice} onChange={handleChange} type="text" placeholder="e.g. $30" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
+                    <input name="earlyBirdPrice" value={formData.earlyBirdPrice} onChange={handleChange} type="text" placeholder="e.g. $30" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} disabled={!isVerified} />
                   </div>
                 </div>
               </>
