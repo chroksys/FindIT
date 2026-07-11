@@ -11,7 +11,6 @@ export const Navbar: React.FC = () => {
   useTheme();
   const { role, profile } = useUserContext();
   const { t } = useLanguage();
-  const isHome = location.pathname === '/';
   
   const [showNotifications, setShowNotifications] = useState(false);
   const mockNotifications: any[] = [];
