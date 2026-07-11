@@ -83,7 +83,7 @@ export const HostEvent: React.FC = () => {
   const nextStep = () => setStep(s => Math.min(s + 1, 4));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const displayDate = formData.date ? new Date(formData.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
@@ -124,9 +124,9 @@ export const HostEvent: React.FC = () => {
     }
 
     if (isEditing && id) {
-      updateEvent(id, eventPayload);
+      await updateEvent(id, eventPayload);
     } else {
-      addEvent(eventPayload);
+      await addEvent(eventPayload);
     }
 
     navigate('/dashboard');

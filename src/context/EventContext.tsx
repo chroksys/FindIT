@@ -160,8 +160,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       alert('You must be logged in as a Host to create live events.');
       return;
     }
-    
-    await supabase.from('events').insert([{
+
+    const payload: any = {
       host_id: profile.id,
       title: eventData.title,
       description: eventData.description,
@@ -171,13 +171,31 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       time: eventData.time,
       display_time: eventData.displayTime,
       venue: eventData.venue,
-      city: eventData.city,
+      city: eventData.city || '',
       distance: eventData.distance,
       banner_url: eventData.bannerUrl,
-      price: eventData.price
-    }]);
+      price: eventData.price || null,
+      ticket_link: (eventData as any).ticketLink || null,
+    };
 
-    fetchEvents();
+    if ((eventData as any).earlyBird?.deadline) {
+      payload.early_bird_deadline = (eventData as any).earlyBird.deadline;
+      payload.early_bird_price = (eventData as any).earlyBird.price || null;
+    }
+
+    if ((eventData as any).collaborations?.length) {
+      payload.collaborations = (eventData as any).collaborations;
+    }
+
+    const { error } = await supabase.from('events').insert([payload]);
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      alert(`Failed to publish event: ${error.message}`);
+      return;
+    }
+
+    await fetchEvents();
   };
 
   const updateEvent = async (id: string, updatedData: Partial<Event>) => {
