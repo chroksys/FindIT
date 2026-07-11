@@ -220,7 +220,6 @@ export const Navbar: React.FC = () => {
               ) : (
                 <UserCircle size={24} weight={location.pathname === '/dashboard' ? 'fill' : 'regular'} />
               )}
-              <span style={{ fontSize: '10px' }}>{t('profile')}</span>
             </Link>
         )}
       </nav>
