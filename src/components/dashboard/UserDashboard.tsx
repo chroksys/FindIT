@@ -35,7 +35,7 @@ export const UserDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
-  const [viewAllData, setViewAllData] = useState<{ title: string, items: any[], type: 'event' | 'ticket' | 'payment' } | null>(null);
+  const [viewAllData, setViewAllData] = useState<{ title: string, items: any[], type: 'event' | 'ticket' | 'host' | 'review' | 'attended' } | null>(null);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   // Type assertion since we know it's a user profile if this renders

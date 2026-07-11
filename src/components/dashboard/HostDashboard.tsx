@@ -27,7 +27,6 @@ export const HostDashboard: React.FC = () => {
   const [pushEnabled, setPushEnabled] = useState(true);
   
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-  const [passwordStep, setPasswordStep] = useState<'form' | 'processing' | 'success'>('form');
   
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [emailStep, setEmailStep] = useState<'form' | 'processing' | 'success'>('form');
@@ -311,7 +310,7 @@ export const HostDashboard: React.FC = () => {
               </div>
             </div>
             
-            <button onClick={() => { setPasswordModalOpen(true); setPasswordStep('form'); }} className="settings-item hover-scale">
+            <button onClick={() => setPasswordModalOpen(true)} className="settings-item hover-scale">
               <LockKey size={20} color="var(--text-secondary)" />
               <span className="text-body" style={{ fontWeight: 500 }}>Change Password</span>
             </button>
