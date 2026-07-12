@@ -22,6 +22,7 @@ export interface Event {
   price?: string;
   isPaused: boolean;
   organizer: {
+    id?: string;
     name: string;
     avatarUrl: string;
     verified: boolean;
@@ -49,7 +50,7 @@ interface EventContextType {
   getEventStatus: (event: Event) => EventStatus;
   addReview: (eventId: string, rating: number, comment: string) => Promise<void>;
   followedHostIds: string[];
-  followHost: (hostId: string, hostName: string) => Promise<void>;
+  followHost: (hostId: string, hostName?: string) => Promise<void>;
   unfollowHost: (hostId: string) => Promise<void>;
 }
 
@@ -85,7 +86,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const fetchEvents = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('events')
       .select('*, profiles!events_host_id_fkey(id, name, avatar_url, subscription)')
       .order('created_at', { ascending: false });
@@ -137,7 +138,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const followHost = async (hostId: string, hostName: string) => {
+  const followHost = async (hostId: string, _hostName?: string) => {
     if (!profile?.id) return;
     // Insert follow record
     const { error } = await supabase.from('follows').insert({
@@ -150,9 +151,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setFollowedHostIds(prev => [...prev, hostId]);
 
     // Increment follower count on profiles table
-    await supabase.rpc('increment_follower_count', { profile_id: hostId }).catch(() => {
-      // If RPC doesn't exist, silently continue
-    });
+    try { await supabase.rpc('increment_follower_count', { profile_id: hostId }); } catch (_) { /* RPC may not exist yet */ }
 
     // Send notification to the host
     await supabase.from('notifications').insert({
@@ -178,7 +177,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setFollowedHostIds(prev => prev.filter(id => id !== hostId));
 
     // Decrement follower count
-    await supabase.rpc('decrement_follower_count', { profile_id: hostId }).catch(() => {});
+    try { await supabase.rpc('decrement_follower_count', { profile_id: hostId }); } catch (_) { /* RPC may not exist yet */ }
 
     await fetchEvents();
   };
