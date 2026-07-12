@@ -16,13 +16,13 @@ import { CheckoutModal } from '../components/CheckoutModal';
 export const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { events, addReview } = useEventContext();
+  const { events, addReview, followHost, unfollowHost, followedHostIds } = useEventContext();
   const { role } = useUserContext();
   const { t } = useLanguage();
   
   const [showShare, setShowShare] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
@@ -319,11 +319,28 @@ export const EventDetail = () => {
                 </div>
               </div>
               <button 
-                className={isFollowing ? 'btn-secondary' : 'btn-accent'} 
-                onClick={() => setIsFollowing(!isFollowing)}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                className={followedHostIds.includes(event.organizer.id || '') ? 'btn-secondary' : 'btn-accent'} 
+                disabled={isFollowLoading}
+                onClick={async () => {
+                  if (role === 'guest') { navigate('/login'); return; }
+                  const hostId = event.organizer.id || '';
+                  if (!hostId) return;
+                  setIsFollowLoading(true);
+                  try {
+                    if (followedHostIds.includes(hostId)) {
+                      await unfollowHost(hostId);
+                    } else {
+                      await followHost(hostId, event.organizer.name);
+                    }
+                  } finally {
+                    setIsFollowLoading(false);
+                  }
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: isFollowLoading ? 0.7 : 1 }}
               >
-                {isFollowing ? (
+                {isFollowLoading ? (
+                  <><SpinnerGap size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading...</>
+                ) : followedHostIds.includes(event.organizer.id || '') ? (
                   <><CheckCircle size={20} /> Following</>
                 ) : (
                   <><Bell size={20} /> Follow Organizer</>

@@ -48,6 +48,9 @@ interface EventContextType {
   togglePauseEvent: (id: string) => void;
   getEventStatus: (event: Event) => EventStatus;
   addReview: (eventId: string, rating: number, comment: string) => Promise<void>;
+  followedHostIds: string[];
+  followHost: (hostId: string, hostName: string) => Promise<void>;
+  unfollowHost: (hostId: string) => Promise<void>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -55,19 +58,37 @@ const EventContext = createContext<EventContextType | undefined>(undefined);
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>('All');
+  const [followedHostIds, setFollowedHostIds] = useState<string[]>([]);
   const { profile } = useUserContext();
 
   useEffect(() => {
     fetchEvents();
   }, []);
 
+  // Load followed hosts when user logs in
+  useEffect(() => {
+    if (profile?.id) {
+      fetchFollowedHosts(profile.id);
+    } else {
+      setFollowedHostIds([]);
+    }
+  }, [profile?.id]);
+
+  const fetchFollowedHosts = async (userId: string) => {
+    const { data } = await supabase
+      .from('follows')
+      .select('host_id')
+      .eq('follower_id', userId);
+    if (data) {
+      setFollowedHostIds(data.map((f: any) => f.host_id));
+    }
+  };
+
   const fetchEvents = async () => {
     const { data, error } = await supabase
       .from('events')
       .select('*, profiles!events_host_id_fkey(id, name, avatar_url, subscription)')
       .order('created_at', { ascending: false });
-
-    console.log('[fetchEvents] data count:', data?.length, '| error:', error, '| raw:', data);
 
     if (data && data.length > 0) {
       // Fetch all reviews in one query
@@ -98,8 +119,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           name: d.profiles?.name || 'Unknown',
           avatarUrl: d.profiles?.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
           verified: false,
-          followers: 0,
-          subscriptionTier: d.profiles?.subscription
+          followers: d.profiles?.follower_count || 0,
+          subscriptionTier: d.profiles?.subscription,
+          isFollowed: followedHostIds.includes(d.host_id)
         },
         gallery: [],
         reviews: (reviewsData || []).filter((r: any) => r.event_id === d.id),
@@ -111,9 +133,54 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.log('[fetchEvents] setting', mappedEvents.length, 'events in state');
       setEvents(mappedEvents);
     } else {
-      console.log('[fetchEvents] no data returned, setting empty events. error:', error);
       setEvents([]);
     }
+  };
+
+  const followHost = async (hostId: string, hostName: string) => {
+    if (!profile?.id) return;
+    // Insert follow record
+    const { error } = await supabase.from('follows').insert({
+      follower_id: profile.id,
+      host_id: hostId
+    });
+    if (error) { console.error('Follow error:', error); return; }
+
+    // Update local state immediately
+    setFollowedHostIds(prev => [...prev, hostId]);
+
+    // Increment follower count on profiles table
+    await supabase.rpc('increment_follower_count', { profile_id: hostId }).catch(() => {
+      // If RPC doesn't exist, silently continue
+    });
+
+    // Send notification to the host
+    await supabase.from('notifications').insert({
+      user_id: hostId,
+      type: 'follow',
+      message: `👤 ${profile.name || 'Someone'} started following you!`,
+      link: `/organizer/${profile.id}`,
+      read: false
+    });
+
+    // Refresh events to reflect isFollowed change
+    await fetchEvents();
+  };
+
+  const unfollowHost = async (hostId: string) => {
+    if (!profile?.id) return;
+    await supabase.from('follows')
+      .delete()
+      .eq('follower_id', profile.id)
+      .eq('host_id', hostId);
+
+    // Update local state immediately
+    setFollowedHostIds(prev => prev.filter(id => id !== hostId));
+
+    // Decrement follower count
+    await supabase.rpc('decrement_follower_count', { profile_id: hostId }).catch(() => {});
+
+    await fetchEvents();
   };
 
   const addReview = async (eventId: string, rating: number, comment: string) => {
@@ -297,7 +364,10 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       duplicateEvent,
       togglePauseEvent,
       getEventStatus,
-      addReview
+      addReview,
+      followedHostIds,
+      followHost,
+      unfollowHost
     }}>
       {children}
     </EventContext.Provider>
