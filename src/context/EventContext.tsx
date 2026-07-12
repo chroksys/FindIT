@@ -64,7 +64,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const fetchEvents = async () => {
     const { data, error } = await supabase
       .from('events')
-      .select('*, profiles(id, name, avatar_url, subscription)')
+      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, subscription)')
       .order('created_at', { ascending: false });
 
     console.log('[fetchEvents] data count:', data?.length, '| error:', error, '| raw:', data);
