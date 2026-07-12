@@ -150,9 +150,6 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Update local state immediately
     setFollowedHostIds(prev => [...prev, hostId]);
 
-    // Increment follower count on profiles table
-    try { await supabase.rpc('increment_follower_count', { profile_id: hostId }); } catch (_) { /* RPC may not exist yet */ }
-
     // Send notification to the host
     await supabase.from('notifications').insert({
       user_id: hostId,
@@ -175,9 +172,6 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     // Update local state immediately
     setFollowedHostIds(prev => prev.filter(id => id !== hostId));
-
-    // Decrement follower count
-    try { await supabase.rpc('decrement_follower_count', { profile_id: hostId }); } catch (_) { /* RPC may not exist yet */ }
 
     await fetchEvents();
   };
