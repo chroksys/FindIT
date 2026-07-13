@@ -173,15 +173,15 @@ export const EventDetail = () => {
   return (
     <div style={{ paddingBottom: 'var(--spacing-xlarge)' }}>
       {/* Banner / Hero Section */}
-      <div style={{ position: 'relative', width: '100%', height: '60vh', minHeight: '400px', backgroundColor: 'var(--color-deep-navy)' }}>
+      <div style={{ position: 'relative', width: '100%', height: '60vh', minHeight: '400px', backgroundColor: 'var(--bg-page)' }}>
         <img 
           src={event.bannerUrl} 
           alt={event.title} 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', opacity: 0.9 }} 
         />
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(25,25,45,0.5) 0%, rgba(25,25,45,0) 20%, rgba(25,25,45,0) 60%, rgba(25,25,45,1) 100%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, var(--bg-page) 100%)',
           pointerEvents: 'none'
         }}></div>
 
@@ -257,17 +257,21 @@ export const EventDetail = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)', minWidth: 0 }}>
             
             {/* Quick Details & Actions */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--spacing-base)' }}>
-              <div style={{ display: 'flex', gap: 'var(--spacing-large)', color: 'var(--text-secondary)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CalendarBlank size={24} />
+            <div style={{ 
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--spacing-base)',
+              backgroundColor: 'var(--bg-card)', padding: 'var(--spacing-large)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)',
+              boxShadow: 'var(--shadow-soft)'
+            }}>
+              <div style={{ display: 'flex', gap: 'var(--spacing-large)', color: 'var(--text-secondary)', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <CalendarBlank size={28} />
                   <div>
                     <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{event.displayDate}</div>
                     <div className="text-caption">{event.displayTime}</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <MapPin size={24} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <MapPin size={28} />
                   <div>
                     <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{event.venue}</div>
                     <div className="text-caption">Kampala, Uganda</div>
@@ -275,27 +279,27 @@ export const EventDetail = () => {
                 </div>
               </div>
               
-
-              
-              <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)' }}>
+              <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                 <div style={{ position: 'relative' }}>
                   <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <CalendarPlus size={20} /> {t('add_to_calendar')}
                   </button>
                   {showCalendar && (
-                    <div className="glass-dropdown" style={{ right: 0, left: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '160px' }}>
+                    <div className="glass-dropdown" style={{ right: 0, left: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '160px', top: '100%', marginTop: '8px' }}>
                       <button className="btn-ghost" onClick={handleGoogleCalendar} style={{ justifyContent: 'flex-start' }}><GoogleLogo size={20} /> Google</button>
                       <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><AppleLogo size={20} /> Apple</button>
                       <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><MicrosoftOutlookLogo size={20} /> Outlook</button>
                     </div>
                   )}
                 </div>
-                <button className="btn-secondary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <ThumbsUp size={20} /> {t('interested')}
-                </button>
-                <button className="btn-primary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CheckCircle size={20} /> {t('going')}
-                </button>
+                <div style={{ display: 'flex', gap: 'var(--spacing-small)' }}>
+                  <button className="btn-secondary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <ThumbsUp size={20} /> {t('interested')}
+                  </button>
+                  <button className="btn-primary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckCircle size={20} /> {t('going')}
+                  </button>
+                </div>
               </div>
             </div>
 
