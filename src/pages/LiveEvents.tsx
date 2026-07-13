@@ -21,13 +21,15 @@ export const LiveEvents = () => {
       <section style={{ 
         paddingTop: 'var(--spacing-hero)',
         paddingBottom: 'var(--spacing-large)',
-        backgroundColor: 'var(--color-deep-navy)'
+        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--spacing-small)' }}>
             <div style={{ position: 'relative' }}>
-              <Broadcast size={32} color="var(--color-error)" weight="fill" />
-              <div style={{ position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', backgroundColor: 'var(--color-error)', borderRadius: '50%', border: '2px solid var(--color-deep-navy)', animation: 'pulse 2s infinite' }}></div>
+              <Broadcast size={32} color="var(--color-white)" weight="fill" style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' }} />
+              <div style={{ position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', backgroundColor: 'var(--color-white)', borderRadius: '50%', border: '2px solid transparent', animation: 'pulse 2s infinite', boxShadow: '0 0 10px rgba(255,255,255,0.8)' }}></div>
             </div>
             <h1 className="text-hero animate-fade-in-up" style={{ fontSize: '36px' }}>
               Live Right Now

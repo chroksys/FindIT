@@ -74,10 +74,6 @@ html, body {
 body {
   font-family: var(--font-body);
   background-color: var(--bg-page);
-  background-image: 
-    radial-gradient(circle at 0% 10%, rgba(200, 30, 30, 0.15), transparent 40%),
-    radial-gradient(circle at 100% 50%, rgba(30, 100, 200, 0.05), transparent 50%);
-  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
