@@ -24,7 +24,6 @@ export const EventDetail = () => {
   const [showShare, setShowShare] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   
-  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
