@@ -38,6 +38,7 @@ export interface Event {
   reviews: any[];
   isBoosted?: boolean;
   promoCodes?: { code: string; discount: string; uses: number }[];
+  earlyBird?: { deadline: string; price: string };
   collaborations?: string[];
   rsvps?: { userId: string; status: 'going' | 'interested'; avatarUrl?: string }[];
 }
