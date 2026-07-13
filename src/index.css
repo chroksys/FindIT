@@ -481,9 +481,9 @@ input:focus, textarea:focus, select:focus {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background-color: rgba(44, 44, 74, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-muted-navy);
+  background-color: var(--bg-card);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-card);
   padding: var(--spacing-base);
   box-shadow: 0 8px 32px rgba(15, 15, 30, 0.5);
