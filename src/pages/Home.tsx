@@ -11,7 +11,9 @@ export const Home = () => {
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const CITIES = ['All', 'Kampala', 'Nairobi', 'Jinja'];
+  
+  const dynamicCities = Array.from(new Set(events.map(e => e.city).filter(Boolean))).sort();
+  const CITIES = ['All', ...dynamicCities];
 
   const activeEvents = events.filter(e => {
     if (e.isPaused) return false;

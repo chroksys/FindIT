@@ -50,6 +50,8 @@ export const HostEvent: React.FC = () => {
     endDate: '',
     endTime: '',
     venue: '',
+    city: '',
+    country: '',
     description: '',
     ticketLink: '',
     price: '',
@@ -72,6 +74,8 @@ export const HostEvent: React.FC = () => {
           endDate: eventToEdit.endDate || '',
           endTime: eventToEdit.endTime || '',
           venue: eventToEdit.venue,
+          city: eventToEdit.city || '',
+          country: eventToEdit.country || '',
           description: eventToEdit.description,
           ticketLink: eventToEdit.ticketLink || '',
           price: eventToEdit.price || '',
@@ -133,6 +137,8 @@ export const HostEvent: React.FC = () => {
       endDate: formData.endDate || undefined,
       endTime: formData.endTime || undefined,
       venue: formData.venue,
+      city: formData.city,
+      country: formData.country,
       description: formData.description,
       ticketLink: formData.ticketLink,
       price: formData.price,
@@ -333,7 +339,18 @@ export const HostEvent: React.FC = () => {
                   <label className="form-label">Venue Name</label>
                   <div style={{ position: 'relative' }}>
                     <MapPin size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                    <input name="venue" value={formData.venue} onChange={handleChange} type="text" placeholder="e.g. Serena Hotel, Kampala" style={{ paddingLeft: '40px' }} required />
+                    <input name="venue" value={formData.venue} onChange={handleChange} type="text" placeholder="e.g. Serena Hotel" style={{ paddingLeft: '40px' }} required />
+                  </div>
+                </div>
+
+                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)' }}>
+                  <div className="form-group">
+                    <label className="form-label">City</label>
+                    <input name="city" value={formData.city} onChange={handleChange} type="text" placeholder="e.g. Kampala" required />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Country</label>
+                    <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder="e.g. Uganda" required />
                   </div>
                 </div>
 

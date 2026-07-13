@@ -17,6 +17,7 @@ export interface Event {
   endTime?: string;
   venue: string;
   city: string;
+  country?: string;
   distance: string;
   coordinates?: { lat: number; lng: number };
   bannerUrl: string;
@@ -119,6 +120,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         endTime: d.end_time,
         venue: d.venue,
         city: d.city,
+        country: d.country,
         distance: d.distance,
         bannerUrl: d.banner_url,
         price: d.price,
@@ -258,6 +260,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       end_time: eventData.endTime,
       venue: eventData.venue,
       city: eventData.city || '',
+      country: eventData.country || '',
       distance: eventData.distance,
       banner_url: eventData.bannerUrl,
       price: eventData.price || null,
@@ -311,6 +314,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     mapField('endTime', 'end_time');
     mapField('venue', 'venue');
     mapField('city', 'city');
+    mapField('country', 'country');
     mapField('distance', 'distance');
     mapField('bannerUrl', 'banner_url');
     mapField('price', 'price');
