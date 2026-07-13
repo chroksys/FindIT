@@ -7,8 +7,7 @@ import {
   ShareNetwork, WhatsappLogo, FacebookLogo, InstagramLogo, TwitterLogo, LinkedinLogo, EnvelopeSimple,
   Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar
 } from '@phosphor-icons/react';
-import { Map, Marker } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
+
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -19,7 +18,7 @@ export const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { events, addReview, followHost, unfollowHost, followedHostIds } = useEventContext();
-  const { user, role } = useUserContext();
+  const { role } = useUserContext();
   const { t } = useLanguage();
   
   const [showShare, setShowShare] = useState(false);
