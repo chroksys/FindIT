@@ -17,6 +17,7 @@ import { OrganizerProfile } from './pages/OrganizerProfile';
 import { AttendeeLiveMode } from './pages/AttendeeLiveMode';
 import { HostControlCenter } from './pages/HostControlCenter';
 import { Notifications } from './pages/Notifications';
+import { MapView } from './pages/Map';
 import { EventProvider } from './context/EventContext';
 import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/search" element={<Search />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/live" element={<LiveEvents />} />
+                <Route path="/map" element={<MapView />} />
                 <Route path="/login" element={<Auth />} />
                 <Route path="/register" element={<Auth />} />
                 <Route path="/host" element={<HostEvent />} />

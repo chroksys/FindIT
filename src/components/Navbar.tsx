@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank } from '@phosphor-icons/react';
+import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank, MapTrifold } from '@phosphor-icons/react';
 import { useTheme } from '../context/ThemeContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -24,8 +24,9 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* Top Navigation */}
-      <nav className="navbar-top" style={{ 
+      {/* Top Navigation - Hidden on Map view for immersive experience */}
+      {location.pathname !== '/map' && (
+        <nav className="navbar-top" style={{ 
         padding: '12px 0',
         borderBottom: '1px solid var(--border-color)',
         backgroundColor: 'var(--bg-navbar)',
@@ -79,6 +80,13 @@ export const Navbar: React.FC = () => {
               </Link>
             </div>
             
+            {/* Mobile Only: Live Button next to Notifications */}
+            <div className="hide-on-desktop" style={{ display: 'flex', alignItems: 'center' }}>
+              <Link to="/live" className="btn-ghost hover-scale" style={{ padding: '8px' }} aria-label="Live">
+                <Broadcast size={24} color="var(--color-error)" weight={location.pathname === '/live' ? 'fill' : 'regular'} />
+              </Link>
+            </div>
+
             {/* Notifications */}
             <div style={{ position: 'relative' }}>
               <button 
@@ -164,6 +172,7 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       </nav>
+      )}
 
 
 
@@ -181,9 +190,9 @@ export const Navbar: React.FC = () => {
           <Plus size={28} weight="bold" />
           <span>{t('host_event')}</span>
         </Link>
-        <Link to="/live" className={`nav-item-mobile ${location.pathname === '/live' ? 'active' : ''}`}>
-          <Broadcast size={24} weight={location.pathname === '/live' ? 'fill' : 'regular'} />
-          <span>Live</span>
+        <Link to="/map" className={`nav-item-mobile ${location.pathname === '/map' ? 'active' : ''}`}>
+          <MapTrifold size={24} weight={location.pathname === '/map' ? 'fill' : 'regular'} />
+          <span>Map</span>
         </Link>
         {role === 'guest' ? (
           <Link to="/login" className={`nav-item-mobile ${location.pathname === '/login' ? 'active' : ''}`}>
