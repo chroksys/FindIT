@@ -64,6 +64,11 @@
   padding: 0;
 }
 
+*:focus {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 html, body {
   height: 100%;
   min-height: 100dvh;
@@ -122,6 +127,11 @@ button, .btn-primary, .btn-secondary, .btn-accent, .btn-ghost {
   justify-content: center;
   gap: var(--spacing-small);
   box-sizing: border-box;
+  outline: none;
+}
+
+button:focus, .btn-primary:focus, .btn-secondary:focus, .btn-accent:focus, .btn-ghost:focus {
+  outline: none;
 }
 
 /* Button Variants */
