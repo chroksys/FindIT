@@ -225,12 +225,6 @@ export const UserDashboard: React.FC = () => {
                 <option value="fr" style={{ color: 'black' }}>{t('french')}</option>
               </select>
             </div>
-            
-            <button className="settings-item hover-scale">
-              <Bell size={20} color="var(--text-secondary)" />
-              <span className="text-body" style={{ fontWeight: 500 }}>{t('push_notifications')}</span>
-            </button>
-            
             <button onClick={() => setPasswordModalOpen(true)} className="settings-item hover-scale">
               <LockKey size={20} color="var(--text-secondary)" />
               <span className="text-body" style={{ fontWeight: 500 }}>Change Password</span>

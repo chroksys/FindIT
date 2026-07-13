@@ -299,17 +299,6 @@ export const HostDashboard: React.FC = () => {
                 <option value="fr" style={{ color: 'black' }}>{t('french')}</option>
               </select>
             </div>
-
-            <div className="settings-item hover-scale" style={{ display: 'flex', justifyContent: 'space-between', paddingRight: '12px', cursor: 'pointer' }} onClick={() => setPushEnabled(!pushEnabled)}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Bell size={20} color="var(--text-secondary)" />
-                <span className="text-body" style={{ fontWeight: 500 }}>{t('push_notifications')}</span>
-              </div>
-              <div style={{ color: pushEnabled ? 'var(--color-success)' : 'var(--text-secondary)' }}>
-                {pushEnabled ? <ToggleRight size={32} weight="fill" /> : <ToggleLeft size={32} />}
-              </div>
-            </div>
-            
             <button onClick={() => setPasswordModalOpen(true)} className="settings-item hover-scale">
               <LockKey size={20} color="var(--text-secondary)" />
               <span className="text-body" style={{ fontWeight: 500 }}>Change Password</span>
