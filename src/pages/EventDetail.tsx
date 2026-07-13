@@ -171,7 +171,7 @@ export const EventDetail = () => {
   }
 
   return (
-    <div style={{ paddingBottom: 'var(--spacing-xlarge)' }}>
+    <div style={{ paddingBottom: 'var(--spacing-xlarge)', paddingTop: '70px' }}>
       {/* Banner / Hero Section */}
       <div style={{ position: 'relative', width: '100%', height: '400px', backgroundColor: 'var(--color-deep-navy)' }}>
         <img 
