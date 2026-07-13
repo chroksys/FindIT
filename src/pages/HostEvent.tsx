@@ -4,7 +4,7 @@ import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { Map, Marker } from 'react-map-gl/mapbox';
+import { Map } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { uploadFile } from '../lib/uploadFile';
 
