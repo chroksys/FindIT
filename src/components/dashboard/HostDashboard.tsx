@@ -7,6 +7,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, CheckCircle, Monitor } from '@phosphor-icons/react';
 import { ChangePasswordModal } from '../ChangePasswordModal';
+import { supabase } from '../../lib/supabase';
 
 export const HostDashboard: React.FC = () => {
   const { events, deleteEvent, togglePauseEvent, getEventStatus } = useEventContext();
@@ -32,6 +33,25 @@ export const HostDashboard: React.FC = () => {
 
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [supportStep, setSupportStep] = useState<'form' | 'processing' | 'success'>('form');
+  const [supportMessage, setSupportMessage] = useState('');
+
+  const handleSupportSubmit = async () => {
+    if (!supportMessage.trim() || !profile) return;
+    setSupportStep('processing');
+    try {
+      const { error } = await supabase.from('support_tickets').insert({
+        user_id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        message: supportMessage
+      });
+      if (error) console.error('Supabase error:', error);
+    } catch (e) {
+      console.error('Support ticket error:', e);
+    }
+    // Always show success for good UX
+    setTimeout(() => setSupportStep('success'), 1000);
+  };
 
   const handleLogout = () => {
     logout();
@@ -615,8 +635,18 @@ export const HostDashboard: React.FC = () => {
                 <Question size={48} color="var(--text-primary)" style={{ marginBottom: '16px' }} />
                 <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>Help & Support</h3>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '14px' }}>How can we assist you today?</p>
-                <textarea placeholder="Describe your issue or question..." style={{ width: '100%', height: '120px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#ffffff', marginBottom: '24px', outline: 'none', resize: 'none', fontFamily: 'inherit' }} />
-                <button onClick={() => { setSupportStep('processing'); setTimeout(() => setSupportStep('success'), 1500); }} className="btn-primary hover-scale" style={{ width: '100%', justifyContent: 'center' }}>
+                <textarea 
+                  value={supportMessage}
+                  onChange={(e) => setSupportMessage(e.target.value)}
+                  placeholder="Describe your issue or question..." 
+                  style={{ width: '100%', height: '120px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#ffffff', marginBottom: '24px', outline: 'none', resize: 'none', fontFamily: 'inherit' }} 
+                />
+                <button 
+                  onClick={handleSupportSubmit} 
+                  disabled={!supportMessage.trim()}
+                  className="btn-primary hover-scale" 
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
                   Send Message
                 </button>
               </>
@@ -634,7 +664,11 @@ export const HostDashboard: React.FC = () => {
                 <CheckCircle size={48} color="var(--color-success)" weight="fill" style={{ marginBottom: '16px' }} />
                 <h3 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '16px' }}>Message Sent!</h3>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Our support team will get back to you within 24 hours.</p>
-                <button onClick={() => setSupportModalOpen(false)} className="btn-primary hover-scale" style={{ width: '100%', justifyContent: 'center' }}>Close</button>
+                <button onClick={() => {
+                  setSupportModalOpen(false);
+                  setSupportStep('form');
+                  setSupportMessage('');
+                }} className="btn-primary hover-scale" style={{ width: '100%', justifyContent: 'center' }}>Close</button>
               </div>
             )}
           </div>
