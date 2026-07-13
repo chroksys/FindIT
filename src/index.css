@@ -497,7 +497,7 @@ input:focus, textarea:focus, select:focus {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background-color: rgba(20, 20, 25, 0.85);
+  background-color: var(--bg-navbar);
   backdrop-filter: blur(24px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-card);

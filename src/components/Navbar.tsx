@@ -120,7 +120,7 @@ export const Navbar: React.FC = () => {
                   position: 'absolute', top: '100%', right: '-10px', 
                   width: '320px', padding: '0', overflow: 'hidden', zIndex: 100 
                 }}>
-                  <div style={{ padding: 'var(--spacing-base)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-default)' }}>
+                  <div style={{ padding: 'var(--spacing-base)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'transparent' }}>
                     <h3 className="text-section" style={{ fontSize: '16px', margin: 0 }}>{t('notifications')}</h3>
                     <button className="text-caption" style={{ color: 'var(--color-pin-orange)', background: 'none', border: 'none', cursor: 'pointer' }}>{t('mark_all_read')}</button>
                   </div>
@@ -129,7 +129,7 @@ export const Navbar: React.FC = () => {
                       <div key={notification.id} onClick={() => { navigate(notification.link); setShowNotifications(false); }} style={{ 
                         padding: 'var(--spacing-base)', 
                         borderBottom: '1px solid var(--border-color)',
-                        backgroundColor: notification.read ? 'var(--bg-card)' : 'rgba(255,107,0,0.05)',
+                        backgroundColor: notification.read ? 'transparent' : 'rgba(255,107,0,0.05)',
                         cursor: 'pointer'
                       }} className="hover-lift">
                         <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px' }}>{notification.text}</div>
@@ -141,7 +141,7 @@ export const Navbar: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  <div style={{ padding: 'var(--spacing-small)', textAlign: 'center', backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-color)' }}>
+                  <div style={{ padding: 'var(--spacing-small)', textAlign: 'center', backgroundColor: 'transparent', borderTop: '1px solid var(--border-color)' }}>
                     <Link to="/notifications" onClick={() => setShowNotifications(false)} className="text-caption hover-scale" style={{ color: 'var(--text-primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, display: 'inline-block' }}>{t('view_all')}</Link>
                   </div>
                 </div>
