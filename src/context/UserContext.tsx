@@ -254,6 +254,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
 
       mapField('avatarUrl', 'avatar_url');
+      mapField('bannerUrl', 'banner_url');
       mapField('businessName', 'business_name');
       mapField('organizerType', 'organizer_type');
       mapField('verificationStatus', 'verification_status');
