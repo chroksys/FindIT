@@ -2,6 +2,7 @@ import React from 'react';
 import { Heart, MapPin, CalendarBlank } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
+import { AvatarCluster } from './AvatarCluster';
 
 export interface EventCardProps {
   id: string;
@@ -19,6 +20,7 @@ export interface EventCardProps {
   isLiveMode?: boolean;
   isBoosted?: boolean;
   price?: string;
+  rsvps?: { avatarUrl?: string; status: 'going' | 'interested' }[];
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
@@ -29,7 +31,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   bannerUrl,
   organizer,
   isLiveMode,
-  price = "$99"
+  price = "$99",
+  rsvps = []
 }) => {
   const navigate = useNavigate();
   const { role, savedEventIds, toggleSaveEvent } = useUserContext();
@@ -202,6 +205,10 @@ export const EventCard: React.FC<EventCardProps> = ({
                 </svg>
               </span>
             )}
+            
+            <div style={{ marginLeft: 'auto' }}>
+              <AvatarCluster rsvps={rsvps} size={24} />
+            </div>
           </div>
         )}
       </div>

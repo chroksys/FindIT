@@ -13,12 +13,13 @@ import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 import { EventCard } from '../components/EventCard';
 import { CheckoutModal } from '../components/CheckoutModal';
+import { AvatarCluster } from '../components/AvatarCluster';
 
 export const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { events, addReview, followHost, unfollowHost, followedHostIds } = useEventContext();
-  const { role } = useUserContext();
+  const { events, addReview, followHost, unfollowHost, followedHostIds, rsvpToEvent } = useEventContext();
+  const { role, profile } = useUserContext();
   const { t } = useLanguage();
   
   const [showShare, setShowShare] = useState(false);
@@ -292,13 +293,36 @@ export const EventDetail = () => {
                     </div>
                   )}
                 </div>
-                <button className="btn-secondary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}>
-                  <ThumbsUp size={20} /> {t('interested')}
-                </button>
-                <button className="btn-primary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}>
-                  <CheckCircle size={20} /> {t('going')}
-                </button>
+                
+                {(() => {
+                  const userRsvp = profile?.id ? event.rsvps?.find(r => r.userId === profile.id)?.status : null;
+                  
+                  return (
+                    <>
+                      <button 
+                        className={userRsvp === 'interested' ? "btn-accent hover-lift" : "btn-secondary hover-lift"} 
+                        onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'interested' ? null : 'interested'))} 
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}
+                      >
+                        <ThumbsUp size={20} weight={userRsvp === 'interested' ? "fill" : "regular"} /> {t('interested')}
+                      </button>
+                      <button 
+                        className={userRsvp === 'going' ? "btn-accent hover-lift" : "btn-primary hover-lift"} 
+                        onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'going' ? null : 'going'))} 
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}
+                      >
+                        <CheckCircle size={20} weight={userRsvp === 'going' ? "fill" : "regular"} /> {t('going')}
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
+
+              {event.rsvps && event.rsvps.length > 0 && (
+                <div style={{ marginTop: 'var(--spacing-medium)', width: '100%', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-medium)' }}>
+                  <AvatarCluster rsvps={event.rsvps} size={32} />
+                </div>
+              )}
             </div>
 
             {/* About Section */}

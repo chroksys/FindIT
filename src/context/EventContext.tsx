@@ -38,8 +38,8 @@ export interface Event {
   reviews: any[];
   isBoosted?: boolean;
   promoCodes?: { code: string; discount: string; uses: number }[];
-  earlyBird?: { deadline: string; price: string };
   collaborations?: string[];
+  rsvps?: { userId: string; status: 'going' | 'interested'; avatarUrl?: string }[];
 }
 
 interface EventContextType {
@@ -56,6 +56,7 @@ interface EventContextType {
   followedHostIds: string[];
   followHost: (hostId: string, hostName?: string) => Promise<void>;
   unfollowHost: (hostId: string) => Promise<void>;
+  rsvpToEvent: (eventId: string, status: 'going' | 'interested' | null) => Promise<void>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -92,7 +93,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const fetchEvents = async () => {
     const { data } = await supabase
       .from('events')
-      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription, bio, phone, website)')
+      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription, bio, phone, website), event_rsvps(status, user_id, profiles(avatar_url))')
       .order('created_at', { ascending: false });
 
     if (data && data.length > 0) {
@@ -137,7 +138,12 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         promoCodes: d.promo_codes || [],
         earlyBird: d.early_bird_deadline ? { deadline: d.early_bird_deadline, price: d.early_bird_price } : undefined,
         collaborations: d.collaborations || [],
-        coordinates: d.latitude && d.longitude ? { lat: Number(d.latitude), lng: Number(d.longitude) } : undefined
+        coordinates: d.latitude && d.longitude ? { lat: Number(d.latitude), lng: Number(d.longitude) } : undefined,
+        rsvps: (d.event_rsvps || []).map((r: any) => ({
+          userId: r.user_id,
+          status: r.status,
+          avatarUrl: r.profiles?.avatar_url
+        }))
       }));
       console.log('[fetchEvents] setting', mappedEvents.length, 'events in state');
       setEvents(mappedEvents);
@@ -361,6 +367,21 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  const rsvpToEvent = async (eventId: string, status: 'going' | 'interested' | null) => {
+    if (!profile?.id) return;
+    
+    if (status === null) {
+      await supabase.from('event_rsvps').delete().eq('event_id', eventId).eq('user_id', profile.id);
+    } else {
+      await supabase
+        .from('event_rsvps')
+        .upsert({ event_id: eventId, user_id: profile.id, status }, { onConflict: 'event_id, user_id' });
+    }
+    
+    // Refresh events to get updated RSVPs
+    fetchEvents();
+  };
+
   return (
     <EventContext.Provider value={{
       events,
@@ -375,7 +396,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       addReview,
       followedHostIds,
       followHost,
-      unfollowHost
+      unfollowHost,
+      rsvpToEvent
     }}>
       {children}
     </EventContext.Provider>
