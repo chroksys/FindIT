@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { 
   MapPin, CalendarBlank, Star, Ticket, CheckCircle, ThumbsUp, CaretLeft, 
   ShareNetwork, WhatsappLogo, FacebookLogo, InstagramLogo, TwitterLogo, LinkedinLogo, EnvelopeSimple,
-  Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar
+  Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar, NavigationArrow
 } from '@phosphor-icons/react';
 
 import { useEventContext } from '../context/EventContext';
@@ -559,7 +559,20 @@ export const EventDetail = () => {
             <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
               <div style={{ padding: 'var(--spacing-base)', backgroundColor: 'var(--color-deep-navy)' }}>
                 <h3 className="text-card-title" style={{ fontSize: '16px' }}>Location</h3>
-                <div className="text-caption">{event.venue}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                  <div className="text-caption">{event.venue}</div>
+                  {(event as any).coordinates && (
+                    <a 
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${(event as any).coordinates.lat},${(event as any).coordinates.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-secondary hover-scale"
+                      style={{ padding: '6px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', borderRadius: 'var(--radius-pill)' }}
+                    >
+                      <NavigationArrow size={14} /> {t('get_directions') || 'Get Directions'}
+                    </a>
+                  )}
+                </div>
               </div>
               <div style={{ height: '200px', backgroundColor: 'var(--color-muted-navy)', position: 'relative' }}>
                 {(event as any).coordinates ? (
@@ -574,9 +587,16 @@ export const EventDetail = () => {
                     mapStyle="mapbox://styles/mapbox/dark-v11"
                   >
                     <Marker longitude={(event as any).coordinates.lng} latitude={(event as any).coordinates.lat} anchor="bottom">
-                      <div className="hover-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+                      <a 
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${(event as any).coordinates.lat},${(event as any).coordinates.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover-scale" 
+                        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}
+                        title="Get directions"
+                      >
                         <MapPin size={32} weight="fill" color="var(--color-pin-orange)" />
-                      </div>
+                      </a>
                     </Marker>
                   </Map>
                 ) : (
