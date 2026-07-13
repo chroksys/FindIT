@@ -129,7 +129,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         promoCodes: d.promo_codes || [],
         earlyBird: d.early_bird_deadline ? { deadline: d.early_bird_deadline, price: d.early_bird_price } : undefined,
         collaborations: d.collaborations || [],
-        coordinates: d.coordinates_lat && d.coordinates_lng ? { lat: Number(d.coordinates_lat), lng: Number(d.coordinates_lng) } : undefined
+        coordinates: d.latitude && d.longitude ? { lat: Number(d.latitude), lng: Number(d.longitude) } : undefined
       }));
       console.log('[fetchEvents] setting', mappedEvents.length, 'events in state');
       setEvents(mappedEvents);
@@ -241,6 +241,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       banner_url: eventData.bannerUrl,
       price: eventData.price || null,
       ticket_link: (eventData as any).ticketLink || null,
+      latitude: eventData.coordinates?.lat || null,
+      longitude: eventData.coordinates?.lng || null,
     };
 
     if ((eventData as any).earlyBird?.deadline) {
@@ -290,6 +292,11 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     mapField('bannerUrl', 'banner_url');
     mapField('price', 'price');
     mapField('isPaused', 'is_paused');
+
+    if (updatedData.coordinates) {
+      payload.latitude = updatedData.coordinates.lat;
+      payload.longitude = updatedData.coordinates.lng;
+    }
     mapField('isBoosted', 'is_boosted');
     mapField('ticketLink', 'ticket_link');
     mapField('gallery', 'gallery');

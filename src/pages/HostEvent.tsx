@@ -4,6 +4,8 @@ import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Map, Marker } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { uploadFile } from '../lib/uploadFile';
 
 export const HostEvent: React.FC = () => {
@@ -23,6 +25,7 @@ export const HostEvent: React.FC = () => {
   const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [bannerUploadError, setBannerUploadError] = useState('');
   const bannerInputRef = useRef<HTMLInputElement>(null);
+  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
   const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,7 +54,8 @@ export const HostEvent: React.FC = () => {
     bannerUrl: 'https://images.unsplash.com/photo-1540039155732-68421c713fca?auto=format&fit=crop&q=80&w=1200', 
     earlyBirdDeadline: '',
     earlyBirdPrice: '',
-    collaborationEventId: ''
+    collaborationEventId: '',
+    coordinates: { lat: 0.3476, lng: 32.5825 } // Default to Kampala
   });
 
   useEffect(() => {
@@ -70,7 +74,8 @@ export const HostEvent: React.FC = () => {
           bannerUrl: eventToEdit.bannerUrl,
           earlyBirdDeadline: eventToEdit.earlyBird?.deadline ? eventToEdit.earlyBird.deadline.substring(0, 16) : '',
           earlyBirdPrice: eventToEdit.earlyBird?.price || '',
-          collaborationEventId: eventToEdit.collaborations?.[0] || ''
+          collaborationEventId: eventToEdit.collaborations?.[0] || '',
+          coordinates: eventToEdit.coordinates || { lat: 0.3476, lng: 32.5825 }
         });
       }
     }
@@ -110,7 +115,8 @@ export const HostEvent: React.FC = () => {
       bannerUrl: formData.bannerUrl,
       displayDate,
       displayTime,
-      distance: '0km away' 
+      distance: '0km away',
+      coordinates: formData.coordinates
     };
 
     if (formData.earlyBirdDeadline && formData.earlyBirdPrice) {
@@ -289,10 +295,38 @@ export const HostEvent: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Venue Location</label>
+                  <label className="form-label">Venue Name</label>
                   <div style={{ position: 'relative' }}>
                     <MapPin size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                     <input name="venue" value={formData.venue} onChange={handleChange} type="text" placeholder="e.g. Serena Hotel, Kampala" style={{ paddingLeft: '40px' }} required />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Pinpoint Exact Location</label>
+                  <p className="text-caption" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-small)' }}>Drag the map to place the pin exactly where your event is located.</p>
+                  <div style={{ width: '100%', height: '250px', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
+                    {MAPBOX_TOKEN ? (
+                      <Map
+                        initialViewState={{
+                          longitude: formData.coordinates.lng,
+                          latitude: formData.coordinates.lat,
+                          zoom: 13
+                        }}
+                        mapStyle="mapbox://styles/mapbox/dark-v11"
+                        mapboxAccessToken={MAPBOX_TOKEN}
+                        onMove={(evt) => setFormData(prev => ({ ...prev, coordinates: { lat: evt.viewState.latitude, lng: evt.viewState.longitude } }))}
+                      >
+                        {/* Center marker indicating where the map is pointing */}
+                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -100%)', pointerEvents: 'none', zIndex: 10 }}>
+                          <MapPin size={36} weight="fill" color="var(--color-pin-orange)" />
+                        </div>
+                      </Map>
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-deep-navy)' }}>
+                        <span className="text-caption">Mapbox token missing</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </>
