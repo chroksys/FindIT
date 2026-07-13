@@ -261,27 +261,7 @@ export const EventDetail = () => {
                 </div>
               </div>
               
-              {/* Mini Map Location */}
-              {MAPBOX_TOKEN && event.coordinates && (
-                <div style={{ width: '100%', height: '200px', borderRadius: 'var(--radius-card)', overflow: 'hidden', marginTop: 'var(--spacing-medium)', border: '1px solid var(--border-color)', position: 'relative' }}>
-                  <Map
-                    initialViewState={{
-                      longitude: event.coordinates.lng,
-                      latitude: event.coordinates.lat,
-                      zoom: 15
-                    }}
-                    mapStyle="mapbox://styles/mapbox/dark-v11"
-                    mapboxAccessToken={MAPBOX_TOKEN}
-                    interactive={false} // Make it static/un-pannable if you just want a mini preview, or true for interactive
-                  >
-                    <Marker longitude={event.coordinates.lng} latitude={event.coordinates.lat} color="var(--color-accent)" />
-                  </Map>
-                  {/* Click overlay to map route */}
-                  <Link to="/map" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 5, backgroundColor: 'rgba(0,0,0,0)' }}>
-                    <span className="sr-only">View full map</span>
-                  </Link>
-                </div>
-              )}
+
               
               <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)' }}>
                 <div style={{ position: 'relative' }}>
