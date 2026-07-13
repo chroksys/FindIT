@@ -2,13 +2,13 @@
 
 :root {
   /* Colors - Primary */
-  --color-navy: #19192d;
+  --color-navy: #111111;
   --color-white: #f4faf5;
   
   /* Colors - Extended */
-  --color-deep-navy: #0f0f1e;
-  --color-mid-navy: #2c2c4a;
-  --color-muted-navy: #3e3e5e;
+  --color-deep-navy: rgba(25, 25, 30, 0.4);
+  --color-mid-navy: rgba(40, 40, 45, 0.5);
+  --color-muted-navy: rgba(60, 60, 65, 0.5);
   --color-soft-white: #e8f0e9;
   --color-pin-orange: #e8542c;
   --color-success: #2ecc71;
@@ -299,6 +299,7 @@ input, textarea, select {
   border-radius: var(--radius-input);
   border: 1px solid var(--border-color);
   background-color: var(--color-deep-navy);
+  backdrop-filter: blur(12px);
   color: var(--text-primary);
   width: 100%;
 }
