@@ -7,6 +7,8 @@ import {
   ShareNetwork, WhatsappLogo, FacebookLogo, InstagramLogo, TwitterLogo, LinkedinLogo, EnvelopeSimple,
   Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar
 } from '@phosphor-icons/react';
+import { Map, Marker } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -17,11 +19,13 @@ export const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { events, addReview, followHost, unfollowHost, followedHostIds } = useEventContext();
-  const { role } = useUserContext();
+  const { user, role } = useUserContext();
   const { t } = useLanguage();
   
   const [showShare, setShowShare] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  
+  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
@@ -258,7 +262,29 @@ export const EventDetail = () => {
                 </div>
               </div>
               
-              <div style={{ display: 'flex', gap: 'var(--spacing-small)' }}>
+              {/* Mini Map Location */}
+              {MAPBOX_TOKEN && (
+                <div style={{ width: '100%', height: '200px', borderRadius: 'var(--radius-card)', overflow: 'hidden', marginTop: 'var(--spacing-medium)', border: '1px solid var(--border-color)', position: 'relative' }}>
+                  <Map
+                    initialViewState={{
+                      longitude: 32.5825 + (parseInt(id || '0') * 0.005), // Slight fake jitter based on ID
+                      latitude: 0.3476 + (parseInt(id || '0') * 0.005),
+                      zoom: 13
+                    }}
+                    mapStyle="mapbox://styles/mapbox/dark-v11"
+                    mapboxAccessToken={MAPBOX_TOKEN}
+                    interactive={false} // Make it static/un-pannable if you just want a mini preview, or true for interactive
+                  >
+                    <Marker longitude={32.5825 + (parseInt(id || '0') * 0.005)} latitude={0.3476 + (parseInt(id || '0') * 0.005)} color="var(--color-accent)" />
+                  </Map>
+                  {/* Click overlay to map route */}
+                  <Link to="/map" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 5, backgroundColor: 'rgba(0,0,0,0)' }}>
+                    <span className="sr-only">View full map</span>
+                  </Link>
+                </div>
+              )}
+              
+              <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)' }}>
                 <div style={{ position: 'relative' }}>
                   <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <CalendarPlus size={20} /> {t('add_to_calendar')}
