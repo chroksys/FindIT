@@ -171,7 +171,7 @@ export const EventDetail = () => {
   }
 
   return (
-    <div style={{ paddingBottom: 'var(--spacing-xlarge)' }}>
+    <div style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + var(--spacing-xlarge))' }}>
       {/* Banner / Hero Section */}
       <div style={{ position: 'relative', width: '100%', height: '60vh', minHeight: '400px', backgroundColor: 'var(--bg-page)' }}>
         <img 
@@ -186,7 +186,7 @@ export const EventDetail = () => {
         }}></div>
 
         {/* Top Controls (Back & Share) */}
-        <div style={{ position: 'absolute', top: 'max(var(--spacing-large), 40px)', left: 'var(--spacing-medium)', right: 'var(--spacing-medium)', display: 'flex', justifyContent: 'space-between', zIndex: 10, maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ position: 'absolute', top: 'calc(env(safe-area-inset-top, 20px) + 20px)', left: 'max(env(safe-area-inset-left, 0px), var(--spacing-medium))', right: 'max(env(safe-area-inset-right, 0px), var(--spacing-medium))', display: 'flex', justifyContent: 'space-between', zIndex: 10, maxWidth: '1200px', margin: '0 auto' }}>
           <Link to="/" style={{ 
             display: 'flex', alignItems: 'center', justifyContent: 'center', 
             width: '44px', height: '44px', borderRadius: '50%', 
