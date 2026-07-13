@@ -65,7 +65,7 @@ export const Search = () => {
       
       {/* Search Bar (Floating Style) */}
       <div className="animate-fade-in-up" style={{ position: 'relative', maxWidth: '100%', zIndex: 10 }}>
-        <MagnifyingGlass size={24} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.5)' }} />
+        <MagnifyingGlass size={24} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
         <input 
           type="text" 
           placeholder={t('search_events')} 
@@ -76,10 +76,10 @@ export const Search = () => {
             padding: '20px 20px 20px 60px', 
             fontSize: '18px', 
             borderRadius: 'var(--radius-pill)', 
-            backgroundColor: 'rgba(255,255,255,0.05)', 
-            border: '1px solid rgba(255,255,255,0.1)',
-            color: '#ffffff',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+            backgroundColor: 'var(--bg-card)', 
+            border: '1px solid var(--border-color)',
+            color: 'var(--text-primary)',
+            boxShadow: 'var(--shadow-soft)',
             backdropFilter: 'blur(10px)',
             outline: 'none'
           }}
@@ -87,7 +87,7 @@ export const Search = () => {
         {keyword && (
           <button 
             onClick={() => setKeyword('')} 
-            style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
+            style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}
           >
             Clear
           </button>
@@ -97,7 +97,7 @@ export const Search = () => {
       {isBrowsingCategories ? (
         /* Dribbble Style Categories Grid */
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-medium)', paddingBottom: '180px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '16px 0', color: '#ffffff' }}>Choose Categories</h1>
+          <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '16px 0', color: 'var(--text-primary)' }}>Choose Categories</h1>
           
           <div style={{ 
             display: 'grid', 
@@ -110,9 +110,9 @@ export const Search = () => {
                 onClick={() => setCategory(cat.name)}
                 className="category-card"
                 style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  backgroundColor: 'var(--bg-card)',
                   backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '24px',
                   padding: '24px 16px',
                   display: 'flex',
@@ -124,10 +124,10 @@ export const Search = () => {
                   animationDelay: `${i * 0.05}s`
                 }}
               >
-                <div style={{ color: 'rgba(255,255,255,0.9)' }}>
+                <div style={{ color: 'var(--text-primary)' }}>
                   {cat.icon}
                 </div>
-                <span style={{ color: '#ffffff', fontWeight: 600, fontSize: '15px' }}>{cat.name}</span>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '15px' }}>{cat.name}</span>
               </div>
             ))}
           </div>
@@ -139,8 +139,8 @@ export const Search = () => {
               className="hover-scale"
               style={{
                 pointerEvents: 'auto',
-                backgroundColor: '#ffffff',
-                color: '#000000',
+                backgroundColor: 'var(--text-primary)',
+                color: 'var(--bg-page)',
                 border: 'none',
                 borderRadius: '999px',
                 padding: '16px 48px',

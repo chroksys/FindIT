@@ -47,7 +47,7 @@ export const LiveEvents = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="input-field"
-              style={{ paddingLeft: '44px', width: '100%', borderRadius: 'var(--radius-pill)', backgroundColor: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+              style={{ paddingLeft: '44px', width: '100%', borderRadius: 'var(--radius-pill)', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
             />
           </div>
         </div>
