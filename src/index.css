@@ -408,7 +408,7 @@ input:focus, textarea:focus, select:focus {
   }
 
   .main-content {
-    padding-bottom: 80px; /* Space for bottom nav on mobile */
+    padding-bottom: 120px; /* Space for bottom nav on mobile */
   }
 }
 
