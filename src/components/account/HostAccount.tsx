@@ -10,8 +10,10 @@ export const HostAccount = () => {
   const [formData, setFormData] = useState<any>(profile || { name: '', email: '' });
   const [isSaved, setIsSaved] = useState(false);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
   if (!profile) {
     return <div className="container section text-center">Please log in to view this page.</div>;
@@ -39,6 +41,22 @@ export const HostAccount = () => {
     }
   };
 
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingBanner(true);
+    setUploadError('');
+    try {
+      const url = await uploadFile(file, 'avatars', 'banners/');
+      setFormData((prev: any) => ({ ...prev, bannerUrl: url }));
+      await updateProfile({ bannerUrl: url });
+    } catch (err: any) {
+      setUploadError('Banner upload failed: ' + err.message);
+    } finally {
+      setIsUploadingBanner(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateProfile(formData);
@@ -59,6 +77,39 @@ export const HostAccount = () => {
         <form onSubmit={handleSubmit} className="animate-fade-in-up" style={{ animationDelay: '0.2s', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-large)' }}>
           <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
             <h2 className="text-section" style={{ fontSize: '20px', marginBottom: 'var(--spacing-large)' }}>Host Profile</h2>
+
+            {/* Banner Upload */}
+            <div className="form-group">
+              <label className="form-label">Profile Banner</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
+                <img
+                  src={formData.bannerUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600'}
+                  alt="Banner"
+                  style={{ width: '100%', height: '140px', borderRadius: 'var(--radius-card)', objectFit: 'cover', border: '1px solid var(--border-color)' }}
+                />
+                <div>
+                  <button
+                    type="button"
+                    className="btn-secondary hover-scale"
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    onClick={() => bannerInputRef.current?.click()}
+                    disabled={isUploadingBanner}
+                  >
+                    {isUploadingBanner
+                      ? <><Spinner size={20} style={{ animation: 'spin 1s linear infinite' }} /> Uploading...</>
+                      : <><UploadSimple size={20} /> Change Banner</>
+                    }
+                  </button>
+                </div>
+              </div>
+              <input
+                ref={bannerInputRef}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                style={{ display: 'none' }}
+                onChange={handleBannerUpload}
+              />
+            </div>
 
             {/* Logo Upload */}
             <div className="form-group">

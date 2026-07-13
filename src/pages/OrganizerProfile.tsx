@@ -10,7 +10,6 @@ export const OrganizerProfile: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { role } = useUserContext();
-  const [isFollowing, setIsFollowing] = useState(false);
   const [viewAllData, setViewAllData] = useState<{title: string, items: any[], type: 'event' | 'ticket' | 'host' | 'review' | 'attended'} | null>(null);
 
   const handleAction = (callback: () => void) => {
@@ -31,7 +30,7 @@ export const OrganizerProfile: React.FC = () => {
     name: firstEvent.organizer.name,
     verified: firstEvent.organizer.verified,
     avatarUrl: firstEvent.organizer.avatarUrl,
-    bannerUrl: firstEvent.bannerUrl, // Fallback to first event's banner
+    bannerUrl: firstEvent.organizer.bannerUrl || firstEvent.bannerUrl, // Use explicit banner if set, else fallback to first event
     type: 'Event Organizer',
     location: firstEvent.city || 'Kampala',
     bio: `Welcome to ${firstEvent.organizer.name}! We curate unforgettable experiences for our community.`,

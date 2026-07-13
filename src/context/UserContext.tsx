@@ -12,6 +12,7 @@ export interface BaseProfile {
   phone?: string;
   city?: string;
   avatarUrl?: string;
+  bannerUrl?: string;
 }
 
 export interface UserProfile extends BaseProfile {
@@ -92,6 +93,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: data.name || '',
         email: email,
         avatarUrl: data.avatar_url,
+        bannerUrl: data.banner_url,
         phone: data.phone,
         city: data.city,
         interests: data.interests || [],
