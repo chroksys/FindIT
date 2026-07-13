@@ -16,7 +16,8 @@ import {
   Sun, 
   Question, 
   SignOut,
-  Translate
+  Translate,
+  Monitor
 } from '@phosphor-icons/react';
 
 const INTEREST_ICONS: Record<string, string> = {
@@ -29,7 +30,7 @@ const INTEREST_ICONS: Record<string, string> = {
 export const UserDashboard: React.FC = () => {
   const { events } = useEventContext();
   const { profile, logout, savedEventIds } = useUserContext();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
@@ -234,9 +235,15 @@ export const UserDashboard: React.FC = () => {
               <span className="text-body" style={{ fontWeight: 500 }}>Change Email</span>
             </button>
 
-            <button onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')} className="settings-item hover-scale">
-              {resolvedTheme === 'dark' ? <Sun size={20} color="var(--text-secondary)" /> : <Moon size={20} color="var(--text-secondary)" />}
-              <span className="text-body" style={{ fontWeight: 500 }}>{resolvedTheme === 'dark' ? t('light_mode') : t('dark_mode')}</span>
+            <button onClick={() => {
+              if (theme === 'dark') setTheme('system');
+              else if (theme === 'system') setTheme('light');
+              else setTheme('dark');
+            }} className="settings-item hover-scale">
+              {theme === 'system' ? <Monitor size={20} color="var(--text-secondary)" /> : theme === 'light' ? <Sun size={20} color="var(--text-secondary)" /> : <Moon size={20} color="var(--text-secondary)" />}
+              <span className="text-body" style={{ fontWeight: 500 }}>
+                {theme === 'system' ? 'System Theme' : theme === 'light' ? t('light_mode') : t('dark_mode')}
+              </span>
             </button>
 
             <button className="settings-item hover-scale">

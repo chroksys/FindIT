@@ -47,15 +47,20 @@
 }
 
 [data-theme='light'] {
-  --bg-page: #f4faf5;
-  --bg-card: #ffffff;
-  --bg-navbar: rgba(244, 250, 245, 0.95);
-  --text-primary: #19192d;
-  --text-secondary: #5c5c77;
-  --border-color: #e2e4e8;
+  --bg-page: #ffffff;
+  --bg-card: #f9fafb;
+  --bg-navbar: rgba(255, 255, 255, 0.95);
+  --text-primary: #111111;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
   
-  --color-deep-navy: #eef1f5; /* Override deep-navy for inputs in light mode */
-  --color-muted-navy: #d1d5db; /* Override muted navy for borders/badges in light mode */
+  /* Invert core colors so primary buttons become Black in Light Mode */
+  --color-navy: #ffffff;
+  --color-white: #111111;
+  --color-soft-white: #374151;
+  
+  --color-deep-navy: #f3f4f6; /* Inputs background */
+  --color-muted-navy: #d1d5db;
 }
 
 * {

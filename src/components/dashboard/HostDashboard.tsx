@@ -5,13 +5,13 @@ import type { HostProfile } from '../../context/UserContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, CheckCircle } from '@phosphor-icons/react';
+import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, CheckCircle, Monitor } from '@phosphor-icons/react';
 import { ChangePasswordModal } from '../ChangePasswordModal';
 
 export const HostDashboard: React.FC = () => {
   const { events, deleteEvent, togglePauseEvent, getEventStatus } = useEventContext();
   const { getEventLimit, role, profile, logout } = useUserContext();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
@@ -308,9 +308,15 @@ export const HostDashboard: React.FC = () => {
               <span className="text-body" style={{ fontWeight: 500 }}>Change Email</span>
             </button>
 
-            <button onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')} className="settings-item hover-scale">
-              {resolvedTheme === 'dark' ? <Sun size={20} color="var(--text-secondary)" /> : <Moon size={20} color="var(--text-secondary)" />}
-              <span className="text-body" style={{ fontWeight: 500 }}>{resolvedTheme === 'dark' ? t('light_mode') : t('dark_mode')}</span>
+            <button onClick={() => {
+              if (theme === 'dark') setTheme('system');
+              else if (theme === 'system') setTheme('light');
+              else setTheme('dark');
+            }} className="settings-item hover-scale">
+              {theme === 'system' ? <Monitor size={20} color="var(--text-secondary)" /> : theme === 'light' ? <Sun size={20} color="var(--text-secondary)" /> : <Moon size={20} color="var(--text-secondary)" />}
+              <span className="text-body" style={{ fontWeight: 500 }}>
+                {theme === 'system' ? 'System Theme' : theme === 'light' ? t('light_mode') : t('dark_mode')}
+              </span>
             </button>
 
             <button onClick={() => { setSupportModalOpen(true); setSupportStep('form'); }} className="settings-item hover-scale">
