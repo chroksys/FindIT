@@ -10,7 +10,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   PencilSimple, 
   MapPin, 
-  Bell, 
   LockKey, 
   EnvelopeSimple, 
   Moon, 

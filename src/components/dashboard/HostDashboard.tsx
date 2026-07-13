@@ -5,7 +5,7 @@ import type { HostProfile } from '../../context/UserContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, Bell, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, ToggleRight, ToggleLeft, CheckCircle } from '@phosphor-icons/react';
+import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, CheckCircle } from '@phosphor-icons/react';
 import { ChangePasswordModal } from '../ChangePasswordModal';
 
 export const HostDashboard: React.FC = () => {
@@ -24,7 +24,6 @@ export const HostDashboard: React.FC = () => {
   const [blastMessage, setBlastMessage] = useState('');
 
   // Settings States
-  const [pushEnabled, setPushEnabled] = useState(true);
   
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   

@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import Map, { Source, Layer, MapLayerMouseEvent } from 'react-map-gl';
-import type { HeatmapLayer, CircleLayer } from 'react-map-gl';
+import Map, { Source, Layer } from 'react-map-gl/mapbox';
+import type { HeatmapLayerSpecification, CircleLayerSpecification } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useEventContext, Event } from '../context/EventContext';
+import { useEventContext } from '../context/EventContext';
+import type { Event } from '../context/EventContext';
 import { EventCard } from '../components/EventCard';
 import { X } from '@phosphor-icons/react';
 
@@ -11,7 +12,7 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const MAX_ZOOM_LEVEL = 15;
 
-const heatmapLayer: HeatmapLayer = {
+const heatmapLayer: HeatmapLayerSpecification = {
   id: 'events-heat',
   type: 'heatmap',
   source: 'events',
@@ -59,7 +60,7 @@ const heatmapLayer: HeatmapLayer = {
   }
 };
 
-const circleLayer: CircleLayer = {
+const circleLayer: CircleLayerSpecification = {
   id: 'events-point',
   type: 'circle',
   source: 'events',
@@ -115,7 +116,7 @@ export const MapView: React.FC = () => {
     return { type: 'FeatureCollection', features };
   }, [events]);
 
-  const onClick = (event: MapLayerMouseEvent) => {
+  const onClick = (event: any) => {
     // Check if clicked on a point or heatmap
     const feature = event.features?.[0];
     if (feature) {
