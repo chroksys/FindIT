@@ -8,7 +8,7 @@ import { useLanguage } from '../context/LanguageContext';
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  useTheme();
+  const { resolvedTheme } = useTheme();
   const { role, profile } = useUserContext();
   const { t } = useLanguage();
   
@@ -39,12 +39,12 @@ export const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
             <img 
-              src="/logo(Light).svg" 
+              src={resolvedTheme === 'light' ? '/logo(Dark).svg' : '/logo(Light).svg'} 
               alt="FindIt Logo" 
               style={{ 
                 height: '36px',
                 width: 'auto',
-                filter: 'drop-shadow(0 0 8px rgba(255, 87, 34, 0.3))'
+                filter: resolvedTheme === 'dark' ? 'drop-shadow(0 0 8px rgba(255, 87, 34, 0.3))' : 'none'
               }}
             />
             <span className="text-section" style={{ display: 'none', margin: 0, fontSize: '24px' }}>FindIt</span>
