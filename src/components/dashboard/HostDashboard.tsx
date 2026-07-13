@@ -11,7 +11,7 @@ import { ChangePasswordModal } from '../ChangePasswordModal';
 export const HostDashboard: React.FC = () => {
   const { events, deleteEvent, togglePauseEvent, getEventStatus } = useEventContext();
   const { getEventLimit, role, profile, logout } = useUserContext();
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
