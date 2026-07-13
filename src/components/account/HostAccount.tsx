@@ -165,8 +165,13 @@ export const HostAccount = () => {
               <label className="form-label">Contact Phone</label>
               <div style={{ position: 'relative' }}>
                 <Phone size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                <input name="phone" value={formData.phone || ''} onChange={handleChange} type="tel" style={{ paddingLeft: '40px' }} />
+                <input name="phone" value={formData.phone || ''} onChange={handleChange} type="tel" style={{ paddingLeft: '40px' }} placeholder="+256..." />
               </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Welcoming Message (Bio)</label>
+              <textarea name="bio" value={formData.bio || ''} onChange={handleChange as any} rows={4} style={{ resize: 'vertical' }} placeholder="Welcome to our events! We curate..." />
             </div>
 
             <div className="form-group">

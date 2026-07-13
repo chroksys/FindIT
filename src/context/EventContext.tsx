@@ -26,6 +26,9 @@ export interface Event {
     name: string;
     avatarUrl: string;
     bannerUrl?: string;
+    bio?: string;
+    phone?: string;
+    website?: string;
     verified: boolean;
     followers: number;
     subscriptionTier?: 'Free' | 'Pro' | 'Starter' | 'Growth';
@@ -89,7 +92,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const fetchEvents = async () => {
     const { data } = await supabase
       .from('events')
-      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription)')
+      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription, bio, phone, website)')
       .order('created_at', { ascending: false });
 
     if (data && data.length > 0) {
@@ -121,6 +124,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           name: d.profiles?.name || 'Unknown',
           avatarUrl: d.profiles?.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
           bannerUrl: d.profiles?.banner_url,
+          bio: d.profiles?.bio,
+          phone: d.profiles?.phone,
+          website: d.profiles?.website,
           verified: false,
           followers: d.profiles?.follower_count || 0,
           subscriptionTier: d.profiles?.subscription,

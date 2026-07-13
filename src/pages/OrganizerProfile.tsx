@@ -25,6 +25,11 @@ export const OrganizerProfile: React.FC = () => {
   
   // Dynamic Data for the Organizer Profile
   const firstEvent = hostEvents[0];
+  const reviews = hostEvents.flatMap(e => (e.reviews || []).map(r => ({ ...r, event: e.title })));
+  const averageRating = reviews.length > 0 
+    ? (reviews.reduce((acc, r) => acc + (r.rating || 5), 0) / reviews.length).toFixed(1)
+    : '5.0';
+
   const organizer = firstEvent ? {
     id: id || '1',
     name: firstEvent.organizer.name,
@@ -33,14 +38,14 @@ export const OrganizerProfile: React.FC = () => {
     bannerUrl: firstEvent.organizer.bannerUrl || firstEvent.bannerUrl, // Use explicit banner if set, else fallback to first event
     type: 'Event Organizer',
     location: firstEvent.city || 'Kampala',
-    bio: `Welcome to ${firstEvent.organizer.name}! We curate unforgettable experiences for our community.`,
-    website: 'linktr.ee/findit',
-    phone: 'Contact via FindIt',
+    bio: firstEvent.organizer.bio || `"Welcome to ${firstEvent.organizer.name}! We curate unforgettable experiences for our community."`,
+    website: firstEvent.organizer.website || 'No website',
+    phone: firstEvent.organizer.phone || 'No phone',
     stats: {
       followers: firstEvent.organizer.followers || 0,
       totalEvents: hostEvents.length,
-      rating: 4.8,
-      reviewCount: hostEvents.reduce((acc, ev) => acc + (ev.reviews?.length || 0), 0)
+      rating: averageRating,
+      reviewCount: reviews.length
     }
   } : {
     id: id || '1',
@@ -58,8 +63,6 @@ export const OrganizerProfile: React.FC = () => {
 
   const upcomingEvents = hostEvents.filter(e => getEventStatus(e) !== 'Ended');
   const pastEvents = hostEvents.filter(e => getEventStatus(e) === 'Ended');
-
-  const reviews = hostEvents.flatMap(e => (e.reviews || []).map(r => ({ ...r, event: e.title })));
 
   return (
     <div style={{ paddingBottom: 'var(--spacing-xlarge)' }}>
