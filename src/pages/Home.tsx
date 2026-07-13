@@ -177,9 +177,9 @@ export const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className="hover-scale" 
                   style={{
-                    background: isActive ? '#ffffff' : 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    color: isActive ? '#000000' : 'var(--text-secondary)',
+                    background: isActive ? 'var(--text-primary)' : 'transparent',
+                    border: isActive ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
+                    color: isActive ? 'var(--bg-page)' : 'var(--text-secondary)',
                     fontWeight: 600,
                     fontSize: '15px',
                     cursor: 'pointer',
