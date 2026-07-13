@@ -4,6 +4,7 @@ import { CheckCircle, Heart, Phone, Globe, Star, ArrowRight } from '@phosphor-ic
 import { EventCard } from '../components/EventCard';
 import { ViewAllModal } from '../components/ViewAllModal';
 import { useUserContext } from '../context/UserContext';
+import { useEventContext } from '../context/EventContext';
 
 export const OrganizerProfile: React.FC = () => {
   const { id } = useParams();
@@ -20,90 +21,46 @@ export const OrganizerProfile: React.FC = () => {
     }
   };
 
-  // Mock Data for the Organizer Profile
-  const organizer = {
+  const { events, getEventStatus, followedHostIds, followHost, unfollowHost } = useEventContext();
+  const hostEvents = events.filter(e => e.organizer.id === id || (!e.organizer.id && id === '1'));
+  
+  // Dynamic Data for the Organizer Profile
+  const firstEvent = hostEvents[0];
+  const organizer = firstEvent ? {
     id: id || '1',
-    name: 'Neon Nights Uganda',
-    verified: true,
-    avatarUrl: 'https://images.unsplash.com/photo-1549492423-400259a2e574?auto=format&fit=crop&q=80&w=150',
-    bannerUrl: '/neon_banner.png',
-    type: 'Music Promoter',
-    location: 'Kampala',
-    bio: 'Bringing the best live music experiences to East Africa. We curate unforgettable nights with top artists and DJs.',
-    website: 'neonights.ug',
-    phone: '+256 700 000 000',
+    name: firstEvent.organizer.name,
+    verified: firstEvent.organizer.verified,
+    avatarUrl: firstEvent.organizer.avatarUrl,
+    bannerUrl: firstEvent.bannerUrl, // Fallback to first event's banner
+    type: 'Event Organizer',
+    location: firstEvent.city || 'Kampala',
+    bio: `Welcome to ${firstEvent.organizer.name}! We curate unforgettable experiences for our community.`,
+    website: 'linktr.ee/findit',
+    phone: 'Contact via FindIt',
     stats: {
-      followers: '1.2k',
-      totalEvents: '48',
+      followers: firstEvent.organizer.followers || 0,
+      totalEvents: hostEvents.length,
       rating: 4.8,
-      reviewCount: 36
+      reviewCount: hostEvents.reduce((acc, ev) => acc + (ev.reviews?.length || 0), 0)
     }
+  } : {
+    id: id || '1',
+    name: 'Unknown Organizer',
+    verified: false,
+    avatarUrl: 'https://images.unsplash.com/photo-1549492423-400259a2e574?auto=format&fit=crop&q=80&w=150',
+    bannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200',
+    type: 'Organizer',
+    location: 'Unknown',
+    bio: 'No bio available.',
+    website: '',
+    phone: '',
+    stats: { followers: 0, totalEvents: 0, rating: 0, reviewCount: 0 }
   };
 
-  const upcomingEvents = [
-    {
-      id: 'e1',
-      title: 'Kampala Jazz Night',
-      date: '2026-08-15',
-      venue: 'Serena Hotel, Kampala',
-      category: 'Music',
-      distance: '2.5 km',
-      bannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600',
-      organizer: { name: organizer.name, avatarUrl: organizer.avatarUrl, verified: organizer.verified }
-    },
-    {
-      id: 'e2',
-      title: 'Neon Rooftop Party',
-      date: '2026-08-22',
-      venue: 'Skyz Hotel, Naguru',
-      category: 'Nightlife',
-      distance: '5.1 km',
-      bannerUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=600',
-      organizer: { name: organizer.name, avatarUrl: organizer.avatarUrl, verified: organizer.verified }
-    }
-  ];
+  const upcomingEvents = hostEvents.filter(e => getEventStatus(e) !== 'Ended');
+  const pastEvents = hostEvents.filter(e => getEventStatus(e) === 'Ended');
 
-  const pastEvents = [
-    {
-      id: 'p1',
-      title: 'Afrobeat Festival',
-      date: '2026-05-10',
-      venue: 'Lugogo Cricket Oval',
-      category: 'Festival',
-      distance: '4.0 km',
-      bannerUrl: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=600',
-      organizer: { name: organizer.name, avatarUrl: organizer.avatarUrl, verified: organizer.verified }
-    },
-    {
-      id: 'p2',
-      title: 'Underground Sound',
-      date: '2026-04-22',
-      venue: 'The Warehouse',
-      category: 'Music',
-      distance: '3.2 km',
-      bannerUrl: 'https://images.unsplash.com/photo-1540039155732-68421c713fca?auto=format&fit=crop&q=80&w=600',
-      organizer: { name: organizer.name, avatarUrl: organizer.avatarUrl, verified: organizer.verified }
-    }
-  ];
-
-  const reviews = [
-    {
-      id: 'r1',
-      name: 'Jane M.',
-      rating: 5,
-      comment: "Best event I've attended in Kampala this year! The sound was perfect and the crowd was amazing.",
-      event: 'Afrobeat Festival',
-      date: '15 May 2026'
-    },
-    {
-      id: 'r2',
-      name: 'Brian K.',
-      rating: 4,
-      comment: "Great lineup, sound could have been a bit better, but overall a fantastic experience.",
-      event: 'Underground Sound',
-      date: '25 April 2026'
-    }
-  ];
+  const reviews = hostEvents.flatMap(e => (e.reviews || []).map(r => ({ ...r, event: e.title })));
 
   return (
     <div style={{ paddingBottom: 'var(--spacing-xlarge)' }}>
@@ -140,8 +97,14 @@ export const OrganizerProfile: React.FC = () => {
         </div>
 
         <button 
-          onClick={() => handleAction(() => setIsFollowing(!isFollowing))}
-          className={`btn-primary hover-scale ${isFollowing ? 'btn-secondary' : ''}`} 
+          onClick={() => handleAction(() => {
+            if (followedHostIds.includes(organizer.id)) {
+              unfollowHost(organizer.id);
+            } else {
+              followHost(organizer.id, organizer.name);
+            }
+          })}
+          className={`btn-primary hover-scale ${followedHostIds.includes(organizer.id) ? 'btn-secondary' : ''}`} 
           style={{ 
             marginTop: '8px', 
             padding: '10px 32px', 
@@ -149,12 +112,14 @@ export const OrganizerProfile: React.FC = () => {
             display: 'flex', 
             alignItems: 'center', 
             gap: '8px',
-            backgroundColor: isFollowing ? 'var(--bg-card)' : 'var(--color-pin-orange)',
-            color: isFollowing ? 'var(--text-primary)' : 'white'
+            fontSize: '16px'
           }}
         >
-          <Heart size={20} weight={isFollowing ? 'fill' : 'regular'} color={isFollowing ? 'var(--color-error)' : 'white'} /> 
-          {isFollowing ? 'Following' : 'Follow'}
+          {followedHostIds.includes(organizer.id) ? (
+            <><CheckCircle size={20} weight="fill" /> Following</>
+          ) : (
+            <><Heart size={20} /> Follow Host</>
+          )}
         </button>
       </div>
       </div>
