@@ -279,27 +279,25 @@ export const EventDetail = () => {
                 </div>
               </div>
               
-              <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)', width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                <div style={{ position: 'relative' }}>
-                  <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)', width: '100%', flexWrap: 'wrap' }}>
+                <div style={{ position: 'relative', flex: '1 1 auto', minWidth: '150px' }}>
+                  <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
                     <CalendarPlus size={20} /> {t('add_to_calendar')}
                   </button>
                   {showCalendar && (
-                    <div className="glass-dropdown" style={{ right: 0, left: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '160px', top: '100%', marginTop: '8px' }}>
+                    <div className="glass-dropdown" style={{ left: 0, right: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '100%', top: '100%', marginTop: '8px' }}>
                       <button className="btn-ghost" onClick={handleGoogleCalendar} style={{ justifyContent: 'flex-start' }}><GoogleLogo size={20} /> Google</button>
                       <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><AppleLogo size={20} /> Apple</button>
                       <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><MicrosoftOutlookLogo size={20} /> Outlook</button>
                     </div>
                   )}
                 </div>
-                <div style={{ display: 'flex', gap: 'var(--spacing-small)' }}>
-                  <button className="btn-secondary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ThumbsUp size={20} /> {t('interested')}
-                  </button>
-                  <button className="btn-primary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <CheckCircle size={20} /> {t('going')}
-                  </button>
-                </div>
+                <button className="btn-secondary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}>
+                  <ThumbsUp size={20} /> {t('interested')}
+                </button>
+                <button className="btn-primary hover-lift" onClick={() => handleAction()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}>
+                  <CheckCircle size={20} /> {t('going')}
+                </button>
               </div>
             </div>
 
