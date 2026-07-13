@@ -24,8 +24,8 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* Top Navigation - Hidden on Map view for immersive experience */}
-      {location.pathname !== '/map' && (
+      {/* Top Navigation - Hidden on Map view and Event Details for immersive experience */}
+      {location.pathname !== '/map' && !location.pathname.startsWith('/events/') && (
         <nav className="navbar-top" style={{ 
         padding: '12px 0',
         borderBottom: '1px solid var(--border-color)',

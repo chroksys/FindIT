@@ -171,66 +171,81 @@ export const EventDetail = () => {
   }
 
   return (
-    <div style={{ paddingBottom: 'var(--spacing-xlarge)', paddingTop: '70px' }}>
+    <div style={{ paddingBottom: 'var(--spacing-xlarge)' }}>
       {/* Banner / Hero Section */}
-      <div style={{ position: 'relative', width: '100%', height: '400px', backgroundColor: 'var(--color-deep-navy)' }}>
+      <div style={{ position: 'relative', width: '100%', height: '60vh', minHeight: '400px', backgroundColor: 'var(--color-deep-navy)' }}>
         <img 
           src={event.bannerUrl} 
           alt={event.title} 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} 
         />
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(25,25,45,0.2) 0%, rgba(25,25,45,1) 100%)'
+          background: 'linear-gradient(to bottom, rgba(25,25,45,0.5) 0%, rgba(25,25,45,0) 20%, rgba(25,25,45,0) 60%, rgba(25,25,45,1) 100%)',
+          pointerEvents: 'none'
         }}></div>
-        
-        <div className="container" style={{ position: 'absolute', bottom: 'var(--spacing-xlarge)', left: 0, right: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--color-white)', marginBottom: 'var(--spacing-base)' }} className="hover-scale">
-                <CaretLeft size={20} /> {t('back_to_discover')}
-              </Link>
-              <div>
-                <span className="badge badge-default animate-fade-in-up" style={{ backgroundColor: 'var(--color-pin-orange)', marginBottom: 'var(--spacing-small)' }}>
-                  {event.category}
-                </span>
+
+        {/* Top Controls (Back & Share) */}
+        <div style={{ position: 'absolute', top: 'max(var(--spacing-large), 40px)', left: 'var(--spacing-medium)', right: 'var(--spacing-medium)', display: 'flex', justifyContent: 'space-between', zIndex: 10, maxWidth: '1200px', margin: '0 auto' }}>
+          <Link to="/" style={{ 
+            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+            width: '44px', height: '44px', borderRadius: '50%', 
+            backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', color: 'white' 
+          }} className="hover-scale">
+            <CaretLeft size={24} />
+          </Link>
+
+          <div style={{ position: 'relative' }}>
+            <button 
+              className="hover-scale" 
+              onClick={() => handleAction(handleShare)} 
+              style={{ 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                width: '44px', height: '44px', borderRadius: '50%', 
+                backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', color: 'white', border: 'none', cursor: 'pointer'
+              }}
+            >
+              <ShareNetwork size={22} />
+            </button>
+            {showShare && (
+              <div className="glass-dropdown" style={{ display: 'flex', gap: '12px', right: 0, top: '54px' }}>
+                <button className="social-icon-btn"><WhatsappLogo size={24} /></button>
+                <button className="social-icon-btn"><FacebookLogo size={24} /></button>
+                <button className="social-icon-btn"><TwitterLogo size={24} /></button>
+                <button className="social-icon-btn"><InstagramLogo size={24} /></button>
+                <button className="social-icon-btn"><LinkedinLogo size={24} /></button>
+                <button className="social-icon-btn"><EnvelopeSimple size={24} /></button>
               </div>
-              <h1 className="text-hero animate-fade-in-up" style={{ marginBottom: 'var(--spacing-small)' }}>{event.title}</h1>
-              
-              {event.organizer && (
-                <div 
-                  className="animate-fade-in-up hover-scale" 
-                  style={{ animationDelay: '0.1s', display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '8px 16px', backgroundColor: 'rgba(25,25,45,0.6)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', marginTop: 'var(--spacing-small)' }}
-                  onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
-                >
-                  <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                  <div>
-                    <div className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', lineHeight: 1 }}>Hosted by</div>
-                    <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', lineHeight: 1.2 }}>
-                      {event.organizer.name}
-                      {event.organizer.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
-                    </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Title and Category */}
+        <div className="container" style={{ position: 'absolute', bottom: 'var(--spacing-large)', left: 0, right: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-small)' }}>
+            <div>
+              <span className="badge badge-default animate-fade-in-up" style={{ backgroundColor: 'var(--color-pin-orange)' }}>
+                {event.category}
+              </span>
+            </div>
+            <h1 className="text-hero animate-fade-in-up" style={{ margin: 0, lineHeight: 1.1 }}>{event.title}</h1>
+            
+            {event.organizer && (
+              <div 
+                className="animate-fade-in-up hover-scale" 
+                style={{ animationDelay: '0.1s', display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '8px 16px', backgroundColor: 'rgba(25,25,45,0.6)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', marginTop: '8px', width: 'fit-content' }}
+                onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
+              >
+                <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                <div>
+                  <div className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', lineHeight: 1 }}>Hosted by</div>
+                  <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', lineHeight: 1.2 }}>
+                    {event.organizer.name}
+                    {event.organizer.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
                   </div>
                 </div>
-              )}
-            </div>
-            
-            {/* Share Button with Dropdown */}
-            <div style={{ position: 'relative' }} className="animate-fade-in-up">
-              <button className="btn-secondary hover-scale" onClick={() => handleAction(handleShare)} style={{ borderRadius: 'var(--radius-pill)', padding: '12px' }}>
-                <ShareNetwork size={24} />
-              </button>
-              {showShare && (
-                <div className="glass-dropdown" style={{ display: 'flex', gap: '12px', right: 0, top: '50px' }}>
-                  <button className="social-icon-btn"><WhatsappLogo size={24} /></button>
-                  <button className="social-icon-btn"><FacebookLogo size={24} /></button>
-                  <button className="social-icon-btn"><TwitterLogo size={24} /></button>
-                  <button className="social-icon-btn"><InstagramLogo size={24} /></button>
-                  <button className="social-icon-btn"><LinkedinLogo size={24} /></button>
-                  <button className="social-icon-btn"><EnvelopeSimple size={24} /></button>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
