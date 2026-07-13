@@ -38,9 +38,9 @@
   --shadow-soft: 0 4px 20px rgba(25, 25, 45, 0.12);
 
   /* Theme: Dark (Default) */
-  --bg-page: #0a0a0c;
+  --bg-page: #000000;
   --bg-card: rgba(25, 25, 30, 0.6);
-  --bg-navbar: rgba(10, 10, 12, 0.85);
+  --bg-navbar: rgba(0, 0, 0, 0.85);
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
   --border-color: rgba(255, 255, 255, 0.1);
