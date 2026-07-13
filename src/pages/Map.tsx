@@ -131,6 +131,22 @@ export const MapView: React.FC = () => {
     }
   };
 
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#000', zIndex: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-large)', textAlign: 'center' }}>
+        <div style={{ backgroundColor: 'var(--bg-card)', padding: 'var(--spacing-large)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', maxWidth: '400px' }}>
+          <h2 className="text-section" style={{ color: 'var(--color-error)', marginBottom: 'var(--spacing-small)' }}>Map Unavailable</h2>
+          <p className="text-body" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-medium)' }}>
+            The Mapbox API token is missing in this environment. If you just added it to Vercel, make sure you clicked "Redeploy" and try doing a hard refresh.
+          </p>
+          <button onClick={() => window.history.back()} className="btn-primary" style={{ width: '100%' }}>
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#000', zIndex: 10 }}>
       <Map
