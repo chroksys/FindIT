@@ -47,6 +47,8 @@ export const HostEvent: React.FC = () => {
     category: '',
     date: '',
     time: '',
+    endDate: '',
+    endTime: '',
     venue: '',
     description: '',
     ticketLink: '',
@@ -67,6 +69,8 @@ export const HostEvent: React.FC = () => {
           category: eventToEdit.category,
           date: eventToEdit.date,
           time: eventToEdit.time,
+          endDate: eventToEdit.endDate || '',
+          endTime: eventToEdit.endTime || '',
           venue: eventToEdit.venue,
           description: eventToEdit.description,
           ticketLink: eventToEdit.ticketLink || '',
@@ -92,15 +96,33 @@ export const HostEvent: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const displayDate = formData.date ? new Date(formData.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
+    let displayDate = 'TBD';
+    if (formData.date) {
+      const start = new Date(formData.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+      if (formData.endDate && formData.endDate !== formData.date) {
+        const end = new Date(formData.endDate).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        displayDate = `${start} - ${end}`;
+      } else {
+        displayDate = new Date(formData.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+      }
+    }
     
     let displayTime = 'TBD';
     if (formData.time) {
-      const [hourStr, minStr] = formData.time.split(':');
-      const hour = parseInt(hourStr, 10);
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      const formattedHour = hour % 12 || 12;
-      displayTime = `${formattedHour}:${minStr} ${ampm}`;
+      const formatTime = (t: string) => {
+        const [hourStr, minStr] = t.split(':');
+        const hour = parseInt(hourStr, 10);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minStr} ${ampm}`;
+      };
+      
+      const startT = formatTime(formData.time);
+      if (formData.endTime) {
+        displayTime = `${startT} - ${formatTime(formData.endTime)}`;
+      } else {
+        displayTime = startT;
+      }
     }
 
     const eventPayload: any = {
@@ -108,6 +130,8 @@ export const HostEvent: React.FC = () => {
       category: formData.category,
       date: formData.date,
       time: formData.time,
+      endDate: formData.endDate || undefined,
+      endTime: formData.endTime || undefined,
       venue: formData.venue,
       description: formData.description,
       ticketLink: formData.ticketLink,
@@ -282,15 +306,26 @@ export const HostEvent: React.FC = () => {
               <>
                 <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)' }}>
                   <div className="form-group">
-                    <label className="form-label">Date</label>
+                    <label className="form-label">Start Date</label>
                     <div style={{ position: 'relative' }}>
                       <CalendarBlank size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                       <input name="date" value={formData.date} onChange={handleChange} type="date" min={new Date().toISOString().split('T')[0]} style={{ paddingLeft: '40px' }} required />
                     </div>
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Time</label>
+                    <label className="form-label">Start Time</label>
                     <input name="time" value={formData.time} onChange={handleChange} type="time" required />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">End Date <span style={{ color: 'var(--text-secondary)', fontWeight: 'normal', fontSize: '13px' }}>(Optional)</span></label>
+                    <div style={{ position: 'relative' }}>
+                      <CalendarBlank size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                      <input name="endDate" value={formData.endDate} onChange={handleChange} type="date" min={formData.date || new Date().toISOString().split('T')[0]} style={{ paddingLeft: '40px' }} />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">End Time <span style={{ color: 'var(--text-secondary)', fontWeight: 'normal', fontSize: '13px' }}>(Optional)</span></label>
+                    <input name="endTime" value={formData.endTime} onChange={handleChange} type="time" />
                   </div>
                 </div>
 

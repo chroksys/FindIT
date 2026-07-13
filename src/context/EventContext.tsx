@@ -13,6 +13,8 @@ export interface Event {
   displayDate: string;
   time: string;
   displayTime: string;
+  endDate?: string;
+  endTime?: string;
   venue: string;
   city: string;
   distance: string;
@@ -113,6 +115,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         displayDate: d.display_date,
         time: d.time,
         displayTime: d.display_time,
+        endDate: d.end_date,
+        endTime: d.end_time,
         venue: d.venue,
         city: d.city,
         distance: d.distance,
@@ -250,6 +254,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       display_date: eventData.displayDate,
       time: eventData.time,
       display_time: eventData.displayTime,
+      end_date: eventData.endDate,
+      end_time: eventData.endTime,
       venue: eventData.venue,
       city: eventData.city || '',
       distance: eventData.distance,
@@ -301,6 +307,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     mapField('displayDate', 'display_date');
     mapField('time', 'time');
     mapField('displayTime', 'display_time');
+    mapField('endDate', 'end_date');
+    mapField('endTime', 'end_time');
     mapField('venue', 'venue');
     mapField('city', 'city');
     mapField('distance', 'distance');
