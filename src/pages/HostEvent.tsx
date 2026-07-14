@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, CurrencyDollar, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey } from '@phosphor-icons/react';
+import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey } from '@phosphor-icons/react';
 import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
