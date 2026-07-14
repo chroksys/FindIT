@@ -391,8 +391,8 @@ input:focus, textarea:focus, select:focus {
     width: calc(100% - 48px);
     max-width: 380px;
     background-color: var(--bg-mobile-nav);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(80px);
     border: var(--border-mobile-nav);
     border-radius: 999px;
     z-index: 1000;
