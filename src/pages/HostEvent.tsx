@@ -424,9 +424,8 @@ export const HostEvent: React.FC = () => {
                   <div className="form-group">
                     <label className="form-label">Price (Gate / Online)</label>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <div style={{ position: 'relative', flex: 1 }}>
-                        <CurrencyDollar size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                        <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="General Entry" style={{ paddingLeft: '40px', width: '100%' }} />
+                      <div style={{ flex: 1 }}>
+                        <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="General Entry" className="input-field" style={{ width: '100%' }} />
                       </div>
                       <select name="currency" value={formData.currency} onChange={handleChange} className="input-field" style={{ width: '90px', padding: '0 8px' }}>
                         <option value="USD">USD</option>
