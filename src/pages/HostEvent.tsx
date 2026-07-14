@@ -407,8 +407,8 @@ export const HostEvent: React.FC = () => {
                   </div>
                 )}
 
-                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', opacity: isVerified ? 1 : 0.4, pointerEvents: isVerified ? 'auto' : 'none' }}>
-                  <div className="form-group">
+                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)' }}>
+                  <div className="form-group" style={{ opacity: isVerified ? 1 : 0.4, pointerEvents: isVerified ? 'auto' : 'none' }}>
                     <label className="form-label">Ticket Link (Optional)</label>
                     <div style={{ position: 'relative' }}>
                       <LinkIcon size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
@@ -416,22 +416,22 @@ export const HostEvent: React.FC = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Price (for online sales)</label>
+                    <label className="form-label">Price (Gate / Online)</label>
                     <div style={{ position: 'relative' }}>
                       <CurrencyDollar size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                      <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="e.g. 50,000 UGX" style={{ paddingLeft: '40px' }} disabled={!isVerified} />
+                      <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="e.g. 50,000 UGX" style={{ paddingLeft: '40px' }} />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', marginBottom: 'var(--spacing-large)', opacity: isVerified ? 1 : 0.4, pointerEvents: isVerified ? 'auto' : 'none' }}>
+                <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', marginBottom: 'var(--spacing-large)' }}>
                   <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
                     <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Deadline (Optional)</label>
-                    <input name="earlyBirdDeadline" value={formData.earlyBirdDeadline} onChange={handleChange} type="datetime-local" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} disabled={!isVerified} />
+                    <input name="earlyBirdDeadline" value={formData.earlyBirdDeadline} onChange={handleChange} type="datetime-local" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
                   </div>
                   <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
                     <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Price (Optional)</label>
-                    <input name="earlyBirdPrice" value={formData.earlyBirdPrice} onChange={handleChange} type="text" placeholder="e.g. $30" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} disabled={!isVerified} />
+                    <input name="earlyBirdPrice" value={formData.earlyBirdPrice} onChange={handleChange} type="text" placeholder="e.g. $30" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
                   </div>
                 </div>
               </>
