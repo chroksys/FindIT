@@ -64,6 +64,16 @@ export const HostControlCenter: React.FC = () => {
     );
   }
 
+  if (event.organizer?.id !== profile?.id) {
+    return (
+      <div className="container section" style={{ textAlign: 'center', padding: 'var(--spacing-hero) 0' }}>
+        <h1 className="text-hero" style={{ marginBottom: 'var(--spacing-base)' }}>Access Denied</h1>
+        <p className="text-body" style={{ color: 'var(--text-secondary)' }}>You can only manage events that you have hosted.</p>
+        <button className="btn-primary hover-scale" style={{ marginTop: 'var(--spacing-large)' }} onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
+      </div>
+    );
+  }
+
   const handleBroadcast = (e: React.FormEvent) => {
     e.preventDefault();
     if (!broadcastText.trim()) return;

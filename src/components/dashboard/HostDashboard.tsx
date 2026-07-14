@@ -64,8 +64,8 @@ export const HostDashboard: React.FC = () => {
 
   const hostProfile = profile as HostProfile;
 
-  // For MVP, assume all events in context belong to the user
-  const userEvents = events;
+  // Filter events to only show ones belonging to the logged-in host
+  const userEvents = events.filter(e => e.organizer?.id === profile?.id);
   const isLimitReached = userEvents.length >= getEventLimit();
 
   const getStatusColor = (status: string, isPaused: boolean) => {

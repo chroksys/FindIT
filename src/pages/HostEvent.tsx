@@ -68,6 +68,10 @@ export const HostEvent: React.FC = () => {
     if (isEditing && id) {
       const eventToEdit = events.find(e => e.id === id);
       if (eventToEdit) {
+        if (eventToEdit.organizer?.id !== profile?.id) {
+          navigate('/dashboard');
+          return;
+        }
         setFormData({
           title: eventToEdit.title,
           category: eventToEdit.category,
