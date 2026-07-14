@@ -182,7 +182,7 @@ export const EventDetail = () => {
         />
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, var(--bg-page) 100%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, var(--bg-page) 65%, var(--bg-page) 100%)',
           pointerEvents: 'none'
         }}></div>
 
@@ -229,7 +229,7 @@ export const EventDetail = () => {
                 {event.category}
               </span>
             </div>
-            <h1 className="text-hero animate-fade-in-up" style={{ margin: 0, lineHeight: 1.1 }}>{event.title}</h1>
+            <h1 className="text-hero animate-fade-in-up" style={{ margin: 0, lineHeight: 1.1, textShadow: '0 2px 20px var(--bg-page)' }}>{event.title}</h1>
             
             {event.organizer && (
               <div 
