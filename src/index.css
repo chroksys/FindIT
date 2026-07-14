@@ -85,10 +85,10 @@
 }
 
 html, body {
-  height: 100%;
   min-height: 100dvh;
   width: 100%;
   overflow-x: hidden;
+  background-color: var(--bg-page);
 }
 
 body {
@@ -381,11 +381,12 @@ input:focus, textarea:focus, select:focus {
   .navbar-top {
     border-bottom: none;
     padding-bottom: 0;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
   }
 
   .navbar-bottom {
     position: fixed;
-    bottom: 24px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 48px);

@@ -30,7 +30,7 @@ function App() {
         <UserProvider>
           <EventProvider>
         <BrowserRouter>
-          <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
             <Navbar />
             <main className="main-content" style={{ flexGrow: 1, minWidth: 0, width: '100%' }}>
               <Routes>
