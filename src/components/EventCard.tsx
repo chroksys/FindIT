@@ -83,7 +83,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       <div style={{
         position: 'absolute',
         top: 0, left: 0, right: 0, bottom: 0,
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.95) 100%)',
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 35%, rgba(0,0,0,0.6) 75%, rgba(0,0,0,0.95) 100%)',
         zIndex: 1
       }}></div>
 
@@ -162,7 +162,7 @@ export const EventCard: React.FC<EventCardProps> = ({
           fontSize: '24px', 
           fontWeight: 800,
           lineHeight: 1.1,
-          textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+          textShadow: '0 2px 12px rgba(0,0,0,0.8)',
           margin: 0
         }}>
           {title}
