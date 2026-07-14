@@ -46,7 +46,7 @@
   --border-color: rgba(255, 255, 255, 0.1);
   
   /* Mobile Nav */
-  --bg-mobile-nav: rgba(25, 25, 30, 0.75);
+  --bg-mobile-nav: rgba(25, 25, 30, 0.6);
   --border-mobile-nav: 1px solid rgba(255, 255, 255, 0.08);
   --shadow-mobile-nav: 0 10px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
 }
@@ -407,7 +407,7 @@ input:focus, textarea:focus, select:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-primary);
     padding: 8px;
     border-radius: 50%;
     transition: all 0.2s ease;
@@ -418,7 +418,7 @@ input:focus, textarea:focus, select:focus {
   }
 
   .nav-item-mobile.active {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--color-pin-orange);
   }
 
   .nav-item-mobile.center-btn {
