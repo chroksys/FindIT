@@ -20,6 +20,8 @@ export interface EventCardProps {
   isLiveMode?: boolean;
   isBoosted?: boolean;
   price?: string;
+  currency?: string;
+  vipPrice?: string;
   rsvps?: { avatarUrl?: string; status: 'going' | 'interested' }[];
 }
 
@@ -31,7 +33,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   bannerUrl,
   organizer,
   isLiveMode,
-  price = "$99",
+  price,
+  currency,
   rsvps = []
 }) => {
   const navigate = useNavigate();
@@ -104,7 +107,9 @@ export const EventCard: React.FC<EventCardProps> = ({
           fontSize: '15px',
           border: '1px solid rgba(255,255,255,0.2)'
         }}>
-          {price}
+          {(!price || price === '0' || price === '00' || price.toLowerCase() === 'free') 
+            ? 'Free' 
+            : (price.includes(currency || 'USD') ? price : `${price} ${currency || 'USD'}`)}
         </div>
 
         {/* Heart Icon */}

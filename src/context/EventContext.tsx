@@ -126,6 +126,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         distance: d.distance,
         bannerUrl: d.banner_url,
         price: d.price,
+        vipPrice: d.vip_price,
+        currency: d.currency,
         isPaused: d.is_paused,
         isBoosted: d.is_boosted,
         hostId: d.host_id,
