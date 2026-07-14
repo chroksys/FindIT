@@ -518,33 +518,36 @@ export const EventDetail = () => {
                   <div style={{ backgroundColor: 'rgba(255,107,0,0.1)', padding: '12px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)', marginBottom: '8px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                       <span style={{ color: 'var(--color-pin-orange)', fontWeight: 600 }}>{t('early_bird_offer')}</span>
-                      <span style={{ fontWeight: 700, fontSize: '18px' }}>{event.earlyBird.price}</span>
+                      <span style={{ fontWeight: 700, fontSize: '18px' }}>
+                        {event.earlyBird.price.includes(event.currency || 'USD') ? event.earlyBird.price : `${event.earlyBird.price} ${event.currency || 'USD'}`}
+                      </span>
                     </div>
                     <div className="text-caption" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
                       <Timer size={14} /> {t('ends_in')} <span style={{ fontWeight: 600, color: 'var(--color-pin-orange)', fontFamily: 'monospace' }}>{timeLeft}</span>
                     </div>
                   </div>
                 )}
-                {event.price ? (
+                {event.price && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--spacing-small)', borderBottom: '1px solid var(--border-color)' }}>
                     <span>{t('general_admission')}</span>
-                    <span style={{ fontWeight: 600, textDecoration: (event.earlyBird && timeLeft !== 'Expired') ? 'line-through' : 'none', opacity: (event.earlyBird && timeLeft !== 'Expired') ? 0.5 : 1 }}>{event.price}</span>
+                    <span style={{ fontWeight: 600, textDecoration: (event.earlyBird && timeLeft !== 'Expired') ? 'line-through' : 'none', opacity: (event.earlyBird && timeLeft !== 'Expired') ? 0.5 : 1 }}>
+                      {event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`}
+                    </span>
                   </div>
-                ) : (
-                  <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--spacing-small)', borderBottom: '1px solid var(--border-color)' }}>
-                      <span>Early Bird</span>
-                      <span style={{ fontWeight: 600 }}>50,000 UGX</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--spacing-small)', borderBottom: '1px solid var(--border-color)' }}>
-                      <span>Regular</span>
-                      <span style={{ fontWeight: 600 }}>80,000 UGX</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-pin-orange)' }}>
-                      <span>VIP</span>
-                      <span style={{ fontWeight: 600 }}>150,000 UGX</span>
-                    </div>
-                  </>
+                )}
+                {event.vipPrice && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ffd700', paddingTop: event.price ? 'var(--spacing-small)' : '0' }}>
+                    <span>VIP Admission</span>
+                    <span style={{ fontWeight: 600 }}>
+                      {event.vipPrice.includes(event.currency || 'USD') ? event.vipPrice : `${event.vipPrice} ${event.currency || 'USD'}`}
+                    </span>
+                  </div>
+                )}
+                {!event.price && !event.vipPrice && !event.earlyBird && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--spacing-small)', borderBottom: '1px solid var(--border-color)' }}>
+                    <span>General Admission</span>
+                    <span style={{ fontWeight: 600 }}>Free</span>
+                  </div>
                 )}
               </div>
               
@@ -573,7 +576,16 @@ export const EventDetail = () => {
                   </p>
                   {event.price && (
                     <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
-                      Entry: <span style={{ color: 'var(--color-pin-orange)' }}>{event.price}</span>
+                      Entry: <span style={{ color: 'var(--color-pin-orange)' }}>
+                        {event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`}
+                      </span>
+                    </div>
+                  )}
+                  {event.vipPrice && (
+                    <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
+                      VIP: <span style={{ color: '#ffd700' }}>
+                        {event.vipPrice.includes(event.currency || 'USD') ? event.vipPrice : `${event.vipPrice} ${event.currency || 'USD'}`}
+                      </span>
                     </div>
                   )}
                 </div>

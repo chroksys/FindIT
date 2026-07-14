@@ -23,6 +23,8 @@ export interface Event {
   bannerUrl: string;
   ticketLink?: string;
   price?: string;
+  vipPrice?: string;
+  currency?: string;
   isPaused: boolean;
   organizer: {
     id?: string;

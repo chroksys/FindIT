@@ -55,6 +55,8 @@ export const HostEvent: React.FC = () => {
     description: '',
     ticketLink: '',
     price: '',
+    vipPrice: '',
+    currency: 'USD',
     bannerUrl: 'https://images.unsplash.com/photo-1540039155732-68421c713fca?auto=format&fit=crop&q=80&w=1200', 
     earlyBirdDeadline: '',
     earlyBirdPrice: '',
@@ -79,6 +81,8 @@ export const HostEvent: React.FC = () => {
           description: eventToEdit.description,
           ticketLink: eventToEdit.ticketLink || '',
           price: eventToEdit.price || '',
+          vipPrice: eventToEdit.vipPrice || '',
+          currency: eventToEdit.currency || 'USD',
           bannerUrl: eventToEdit.bannerUrl,
           earlyBirdDeadline: eventToEdit.earlyBird?.deadline ? eventToEdit.earlyBird.deadline.substring(0, 16) : '',
           earlyBirdPrice: eventToEdit.earlyBird?.price || '',
@@ -142,6 +146,8 @@ export const HostEvent: React.FC = () => {
       description: formData.description,
       ticketLink: formData.ticketLink,
       price: formData.price,
+      vipPrice: formData.vipPrice,
+      currency: formData.currency,
       bannerUrl: formData.bannerUrl,
       displayDate,
       displayTime,
@@ -417,21 +423,37 @@ export const HostEvent: React.FC = () => {
                   </div>
                   <div className="form-group">
                     <label className="form-label">Price (Gate / Online)</label>
-                    <div style={{ position: 'relative' }}>
-                      <CurrencyDollar size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                      <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="e.g. 50,000 UGX" style={{ paddingLeft: '40px' }} />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ position: 'relative', flex: 1 }}>
+                        <CurrencyDollar size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                        <input name="price" value={formData.price} onChange={handleChange} type="text" placeholder="General Entry" style={{ paddingLeft: '40px', width: '100%' }} />
+                      </div>
+                      <select name="currency" value={formData.currency} onChange={handleChange} className="input-field" style={{ width: '90px', padding: '0 8px' }}>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="UGX">UGX</option>
+                        <option value="KES">KES</option>
+                        <option value="RWF">RWF</option>
+                        <option value="TZS">TZS</option>
+                        <option value="ZAR">ZAR</option>
+                      </select>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', marginBottom: 'var(--spacing-large)' }}>
-                  <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
-                    <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Deadline (Optional)</label>
-                    <input name="earlyBirdDeadline" value={formData.earlyBirdDeadline} onChange={handleChange} type="datetime-local" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
+                  <div className="form-group" style={{ backgroundColor: 'rgba(255,215,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid rgba(255,215,0,0.4)' }}>
+                    <label className="form-label" style={{ color: '#e6c200' }}>VIP Price (Optional)</label>
+                    <input name="vipPrice" value={formData.vipPrice} onChange={handleChange} type="text" placeholder="VIP Entry" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
                   </div>
                   <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
                     <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Price (Optional)</label>
-                    <input name="earlyBirdPrice" value={formData.earlyBirdPrice} onChange={handleChange} type="text" placeholder="e.g. $30" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
+                    <input name="earlyBirdPrice" value={formData.earlyBirdPrice} onChange={handleChange} type="text" placeholder="Early Bird Entry" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
+                  </div>
+                  <div className="form-group" style={{ backgroundColor: 'rgba(255,107,0,0.05)', padding: '16px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
+                    <label className="form-label" style={{ color: 'var(--color-pin-orange)' }}>Early Bird Deadline</label>
+                    <input name="earlyBirdDeadline" value={formData.earlyBirdDeadline} onChange={handleChange} type="datetime-local" className="input-field" style={{ backgroundColor: 'var(--bg-default)' }} />
                   </div>
                 </div>
               </>
