@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 
 export type SubscriptionTier = 'Free Trial' | 'Starter' | 'Growth' | 'Pro';
@@ -60,6 +60,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<AnyProfile | null>(null);
   const [savedEventIds, setSavedEventIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isRegisteringRef = useRef(false);
 
   const [pendingPromoters] = useState<HostProfile[]>([]);
 
@@ -85,6 +86,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const fetchProfile = async (userId: string, email: string) => {
+    if (isRegisteringRef.current) return;
+
     const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
     if (data) {
       setRole(data.role as Role);
@@ -139,49 +142,59 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const registerUser = async (data: UserProfile, password: string) => {
-    const { data: authData, error } = await supabase.auth.signUp({ email: data.email, password });
-    if (error) throw error;
-    if (authData.user) {
-      await supabase.from('profiles').insert([
-        { 
-          id: authData.user.id, 
-          name: data.name, 
-          email: data.email, 
-          role: 'user', 
-          avatar_url: data.avatarUrl,
-          phone: data.phone,
-          city: data.city,
-          interests: data.interests || []
-        }
-      ]);
-      setRole('user');
-      setProfile({ ...data, id: authData.user.id });
+    isRegisteringRef.current = true;
+    try {
+      const { data: authData, error } = await supabase.auth.signUp({ email: data.email, password });
+      if (error) throw error;
+      if (authData.user) {
+        await supabase.from('profiles').insert([
+          { 
+            id: authData.user.id, 
+            name: data.name, 
+            email: data.email, 
+            role: 'user', 
+            avatar_url: data.avatarUrl,
+            phone: data.phone,
+            city: data.city,
+            interests: data.interests || []
+          }
+        ]);
+        setRole('user');
+        setProfile({ ...data, id: authData.user.id });
+      }
+    } finally {
+      isRegisteringRef.current = false;
     }
   };
 
   const registerHost = async (data: HostProfile, password: string) => {
-    const { data: authData, error } = await supabase.auth.signUp({ email: data.email, password });
-    if (error) throw error;
-    if (authData.user) {
-      await supabase.from('profiles').insert([
-        { 
-          id: authData.user.id, 
-          name: data.name, 
-          email: data.email, 
-          role: 'host', 
-          subscription: data.subscription, 
-          avatar_url: data.avatarUrl,
-          phone: data.phone,
-          city: data.city,
-          business_name: data.businessName,
-          organizer_type: data.organizerType,
-          website: data.website,
-          bio: data.bio,
-          verification_status: 'unverified'
-        }
-      ]);
-      setRole('host');
-      setProfile({ ...data, id: authData.user.id, verificationStatus: 'unverified' });
+    isRegisteringRef.current = true;
+    try {
+      const { data: authData, error } = await supabase.auth.signUp({ email: data.email, password });
+      if (error) throw error;
+      if (authData.user) {
+        await supabase.from('profiles').insert([
+          { 
+            id: authData.user.id, 
+            name: data.name, 
+            email: data.email, 
+            role: 'host', 
+            subscription: data.subscription, 
+            avatar_url: data.avatarUrl,
+            phone: data.phone,
+            city: data.city,
+            business_name: data.businessName,
+            organizer_type: data.organizerType,
+            website: data.website,
+            bio: data.bio,
+            verification_status: 'unverified'
+          }
+        ]);
+        setRole('host');
+        setProfile({ ...data, id: authData.user.id, verificationStatus: 'unverified' });
+      }
+    } finally {
+      isRegisteringRef.current = false;
     }
   };
 
