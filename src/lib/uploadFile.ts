@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-export type UploadBucket = 'avatars' | 'event-banners' | 'kyb-documents';
+export type UploadBucket = 'avatars' | 'event-banners' | 'kyb-documents' | 'live-feed-images';
 
 /**
  * Uploads a file to a Supabase Storage bucket and returns the public URL.

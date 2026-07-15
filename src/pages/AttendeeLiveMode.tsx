@@ -7,13 +7,19 @@ import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import Map, { Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { supabase } from '../lib/supabase';
+import { uploadFile } from '../lib/uploadFile';
+import { CameraModal } from '../components/CameraModal';
 
 interface ChatMessage {
   id: string;
-  user: string;
+  user_id: string;
+  user_name: string;
   text: string;
+  image_url?: string;
   time: string;
-  isHost?: boolean;
+  is_host: boolean;
+  created_at: string;
 }
 
 export const AttendeeLiveMode: React.FC = () => {
@@ -24,21 +30,80 @@ export const AttendeeLiveMode: React.FC = () => {
   
   const [activeTab, setActiveTab] = useState<'feed' | 'map'>('feed');
   const [inputText, setInputText] = useState('');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   
   const event = events.find(e => e.id === id);
 
-  // Mock chat messages
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: '1', user: 'System', text: 'Welcome to the live experience!', time: '18:00' },
-    { id: '2', user: 'Host', text: 'Gates are open! Head to the main stage.', time: '18:15', isHost: true },
-    { id: '3', user: 'Sarah M.', text: 'The vibe here is crazy already 🔥', time: '18:20' },
-    { id: '4', user: 'David K.', text: 'Where is the merchandise tent?', time: '18:25' }
-  ]);
-
   useEffect(() => {
-    // If not logged in, maybe we still let them view, but they can't chat?
-    // Let's just let anyone view, but restrict chat input in the UI.
-  }, [role]);
+    if (!event) return;
+
+    // Fetch initial messages
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from('live_feed_messages')
+        .select('*, profiles(name)')
+        .eq('event_id', event.id)
+        .order('created_at', { ascending: true });
+
+      if (data) {
+        const formatted = data.map((msg: any) => ({
+          id: msg.id,
+          user_id: msg.user_id,
+          user_name: msg.profiles?.name || 'Unknown',
+          text: msg.text,
+          image_url: msg.image_url,
+          is_host: msg.is_host,
+          created_at: msg.created_at,
+          time: new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }));
+        setMessages(formatted);
+      }
+    };
+
+    fetchMessages();
+
+    // Subscribe to new messages
+    const subscription = supabase
+      .channel('public:live_feed_messages')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'live_feed_messages',
+        filter: `event_id=eq.${event.id}`
+      }, async (payload) => {
+        const msg = payload.new;
+        // Fetch user profile for name
+        const { data: profileData } = await supabase.from('profiles').select('name').eq('id', msg.user_id).single();
+        
+        const newMessage: ChatMessage = {
+          id: msg.id,
+          user_id: msg.user_id,
+          user_name: profileData?.name || 'Unknown',
+          text: msg.text,
+          image_url: msg.image_url,
+          is_host: msg.is_host,
+          created_at: msg.created_at,
+          time: new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'live_feed_messages',
+        filter: `event_id=eq.${event.id}`
+      }, (payload) => {
+        setMessages(prev => prev.filter(m => m.id !== payload.old.id));
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [event]);
 
   if (!event) {
     return (
@@ -49,29 +114,49 @@ export const AttendeeLiveMode: React.FC = () => {
     );
   }
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
+  const handleSendMessage = async (e?: React.FormEvent, imageUrl?: string) => {
+    if (e) e.preventDefault();
+    if (!inputText.trim() && !imageUrl) return;
     
-    if (role === 'guest') {
+    if (role === 'guest' || !profile?.id) {
       navigate('/login');
       return;
     }
 
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      user: profile?.name || 'Attendee',
-      text: inputText,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isHost: role === 'host'
-    };
-    
-    setMessages([...messages, newMessage]);
+    const text = inputText;
     setInputText('');
+
+    await supabase.from('live_feed_messages').insert({
+      event_id: event.id,
+      user_id: profile.id,
+      text: text,
+      image_url: imageUrl || null,
+      is_host: role === 'host' && event.organizer?.id === profile.id
+    });
+  };
+
+  const handleCapturePhoto = async (file: File) => {
+    setIsCameraOpen(false);
+    setIsUploading(true);
+    try {
+      const url = await uploadFile(file, 'live-feed-images');
+      await handleSendMessage(undefined, url);
+    } catch (err) {
+      console.error('Failed to upload image', err);
+      alert('Failed to upload image');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: 'var(--bg-default)' }}>
+      {isCameraOpen && (
+        <CameraModal 
+          onCapture={handleCapturePhoto} 
+          onClose={() => setIsCameraOpen(false)} 
+        />
+      )}
       
       {/* Sticky Header */}
       <div style={{ 
@@ -98,7 +183,7 @@ export const AttendeeLiveMode: React.FC = () => {
         <div style={{ backgroundColor: 'rgba(231, 76, 60, 0.15)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-card)', padding: '8px 12px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
           <Megaphone size={18} color="var(--color-error)" style={{ flexShrink: 0, marginTop: '2px' }} />
           <p className="text-caption" style={{ color: 'var(--color-white)', fontWeight: 500 }}>
-            <span style={{ color: 'var(--color-error)', fontWeight: 700 }}>HOST ANNOUNCEMENT:</span> Main stage acts are delayed by 15 mins. Grab a drink!
+            <span style={{ color: 'var(--color-error)', fontWeight: 700 }}>LIVE CHAT:</span> Interact with the host and other attendees.
           </p>
         </div>
       </div>
@@ -136,24 +221,32 @@ export const AttendeeLiveMode: React.FC = () => {
             backgroundPosition: 'center',
             backgroundAttachment: 'fixed'
           }}>
+            {messages.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-secondary)' }}>
+                No messages yet. Be the first to say hi!
+              </div>
+            )}
             {messages.map((msg) => (
-              <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignSelf: msg.user === profile?.name ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '4px', alignSelf: msg.user === profile?.name ? 'flex-end' : 'flex-start' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: msg.isHost ? 'var(--color-pin-orange)' : 'var(--text-secondary)' }}>
-                    {msg.isHost ? '👑 ' : ''}{msg.user}
+              <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignSelf: msg.user_id === profile?.id ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '4px', alignSelf: msg.user_id === profile?.id ? 'flex-end' : 'flex-start' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: msg.is_host ? 'var(--color-pin-orange)' : 'var(--text-secondary)' }}>
+                    {msg.is_host ? '👑 ' : ''}{msg.user_name}
                   </span>
                   <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{msg.time}</span>
                 </div>
                 <div style={{ 
                   padding: '10px 14px', 
                   borderRadius: '16px', 
-                  borderBottomLeftRadius: msg.user === profile?.name ? '16px' : '4px',
-                  borderBottomRightRadius: msg.user === profile?.name ? '4px' : '16px',
-                  backgroundColor: msg.isHost ? 'rgba(255, 107, 0, 0.15)' : msg.user === profile?.name ? 'var(--color-navy)' : 'var(--bg-card)',
-                  border: msg.isHost ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+                  borderBottomLeftRadius: msg.user_id === profile?.id ? '16px' : '4px',
+                  borderBottomRightRadius: msg.user_id === profile?.id ? '4px' : '16px',
+                  backgroundColor: msg.is_host ? 'rgba(255, 107, 0, 0.15)' : msg.user_id === profile?.id ? 'var(--color-navy)' : 'var(--bg-card)',
+                  border: msg.is_host ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
                   color: 'var(--text-primary)'
                 }}>
-                  {msg.text}
+                  {msg.image_url && (
+                    <img src={msg.image_url} alt="Live feed capture" style={{ width: '100%', borderRadius: '8px', marginBottom: msg.text ? '8px' : '0' }} />
+                  )}
+                  {msg.text && <div>{msg.text}</div>}
                 </div>
               </div>
             ))}
@@ -202,10 +295,16 @@ export const AttendeeLiveMode: React.FC = () => {
           borderTop: '1px solid var(--border-color)',
           zIndex: 50
         }}>
-          {(event as any).organizer?.subscriptionTier === 'Pro' ? (
+          {(event as any).organizer?.subscriptionTier === 'Pro' || true ? (
             <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '8px' }}>
-              <button type="button" className="btn-ghost" style={{ padding: '10px', backgroundColor: 'var(--bg-card)', borderRadius: '50%' }}>
-                <Camera size={20} />
+              <button 
+                type="button" 
+                onClick={() => setIsCameraOpen(true)}
+                disabled={isUploading}
+                className="btn-ghost" 
+                style={{ padding: '10px', backgroundColor: 'var(--bg-card)', borderRadius: '50%' }}
+              >
+                <Camera size={20} color={isUploading ? 'gray' : 'white'} />
               </button>
               <input 
                 type="text" 
@@ -213,9 +312,10 @@ export const AttendeeLiveMode: React.FC = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Say something to the crowd..."
                 className="input-field"
+                disabled={isUploading}
                 style={{ flex: 1, borderRadius: 'var(--radius-pill)', padding: '12px 20px', backgroundColor: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
               />
-              <button type="submit" className="btn-primary hover-scale" style={{ padding: '12px 16px', borderRadius: '50%' }}>
+              <button type="submit" disabled={isUploading || (!inputText.trim())} className="btn-primary hover-scale" style={{ padding: '12px 16px', borderRadius: '50%', opacity: (!inputText.trim() && !isUploading) ? 0.5 : 1 }}>
                 <PaperPlaneRight size={20} weight="fill" />
               </button>
             </form>

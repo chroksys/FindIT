@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   CaretLeft, Megaphone, Users, Ticket, DeviceMobile, Trash, CheckCircle
@@ -6,13 +6,17 @@ import {
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import type { HostProfile } from '../context/UserContext';
+import { supabase } from '../lib/supabase';
 
 interface ChatMessage {
   id: string;
-  user: string;
+  user_id: string;
+  user_name: string;
   text: string;
+  image_url?: string;
   time: string;
-  isHost?: boolean;
+  is_host: boolean;
+  created_at: string;
 }
 
 export const HostControlCenter: React.FC = () => {
@@ -24,16 +28,75 @@ export const HostControlCenter: React.FC = () => {
   
   const [broadcastText, setBroadcastText] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   
   const event = events.find(e => e.id === id);
 
-  // Mock chat messages
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: '1', user: 'System', text: 'Welcome to the live experience!', time: '18:00' },
-    { id: '2', user: 'Host', text: 'Gates are open! Head to the main stage.', time: '18:15', isHost: true },
-    { id: '3', user: 'Sarah M.', text: 'The vibe here is crazy already 🔥', time: '18:20' },
-    { id: '4', user: 'David K.', text: 'Where is the merchandise tent?', time: '18:25' }
-  ]);
+  useEffect(() => {
+    if (!event) return;
+
+    const fetchMessages = async () => {
+      const { data } = await supabase
+        .from('live_feed_messages')
+        .select('*, profiles(name)')
+        .eq('event_id', event.id)
+        .order('created_at', { ascending: true });
+
+      if (data) {
+        const formatted = data.map((msg: any) => ({
+          id: msg.id,
+          user_id: msg.user_id,
+          user_name: msg.profiles?.name || 'Unknown',
+          text: msg.text,
+          image_url: msg.image_url,
+          is_host: msg.is_host,
+          created_at: msg.created_at,
+          time: new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }));
+        setMessages(formatted);
+      }
+    };
+
+    fetchMessages();
+
+    const subscription = supabase
+      .channel('host_public:live_feed_messages')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'live_feed_messages',
+        filter: `event_id=eq.${event.id}`
+      }, async (payload) => {
+        const msg = payload.new;
+        const { data: profileData } = await supabase.from('profiles').select('name').eq('id', msg.user_id).single();
+        
+        const newMessage: ChatMessage = {
+          id: msg.id,
+          user_id: msg.user_id,
+          user_name: profileData?.name || 'Unknown',
+          text: msg.text,
+          image_url: msg.image_url,
+          is_host: msg.is_host,
+          created_at: msg.created_at,
+          time: new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'live_feed_messages',
+        filter: `event_id=eq.${event.id}`
+      }, (payload) => {
+        setMessages(prev => prev.filter(m => m.id !== payload.old.id));
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [event]);
 
   if (role !== 'host') {
     return (
@@ -74,27 +137,24 @@ export const HostControlCenter: React.FC = () => {
     );
   }
 
-  const handleBroadcast = (e: React.FormEvent) => {
+  const handleBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!broadcastText.trim()) return;
 
-    // In a real app, this would ping the database/websockets
-    const newBroadcast: ChatMessage = {
-      id: Date.now().toString(),
-      user: 'Host',
+    await supabase.from('live_feed_messages').insert({
+      event_id: event.id,
+      user_id: profile.id,
       text: broadcastText,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isHost: true
-    };
+      is_host: true
+    });
     
-    setMessages([...messages, newBroadcast]);
     setBroadcastText('');
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
 
-  const handleDeleteMessage = (msgId: string) => {
-    setMessages(messages.filter(m => m.id !== msgId));
+  const handleDeleteMessage = async (msgId: string) => {
+    await supabase.from('live_feed_messages').delete().eq('id', msgId);
   };
 
   return (
@@ -183,16 +243,24 @@ export const HostControlCenter: React.FC = () => {
           <p className="text-caption" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-base)' }}>Delete inappropriate messages from the public feed.</p>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-small)' }}>
+            {messages.length === 0 && (
+              <div style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>No messages in the feed yet.</div>
+            )}
             {messages.slice().reverse().map((msg) => (
               <div key={msg.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '12px', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                    <span style={{ fontWeight: 600, color: msg.isHost ? 'var(--color-pin-orange)' : 'var(--text-primary)' }}>{msg.user}</span>
+                    <span style={{ fontWeight: 600, color: msg.is_host ? 'var(--color-pin-orange)' : 'var(--text-primary)' }}>{msg.user_name} {msg.is_host && '(Host)'}</span>
                     <span className="text-caption" style={{ color: 'var(--text-secondary)' }}>{msg.time}</span>
                   </div>
-                  <p className="text-body" style={{ color: 'var(--text-primary)' }}>{msg.text}</p>
+                  {msg.image_url && (
+                    <img src={msg.image_url} alt="Feed content" style={{ width: '100px', borderRadius: '4px', marginTop: '4px' }} />
+                  )}
+                  {msg.text && (
+                    <p className="text-body" style={{ color: 'var(--text-primary)' }}>{msg.text}</p>
+                  )}
                 </div>
-                {!msg.isHost && (
+                {!msg.is_host && (
                   <button onClick={() => handleDeleteMessage(msg.id)} className="btn-ghost hover-scale" style={{ padding: '8px', color: 'var(--color-error)', backgroundColor: 'rgba(231, 76, 60, 0.1)' }}>
                     <Trash size={18} />
                   </button>
