@@ -139,7 +139,7 @@ export const HostControlCenter: React.FC = () => {
 
   const handleBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!broadcastText.trim()) return;
+    if (!broadcastText.trim() || !profile?.id) return;
 
     await supabase.from('live_feed_messages').insert({
       event_id: event.id,

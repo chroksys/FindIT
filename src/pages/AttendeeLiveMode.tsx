@@ -41,7 +41,7 @@ export const AttendeeLiveMode: React.FC = () => {
 
     // Fetch initial messages
     const fetchMessages = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('live_feed_messages')
         .select('*, profiles(name)')
         .eq('event_id', event.id)
