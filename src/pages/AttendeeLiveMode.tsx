@@ -189,16 +189,30 @@ export const AttendeeLiveMode: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
+      <div style={{ display: 'flex', gap: '12px', padding: '12px var(--spacing-base)', backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)' }}>
         <button 
           onClick={() => setActiveTab('feed')}
-          style={{ flex: 1, padding: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', borderBottom: activeTab === 'feed' ? '2px solid var(--color-pin-orange)' : '2px solid transparent', color: activeTab === 'feed' ? 'var(--color-pin-orange)' : 'var(--text-secondary)', fontWeight: activeTab === 'feed' ? 600 : 400, background: 'none', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' }}
+          style={{ 
+            flex: 1, padding: '10px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', 
+            backgroundColor: activeTab === 'feed' ? 'var(--color-navy)' : 'transparent',
+            color: activeTab === 'feed' ? 'var(--color-pin-orange)' : 'var(--text-secondary)', 
+            border: activeTab === 'feed' ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-pill)',
+            fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'
+          }}
         >
           <ChatCircleText size={20} /> Live Feed
         </button>
         <button 
           onClick={() => setActiveTab('map')}
-          style={{ flex: 1, padding: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', borderBottom: activeTab === 'map' ? '2px solid var(--color-pin-orange)' : '2px solid transparent', color: activeTab === 'map' ? 'var(--color-pin-orange)' : 'var(--text-secondary)', fontWeight: activeTab === 'map' ? 600 : 400, background: 'none', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' }}
+          style={{ 
+            flex: 1, padding: '10px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', 
+            backgroundColor: activeTab === 'map' ? 'var(--color-navy)' : 'transparent',
+            color: activeTab === 'map' ? 'var(--color-pin-orange)' : 'var(--text-secondary)', 
+            border: activeTab === 'map' ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-pill)',
+            fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'
+          }}
         >
           <MapPin size={20} /> Venue Map
         </button>
