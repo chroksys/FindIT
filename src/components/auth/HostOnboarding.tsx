@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext, type SubscriptionTier } from '../../context/UserContext';
 import { ArrowRight, Image as ImageIcon, CaretLeft, CheckCircle, Spinner } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
+import { PhoneInput } from '../PhoneInput';
 
 const ORGANIZER_TYPES = [
   'Event Agency',
@@ -142,7 +143,7 @@ export const HostOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             </div>
             <div>
               <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Phone Number</label>
-              <input type="tel" required value={phone} onChange={e => setPhone(e.target.value)} className="input-field" placeholder="For verification & support" />
+              <PhoneInput required value={phone} onChange={(val) => setPhone(val)} className="input-field" placeholder="For verification & support" />
             </div>
             <button type="submit" className="btn-primary hover-scale" style={{ width: '100%', marginTop: 'var(--spacing-base)', justifyContent: 'center' }}>
               Next: Business Profile <ArrowRight size={20} />

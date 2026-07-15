@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { useUserContext, type UserProfile } from '../../context/UserContext';
-import { EnvelopeSimple, Phone, MapPin, User, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
+import { EnvelopeSimple, MapPin, User, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
+import { PhoneInput } from '../PhoneInput';
 
 const INTERESTS = [
   { id: 'music', label: '🎵 Music' },
@@ -131,10 +132,12 @@ export const UserAccount = () => {
 
             <div className="form-group">
               <label className="form-label">Phone Number</label>
-              <div style={{ position: 'relative' }}>
-                <Phone size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                <input name="phone" value={formData.phone || ''} onChange={handleChange} type="tel" style={{ paddingLeft: '40px' }} placeholder="Optional" />
-              </div>
+              <PhoneInput 
+                name="phone" 
+                value={formData.phone || ''} 
+                onChange={(val) => setFormData(prev => ({ ...prev, phone: val }))} 
+                placeholder="Optional" 
+              />
             </div>
 
             <div className="form-group">

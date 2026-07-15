@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, CheckCircle, CreditCard, DeviceMobile, Ticket, ArrowRight, Spinner } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { PhoneInput } from './PhoneInput';
 
 interface CheckoutModalProps {
   event: any;
@@ -137,7 +138,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
               {paymentMethod === 'momo' ? (
                 <div>
                   <label className="text-caption" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Mobile Number</label>
-                  <input type="tel" className="input-field" placeholder="e.g. 077 123 4567" defaultValue="077 123 4567" />
+                  <PhoneInput 
+                    value="+256 77 123 4567" 
+                    onChange={() => {}} 
+                    className="input-field" 
+                    placeholder="e.g. 077 123 4567" 
+                  />
                   <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>You will receive a prompt on your phone to enter your PIN.</p>
                 </div>
               ) : (

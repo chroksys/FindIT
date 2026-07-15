@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { useUserContext, type HostProfile } from '../../context/UserContext';
 import { Link } from 'react-router-dom';
-import { Storefront, EnvelopeSimple, Phone, Globe, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
+import { Storefront, EnvelopeSimple, Globe, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
+import { PhoneInput } from '../PhoneInput';
 
 export const HostAccount = () => {
   const { profile, updateProfile } = useUserContext();
@@ -163,10 +164,12 @@ export const HostAccount = () => {
 
             <div className="form-group">
               <label className="form-label">Contact Phone</label>
-              <div style={{ position: 'relative' }}>
-                <Phone size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                <input name="phone" value={formData.phone || ''} onChange={handleChange} type="tel" style={{ paddingLeft: '40px' }} placeholder="+256..." />
-              </div>
+              <PhoneInput 
+                name="phone" 
+                value={formData.phone || ''} 
+                onChange={(val: string) => setFormData((prev: any) => ({ ...prev, phone: val }))} 
+                placeholder="+256..." 
+              />
             </div>
 
             <div className="form-group">
