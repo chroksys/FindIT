@@ -218,6 +218,7 @@ export const AttendeeLiveMode: React.FC = () => {
           <MapPin size={20} /> Venue Map
         </button>
       </div>
+      </div>
 
       {/* Tab Content */}
       <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
