@@ -158,38 +158,39 @@ export const AttendeeLiveMode: React.FC = () => {
         />
       )}
       
-      {/* Sticky Header */}
+      {/* Sticky Header and Tabs */}
       <div style={{ 
         position: 'sticky', top: 0, zIndex: 50, 
         backgroundColor: 'rgba(25, 25, 45, 0.95)', backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--border-color)', padding: 'var(--spacing-base)'
+        borderBottom: '1px solid var(--border-color)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-base)' }}>
-          <button className="btn-ghost" onClick={() => navigate(-1)} style={{ padding: 0 }}>
-            <CaretLeft size={24} />
-          </button>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '16px' }}>{event.title}</span>
+        <div style={{ padding: 'var(--spacing-base)', paddingBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-base)' }}>
+            <button className="btn-ghost" onClick={() => navigate(-1)} style={{ padding: 0 }}>
+              <CaretLeft size={24} />
+            </button>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontWeight: 700, fontSize: '16px' }}>{event.title}</span>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--color-error)', padding: '4px 8px', borderRadius: 'var(--radius-pill)', fontWeight: 600, fontSize: '11px', color: 'white', boxShadow: '0 2px 8px rgba(231, 76, 60, 0.4)' }}>
+              <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%', animation: 'pulse 2s infinite' }}></span>
+              LIVE
+            </div>
           </div>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--color-error)', padding: '4px 8px', borderRadius: 'var(--radius-pill)', fontWeight: 600, fontSize: '11px', color: 'white', boxShadow: '0 2px 8px rgba(231, 76, 60, 0.4)' }}>
-            <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%', animation: 'pulse 2s infinite' }}></span>
-            LIVE
+
+          {/* Announcement Banner */}
+          <div style={{ backgroundColor: 'rgba(231, 76, 60, 0.15)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-card)', padding: '8px 12px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+            <Megaphone size={18} color="var(--color-error)" style={{ flexShrink: 0, marginTop: '2px' }} />
+            <p className="text-caption" style={{ color: 'var(--color-white)', fontWeight: 500 }}>
+              <span style={{ color: 'var(--color-error)', fontWeight: 700 }}>LIVE CHAT:</span> Interact with the host and other attendees.
+            </p>
           </div>
         </div>
 
-        {/* Announcement Banner */}
-        <div style={{ backgroundColor: 'rgba(231, 76, 60, 0.15)', border: '1px solid var(--color-error)', borderRadius: 'var(--radius-card)', padding: '8px 12px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-          <Megaphone size={18} color="var(--color-error)" style={{ flexShrink: 0, marginTop: '2px' }} />
-          <p className="text-caption" style={{ color: 'var(--color-white)', fontWeight: 500 }}>
-            <span style={{ color: 'var(--color-error)', fontWeight: 700 }}>LIVE CHAT:</span> Interact with the host and other attendees.
-          </p>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '12px', padding: '12px var(--spacing-base)', backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)' }}>
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: '12px', padding: '0 var(--spacing-base) 16px var(--spacing-base)' }}>
         <button 
           onClick={() => setActiveTab('feed')}
           style={{ 
