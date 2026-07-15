@@ -150,7 +150,7 @@ export const AttendeeLiveMode: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: 'var(--bg-default)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#050505' }}>
       {isCameraOpen && (
         <CameraModal 
           onCapture={handleCapturePhoto} 
@@ -161,7 +161,7 @@ export const AttendeeLiveMode: React.FC = () => {
       {/* Sticky Header and Tabs */}
       <div style={{ 
         position: 'sticky', top: 0, zIndex: 50, 
-        backgroundColor: 'rgba(25, 25, 45, 0.95)', backdropFilter: 'blur(10px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(10px)',
         borderBottom: '1px solid var(--border-color)'
       }}>
         <div style={{ padding: 'var(--spacing-base)', paddingBottom: '16px' }}>
@@ -195,7 +195,7 @@ export const AttendeeLiveMode: React.FC = () => {
           onClick={() => setActiveTab('feed')}
           style={{ 
             flex: 1, padding: '10px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', 
-            backgroundColor: activeTab === 'feed' ? 'var(--color-navy)' : 'transparent',
+            backgroundColor: activeTab === 'feed' ? '#1a1a1a' : 'transparent',
             color: activeTab === 'feed' ? 'var(--color-pin-orange)' : 'var(--text-secondary)', 
             border: activeTab === 'feed' ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
             borderRadius: 'var(--radius-pill)',
@@ -208,7 +208,7 @@ export const AttendeeLiveMode: React.FC = () => {
           onClick={() => setActiveTab('map')}
           style={{ 
             flex: 1, padding: '10px 16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', 
-            backgroundColor: activeTab === 'map' ? 'var(--color-navy)' : 'transparent',
+            backgroundColor: activeTab === 'map' ? '#1a1a1a' : 'transparent',
             color: activeTab === 'map' ? 'var(--color-pin-orange)' : 'var(--text-secondary)', 
             border: activeTab === 'map' ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
             borderRadius: 'var(--radius-pill)',
@@ -255,7 +255,7 @@ export const AttendeeLiveMode: React.FC = () => {
                   borderRadius: '16px', 
                   borderBottomLeftRadius: msg.user_id === profile?.id ? '16px' : '4px',
                   borderBottomRightRadius: msg.user_id === profile?.id ? '4px' : '16px',
-                  backgroundColor: msg.is_host ? 'rgba(255, 107, 0, 0.15)' : msg.user_id === profile?.id ? 'var(--color-navy)' : 'var(--bg-card)',
+                  backgroundColor: msg.is_host ? 'rgba(255, 107, 0, 0.15)' : msg.user_id === profile?.id ? '#1a1a1a' : '#0a0a0a',
                   border: msg.is_host ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
                   color: 'var(--text-primary)'
                 }}>
@@ -286,7 +286,7 @@ export const AttendeeLiveMode: React.FC = () => {
                 <Marker longitude={(event as any).coordinates.lng} latitude={(event as any).coordinates.lat} anchor="bottom">
                   <div className="hover-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <MapPin size={40} weight="fill" color="var(--color-pin-orange)" />
-                    <div style={{ backgroundColor: 'var(--color-navy)', padding: '4px 8px', borderRadius: 'var(--radius-pill)', fontSize: '12px', fontWeight: 600, border: '1px solid var(--color-pin-orange)' }}>
+                    <div style={{ backgroundColor: '#1a1a1a', padding: '4px 8px', borderRadius: 'var(--radius-pill)', fontSize: '12px', fontWeight: 600, border: '1px solid var(--color-pin-orange)' }}>
                       Main Stage
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export const AttendeeLiveMode: React.FC = () => {
         <div style={{ 
           position: 'fixed', bottom: 0, left: 0, right: 0, 
           padding: 'var(--spacing-base)', 
-          backgroundColor: 'rgba(25, 25, 45, 0.95)', backdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(10px)',
           borderTop: '1px solid var(--border-color)',
           zIndex: 50
         }}>
