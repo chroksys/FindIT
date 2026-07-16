@@ -14,6 +14,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { EventCard } from '../components/EventCard';
 import { CheckoutModal } from '../components/CheckoutModal';
 import { AvatarCluster } from '../components/AvatarCluster';
+import { supabase } from '../lib/supabase';
 
 export const EventDetail = () => {
   const { id } = useParams();
@@ -66,6 +67,23 @@ export const EventDetail = () => {
       return () => clearInterval(interval);
     }
   }, [event]);
+
+  useEffect(() => {
+    if (id) {
+      // Track page view
+      const trackView = async () => {
+        try {
+          await supabase.from('page_views').insert({
+            event_id: id,
+            viewer_id: profile?.id || null
+          });
+        } catch (err) {
+          console.error('Failed to track page view', err);
+        }
+      };
+      trackView();
+    }
+  }, [id, profile?.id]);
 
   const handleApplyPromo = () => {
     if (!promoCode) return;
