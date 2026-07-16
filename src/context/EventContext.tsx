@@ -46,6 +46,8 @@ export interface Event {
   earlyBird?: { deadline: string; price: string };
   collaborations?: string[];
   rsvps?: { userId: string; status: 'going' | 'interested'; avatarUrl?: string }[];
+  parentEventId?: string;
+  subEvents?: Event[];
 }
 
 interface EventContextType {
@@ -131,6 +133,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isPaused: d.is_paused,
         isBoosted: d.is_boosted,
         hostId: d.host_id,
+        parentEventId: d.parent_event_id,
         organizer: {
           id: d.profiles?.id,
           name: d.profiles?.name || 'Unknown',
@@ -281,6 +284,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       ticket_link: (eventData as any).ticketLink || null,
       latitude: eventData.coordinates?.lat || null,
       longitude: eventData.coordinates?.lng || null,
+      parent_event_id: (eventData as any).parentEventId || null
     };
 
     if ((eventData as any).earlyBird?.deadline) {
@@ -333,6 +337,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     mapField('bannerUrl', 'banner_url');
     mapField('price', 'price');
     mapField('isPaused', 'is_paused');
+    mapField('parentEventId', 'parent_event_id');
 
     if (updatedData.coordinates) {
       payload.latitude = updatedData.coordinates.lat;
@@ -381,7 +386,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
          distance: eventToDuplicate.distance,
          banner_url: eventToDuplicate.bannerUrl,
          price: eventToDuplicate.price,
-         is_paused: true
+         is_paused: true,
+         parent_event_id: eventToDuplicate.parentEventId || null
        }]);
        fetchEvents();
     }

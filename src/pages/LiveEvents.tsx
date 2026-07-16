@@ -9,6 +9,7 @@ export const LiveEvents = () => {
   
   // Filter for only Live events that are not paused, and match search query
   const liveEvents = events.filter(e => {
+    if (e.parentEventId) return false; // Hide sub-events from main feed
     const isLive = !e.isPaused && getEventStatus(e) === 'Live';
     const matchesSearch = e.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           e.venue.toLowerCase().includes(searchQuery.toLowerCase());

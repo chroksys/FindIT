@@ -61,6 +61,7 @@ export const HostEvent: React.FC = () => {
     earlyBirdDeadline: '',
     earlyBirdPrice: '',
     collaborationEventId: '',
+    parentEventId: '',
     coordinates: { lat: 0.3476, lng: 32.5825 } // Default to Kampala
   });
 
@@ -91,6 +92,7 @@ export const HostEvent: React.FC = () => {
           earlyBirdDeadline: eventToEdit.earlyBird?.deadline ? eventToEdit.earlyBird.deadline.substring(0, 16) : '',
           earlyBirdPrice: eventToEdit.earlyBird?.price || '',
           collaborationEventId: eventToEdit.collaborations?.[0] || '',
+          parentEventId: eventToEdit.parentEventId || '',
           coordinates: eventToEdit.coordinates || { lat: 0.3476, lng: 32.5825 }
         });
       }
@@ -156,7 +158,8 @@ export const HostEvent: React.FC = () => {
       displayDate,
       displayTime,
       distance: '0km away',
-      coordinates: formData.coordinates
+      coordinates: formData.coordinates,
+      parentEventId: formData.parentEventId || undefined
     };
 
     if (formData.earlyBirdDeadline && formData.earlyBirdPrice) {
@@ -309,6 +312,18 @@ export const HostEvent: React.FC = () => {
                       <option value="Education">Education</option>
                     </select>
                   </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Part of a Main Event? (Optional)</label>
+                  <select name="parentEventId" value={formData.parentEventId} onChange={handleChange}>
+                    <option value="">None (This is a standalone/main event)</option>
+                    {events
+                      .filter(e => e.organizer?.id === profile?.id && (!id || e.id !== id) && !e.parentEventId)
+                      .map(e => (
+                        <option key={e.id} value={e.id}>{e.title}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="form-group">

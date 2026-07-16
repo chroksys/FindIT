@@ -40,6 +40,8 @@ export const EventDetail = () => {
 
   const event = events.find(e => e.id === id);
   const collaborations = events.filter(e => event?.collaborations?.includes(e.id));
+  const parentEvent = event?.parentEventId ? events.find(e => e.id === event.parentEventId) : null;
+  const subEvents = events.filter(e => e.parentEventId === id);
 
   useEffect(() => {
     if (event?.earlyBird?.deadline) {
@@ -325,6 +327,19 @@ export const EventDetail = () => {
               )}
             </div>
 
+            {/* Parent Event Banner */}
+            {parentEvent && (
+              <Link to={`/event/${parentEvent.id}`} className="animate-fade-in-up hover-lift" style={{ display: 'block', backgroundColor: 'rgba(255, 107, 0, 0.1)', border: '1px solid var(--color-pin-orange)', borderRadius: 'var(--radius-card)', padding: 'var(--spacing-medium)', marginBottom: 'var(--spacing-large)', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <img src={parentEvent.bannerUrl} alt={parentEvent.title} style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover' }} />
+                  <div>
+                    <div className="text-caption" style={{ color: 'var(--color-pin-orange)', fontWeight: 600 }}>PART OF A MAIN EVENT</div>
+                    <div className="text-body" style={{ fontWeight: 700 }}>{parentEvent.title}</div>
+                  </div>
+                </div>
+              </Link>
+            )}
+
             {/* About Section */}
             <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>{t('about_this_event')}</h2>
@@ -332,6 +347,18 @@ export const EventDetail = () => {
                 {event.description}
               </p>
             </div>
+
+            {/* Sub-Events Section */}
+            {subEvents.length > 0 && (
+              <div className="animate-fade-in-up" style={{ animationDelay: '0.15s', marginTop: 'var(--spacing-large)' }}>
+                <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>Schedule / Sub-Events</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
+                  {subEvents.map(subEvent => (
+                    <EventCard key={subEvent.id} event={subEvent} />
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Gallery Section */}
             {event.gallery && event.gallery.length > 0 && (

@@ -94,7 +94,8 @@ export const MapView: React.FC = () => {
   const data = useMemo(() => {
     // In a real app, you'd filter out events without coordinates.
     // For this demo, let's artificially assign coordinates around Kampala to events without them
-    const features = events.map((event) => {
+    const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId);
+    const features = activeEvents.map((event) => {
       // Create deterministic random offset based on event ID string length so it doesn't jump
       if (!event.coordinates) return null;
       return {

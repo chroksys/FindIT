@@ -47,7 +47,7 @@ export const Calendar = () => {
   const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // Map events to their actual dates
-  const savedEvents = events.filter(e => !e.isPaused); 
+  const savedEvents = events.filter(e => !e.isPaused && !e.parentEventId); 
   
   const mappedEvents = savedEvents.map((e) => {
     // Parse the displayDate string (e.g., "August 15, 2026" or "Sat, 05 Nov 2024")

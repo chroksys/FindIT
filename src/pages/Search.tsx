@@ -43,7 +43,7 @@ export const Search = () => {
     return () => clearTimeout(timer);
   }, [keyword, category]);
 
-  const activeEvents = events.filter(e => !e.isPaused);
+  const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId);
 
   const filteredEvents = activeEvents.filter(event => {
     const searchLower = keyword.toLowerCase();

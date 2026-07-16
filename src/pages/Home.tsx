@@ -17,6 +17,7 @@ export const Home = () => {
 
   const activeEvents = events.filter(e => {
     if (e.isPaused) return false;
+    if (e.parentEventId) return false; // Hide sub-events from main feed
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
     if (selectedCategory !== 'All' && e.category !== selectedCategory) return false;
     return true;
