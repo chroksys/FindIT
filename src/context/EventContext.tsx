@@ -167,7 +167,10 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const followHost = async (hostId: string, _hostName?: string) => {
-    if (!profile?.id) return;
+    if (!profile?.id || hostId === '1' || hostId.length < 10) {
+      console.warn('Cannot follow invalid host ID:', hostId);
+      return;
+    }
     // Insert follow record
     const { error } = await supabase.from('follows').insert({
       follower_id: profile.id,
@@ -192,7 +195,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const unfollowHost = async (hostId: string) => {
-    if (!profile?.id) return;
+    if (!profile?.id || hostId === '1' || hostId.length < 10) return;
     await supabase.from('follows')
       .delete()
       .eq('follower_id', profile.id)

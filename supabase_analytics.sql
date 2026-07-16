@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   created_at timestamp with time zone DEFAULT now()
 );
 
+-- Ensure columns exist in case the table was created earlier without them
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS type text NOT NULL DEFAULT 'review';
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS link text;
+
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Users can view their own notifications." ON public.notifications;
