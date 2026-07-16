@@ -1,3 +1,41 @@
+-- Ensure the follows table exists
+CREATE TABLE IF NOT EXISTS public.follows (
+  id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+  follower_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  host_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  created_at timestamp with time zone DEFAULT now(),
+  UNIQUE(follower_id, host_id)
+);
+
+ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
+
+-- Allow users to follow/unfollow
+DROP POLICY IF EXISTS "Users can manage their own follows" ON public.follows;
+CREATE POLICY "Users can manage their own follows" 
+ON public.follows FOR ALL USING (auth.uid() = follower_id);
+
+-- Ensure the notifications table exists (fixes the 400 Bad Request error)
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  type text NOT NULL DEFAULT 'review',
+  message text NOT NULL,
+  link text,
+  read boolean NOT NULL DEFAULT false,
+  created_at timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view their own notifications." ON public.notifications;
+CREATE POLICY "Users can view their own notifications." ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Authenticated users can create notifications." ON public.notifications;
+CREATE POLICY "Authenticated users can create notifications." ON public.notifications FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
+DROP POLICY IF EXISTS "Users can update their own notifications." ON public.notifications;
+CREATE POLICY "Users can update their own notifications." ON public.notifications FOR UPDATE USING (auth.uid() = user_id);
+
 -- 1. Ensure follower_count exists on profiles
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS follower_count integer DEFAULT 0;
 
@@ -5,13 +43,15 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS follower_count integer DEFA
 CREATE TABLE IF NOT EXISTS public.page_views (
   id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
   event_id uuid REFERENCES public.events(id) ON DELETE CASCADE,
-  viewer_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL, -- can be null if anonymous
+  viewer_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at timestamp with time zone DEFAULT now()
 );
 
--- Enable RLS on page_views
 ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can insert page views" ON public.page_views;
 CREATE POLICY "Anyone can insert page views" ON public.page_views FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Hosts can read page views for their events" ON public.page_views;
 CREATE POLICY "Hosts can read page views for their events" ON public.page_views FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.events WHERE events.id = page_views.event_id AND events.host_id = auth.uid())
 );

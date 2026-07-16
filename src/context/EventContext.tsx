@@ -101,7 +101,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const fetchEvents = async () => {
     const { data } = await supabase
       .from('events')
-      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription, bio, phone, website), event_rsvps(status, user_id, profiles(avatar_url))')
+      .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription, bio, phone, website, follower_count), event_rsvps(status, user_id, profiles(avatar_url))')
       .order('created_at', { ascending: false });
 
     if (data && data.length > 0) {
