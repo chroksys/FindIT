@@ -184,6 +184,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Send notification to the host
     const { error: notifError } = await supabase.from('notifications').insert({
       user_id: hostId,
+      title: 'New Follower',
       type: 'follow',
       message: `👤 ${profile.name || 'Someone'} started following you!`,
       link: `/organizer/${profile.id}`,
@@ -232,6 +233,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (hostId && hostId !== profile.id) {
       await supabase.from('notifications').insert({
         user_id: hostId,
+        title: 'New Review',
         type: 'review',
         message: `⭐ ${profile.name || 'Someone'} left a ${rating}-star review on "${event?.title}"`,
         link: `/event/${eventId}`,

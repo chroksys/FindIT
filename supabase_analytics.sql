@@ -18,6 +18,7 @@ ON public.follows FOR ALL USING (auth.uid() = follower_id);
 CREATE TABLE IF NOT EXISTS public.notifications (
   id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  title text NOT NULL DEFAULT 'Notification',
   type text NOT NULL DEFAULT 'review',
   message text NOT NULL,
   link text,
@@ -26,6 +27,7 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 );
 
 -- Ensure columns exist in case the table was created earlier without them
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS title text NOT NULL DEFAULT 'Notification';
 ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS type text NOT NULL DEFAULT 'review';
 ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS link text;
 
