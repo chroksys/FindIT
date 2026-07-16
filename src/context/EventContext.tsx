@@ -235,12 +235,22 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const getEventStatus = (event: Event): EventStatus => {
     if (!event.date || !event.time) return 'Upcoming';
-    const eventDateTime = new Date(`${event.date}T${event.time}`);
-    const now = new Date();
-    const diffHours = (now.getTime() - eventDateTime.getTime()) / (1000 * 60 * 60);
     
-    if (diffHours > 24) return 'Ended';
-    if (diffHours >= 0 && diffHours <= 24) return 'Live';
+    const startDateTime = new Date(`${event.date}T${event.time}`);
+    const now = new Date();
+    
+    let endDateTime: Date;
+    if (event.endDate) {
+       // If endDate is provided, use it. If endTime is missing, default to end of day.
+       endDateTime = new Date(`${event.endDate}T${event.endTime || '23:59:59'}`);
+    } else {
+       // Fallback: 24 hours after start time
+       endDateTime = new Date(startDateTime.getTime() + 24 * 60 * 60 * 1000);
+    }
+    
+    if (now > endDateTime) return 'Ended';
+    if (now >= startDateTime && now <= endDateTime) return 'Live';
+    
     return 'Upcoming';
   };
 
