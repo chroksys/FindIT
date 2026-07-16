@@ -53,7 +53,7 @@ export const Analytics = () => {
 
   // Group data by day for the last 30 days
   const chartData = useMemo(() => {
-    const data = [];
+    const data: any[] = [];
     const today = new Date();
     
     // Create map of last 30 days
