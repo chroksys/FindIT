@@ -354,7 +354,7 @@ export const EventDetail = () => {
                 <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>Schedule / Sub-Events</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
                   {subEvents.map(subEvent => (
-                    <EventCard key={subEvent.id} event={subEvent} />
+                    <EventCard key={subEvent.id} {...subEvent} />
                   ))}
                 </div>
               </div>
