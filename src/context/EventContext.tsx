@@ -65,12 +65,14 @@ interface EventContextType {
   followHost: (hostId: string, hostName?: string) => Promise<void>;
   unfollowHost: (hostId: string) => Promise<void>;
   rsvpToEvent: (eventId: string, status: 'going' | 'interested' | null) => Promise<void>;
+  loadingEvents: boolean;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState<boolean>(true);
   const [selectedCity, setSelectedCity] = useState<string>('All');
   const [followedHostIds, setFollowedHostIds] = useState<string[]>([]);
   const { profile } = useUserContext();
@@ -164,6 +166,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       setEvents([]);
     }
+    setLoadingEvents(false);
   };
 
   const followHost = async (hostId: string, _hostName?: string) => {
@@ -439,7 +442,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       followedHostIds,
       followHost,
       unfollowHost,
-      rsvpToEvent
+      rsvpToEvent,
+      loadingEvents
     }}>
       {children}
     </EventContext.Provider>

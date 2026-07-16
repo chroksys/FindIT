@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CheckCircle, Heart, Phone, Globe, Star, ArrowRight } from '@phosphor-icons/react';
+import { CheckCircle, Heart, Phone, Globe, Star, ArrowRight, SpinnerGap } from '@phosphor-icons/react';
 import { EventCard } from '../components/EventCard';
 import { ViewAllModal } from '../components/ViewAllModal';
 import { useUserContext } from '../context/UserContext';
@@ -20,7 +20,16 @@ export const OrganizerProfile: React.FC = () => {
     }
   };
 
-  const { events, getEventStatus, followedHostIds, followHost, unfollowHost } = useEventContext();
+  const { events, getEventStatus, followedHostIds, followHost, unfollowHost, loadingEvents } = useEventContext();
+
+  if (loadingEvents) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>
+        <SpinnerGap size={48} weight="bold" className="spin" color="var(--color-primary)" />
+      </div>
+    );
+  }
+
   const hostEvents = events.filter(e => e.organizer.id === id || (!e.organizer.id && id === '1'));
   
   // Dynamic Data for the Organizer Profile
