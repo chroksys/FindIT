@@ -182,13 +182,17 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setFollowedHostIds(prev => [...prev, hostId]);
 
     // Send notification to the host
-    await supabase.from('notifications').insert({
+    const { error: notifError } = await supabase.from('notifications').insert({
       user_id: hostId,
       type: 'follow',
       message: `👤 ${profile.name || 'Someone'} started following you!`,
       link: `/organizer/${profile.id}`,
       read: false
     });
+    
+    if (notifError) {
+      console.error('Notifications insert error details:', JSON.stringify(notifError, null, 2));
+    }
 
     // Refresh events to reflect isFollowed change
     await fetchEvents();
