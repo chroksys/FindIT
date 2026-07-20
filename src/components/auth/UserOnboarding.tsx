@@ -1,7 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
-import { ArrowRight, UserCircle, CheckCircle, Image as ImageIcon, CaretLeft, Spinner } from '@phosphor-icons/react';
+import { 
+  ArrowRight, UserCircle, CheckCircle, Image as ImageIcon, CaretLeft, Spinner,
+  MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, HandsPraying, 
+  UsersThree, Martini, MicrophoneStage, Barbell 
+} from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
 
@@ -12,18 +16,18 @@ const COUNTRIES = [
 ];
 
 const INTERESTS = [
-  { id: 'music', label: '🎵 Music' },
-  { id: 'sports', label: '⚽ Sports' },
-  { id: 'tech', label: '💻 Tech' },
-  { id: 'business', label: '💼 Business' },
-  { id: 'education', label: '📚 Education' },
-  { id: 'fashion', label: '👗 Fashion' },
-  { id: 'festivals', label: '🎉 Festivals' },
-  { id: 'religious', label: '🙏 Religious' },
-  { id: 'community', label: '🤝 Community' },
-  { id: 'nightlife', label: '🌙 Nightlife' },
-  { id: 'concerts', label: '🎤 Concerts' },
-  { id: 'fitness', label: '🏃 Fitness' },
+  { id: 'music', label: 'Music', icon: <MusicNotes size={20} /> },
+  { id: 'sports', label: 'Sports', icon: <SoccerBall size={20} /> },
+  { id: 'tech', label: 'Tech', icon: <Laptop size={20} /> },
+  { id: 'business', label: 'Business', icon: <Briefcase size={20} /> },
+  { id: 'education', label: 'Education', icon: <Books size={20} /> },
+  { id: 'fashion', label: 'Fashion', icon: <TShirt size={20} /> },
+  { id: 'festivals', label: 'Festivals', icon: <Confetti size={20} /> },
+  { id: 'religious', label: 'Religious', icon: <HandsPraying size={20} /> },
+  { id: 'community', label: 'Community', icon: <UsersThree size={20} /> },
+  { id: 'nightlife', label: 'Nightlife', icon: <Martini size={20} /> },
+  { id: 'concerts', label: 'Concerts', icon: <MicrophoneStage size={20} /> },
+  { id: 'fitness', label: 'Fitness', icon: <Barbell size={20} /> },
 ];
 
 export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => {
@@ -200,8 +204,8 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                     gap: '8px'
                   }}
                 >
-                  {interest.label}
-                  {isSelected && <CheckCircle size={18} weight="fill" />}
+                  <span style={{ fontFamily: 'var(--font-family, inherit)' }}>{interest.label}</span>
+                  {isSelected ? <CheckCircle size={18} weight="fill" /> : interest.icon}
                 </button>
               )
             })}
