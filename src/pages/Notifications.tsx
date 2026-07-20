@@ -36,6 +36,14 @@ export const Notifications = () => {
       }
     }
     
+    if (notif.type === 'event' && notif.link?.includes('?host=')) {
+      const hostId = notif.link.split('?host=')[1];
+      if (avatars[hostId]) {
+        return <img src={avatars[hostId]} alt="Host Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />;
+      }
+      return <UserCircle size={24} color="var(--color-info)" weight="fill" />;
+    }
+    
     switch (notif.type) {
       case 'ticket': return <Ticket size={24} color="var(--color-success)" />;
       case 'live': return <Heart size={24} color="var(--color-error)" weight="fill" />;

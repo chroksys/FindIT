@@ -354,8 +354,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           user_id: f.follower_id,
           title: 'New Event',
           type: 'event',
-          message: `📢 ${profile.name || 'A host you follow'} just posted a new event: "${newEvent.title}"`,
-          link: `/events/${newEvent.id}`,
+          message: `${profile.name || 'A host you follow'} just posted a new event: "${newEvent.title}"`,
+          link: `/events/${newEvent.id}?host=${profile.id}`,
           read: false
         }));
         await supabase.from('notifications').insert(notificationsPayload);
