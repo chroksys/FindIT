@@ -168,7 +168,7 @@ export const MapView: React.FC = () => {
       <button 
         onClick={() => window.history.back()}
         className="btn-ghost"
-        style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '50%', padding: '12px' }}
+        style={{ position: 'absolute', top: 'calc(16px + env(safe-area-inset-top, 0px))', left: '16px', zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '50%', padding: '12px' }}
       >
         <X size={24} color="white" />
       </button>
