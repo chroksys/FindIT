@@ -6,7 +6,7 @@ import { useEventContext } from '../context/EventContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Home = () => {
-  const { events, selectedCity, setSelectedCity } = useEventContext();
+  const { events, selectedCity, setSelectedCity, getEventStatus } = useEventContext();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
@@ -18,17 +18,23 @@ export const Home = () => {
   const activeEvents = events.filter(e => {
     if (e.isPaused) return false;
     if (e.parentEventId) return false; // Hide sub-events from main feed
+    if (getEventStatus(e) === 'Ended') return false; // Hide past events from homepage
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
     if (selectedCategory !== 'All' && e.category !== selectedCategory) return false;
     return true;
+  }).sort((a, b) => {
+    // Live events first, then Upcoming sorted by soonest date
+    const statusA = getEventStatus(a);
+    const statusB = getEventStatus(b);
+    if (statusA === 'Live' && statusB !== 'Live') return -1;
+    if (statusB === 'Live' && statusA !== 'Live') return 1;
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
   });
 
   const hottestEvents = activeEvents.filter(e => e.isBoosted);
   const followedEvents = activeEvents.filter(e => e.organizer.isFollowed);
   
-  // For discover more, we can just show everything, or exclude the ones already grouped.
-  // We'll just show activeEvents for now since it's a general feed, but we can exclude hottest if needed.
-
+  // Discover more: all active events (Live + Upcoming), sorted above
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
