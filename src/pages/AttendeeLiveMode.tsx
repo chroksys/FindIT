@@ -32,7 +32,6 @@ export const AttendeeLiveMode: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const event = events.find(e => e.id === id);
 
