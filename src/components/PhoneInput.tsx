@@ -11,15 +11,7 @@ interface PhoneInputProps {
   style?: React.CSSProperties;
 }
 
-const COUNTRY_CODES = [
-  { code: '+256', label: '🇺🇬 +256', maxLength: 9 },
-  { code: '+254', label: '🇰🇪 +254', maxLength: 9 },
-  { code: '+255', label: '🇹🇿 +255', maxLength: 9 },
-  { code: '+250', label: '🇷🇼 +250', maxLength: 9 },
-  { code: '+234', label: '🇳🇬 +234', maxLength: 10 },
-  { code: '+1', label: '🇺🇸 +1', maxLength: 10 },
-  { code: '+44', label: '🇬🇧 +44', maxLength: 10 },
-];
+import { COUNTRY_CODES } from '../lib/phoneCodes';
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, name, required, placeholder, className, style }) => {
   const [countryCode, setCountryCode] = useState('+256');

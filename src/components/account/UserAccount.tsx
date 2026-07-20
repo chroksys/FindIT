@@ -150,8 +150,8 @@ export const UserAccount = () => {
 
             <div style={{ display: 'flex', gap: 'var(--spacing-base)' }}>
               <div className="form-group" style={{ flex: 1 }}>
-                <label className="form-label">Age</label>
-                <input name="age" value={formData.age || ''} onChange={handleChange} type="number" min={16} max={120} className="input-field" />
+                <label className="form-label">Date of Birth</label>
+                <input name="dob" value={formData.dob || ''} onChange={handleChange} type="date" max={new Date().toISOString().split('T')[0]} className="input-field" />
               </div>
               <div className="form-group" style={{ flex: 1 }}>
                 <label className="form-label">Gender</label>

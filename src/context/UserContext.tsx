@@ -14,6 +14,7 @@ export interface BaseProfile {
   phone?: string;
   city?: string;
   country?: string;
+  dob?: string;
   age?: number;
   gender?: string;
   avatarUrl?: string;

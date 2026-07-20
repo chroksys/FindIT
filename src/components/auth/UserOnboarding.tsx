@@ -31,6 +31,18 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  const calculateAge = (dobString: string) => {
+    if (!dobString) return 0;
+    const today = new Date();
+    const birthDate = new Date(dobString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+  };
   
   // State
   const [name, setName] = useState('');
@@ -40,7 +52,7 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [location, setLocation] = useState('');
   const [country, setCountry] = useState('Uganda');
   const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
+  const [dob, setDob] = useState('');
   const [gender, setGender] = useState('Prefer not to say');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
@@ -50,8 +62,10 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     e.preventDefault();
     if (password.length < 8) return alert('Password must be at least 8 characters.');
     if (!phone) return alert('Phone number is required.');
-    const ageNum = parseInt(age);
-    if (!age || isNaN(ageNum) || ageNum < 16) {
+    
+    if (!dob) return alert('Date of birth is required.');
+    const ageNum = calculateAge(dob);
+    if (ageNum < 16) {
       return alert('You must be at least 16 years old to register.');
     }
     setStep(2); // Go to interests
@@ -87,7 +101,8 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         city: skip ? undefined : location,
         country,
         phone,
-        age: parseInt(age),
+        dob,
+        age: calculateAge(dob),
         gender,
         avatarUrl: avatarUrl || undefined,
       }, password);
@@ -146,8 +161,8 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             </div>
             <div style={{ display: 'flex', gap: 'var(--spacing-base)' }}>
               <div style={{ flex: 1 }}>
-                <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Age *</label>
-                <input type="number" required min={16} max={120} value={age} onChange={e => setAge(e.target.value)} className="input-field" placeholder="16+" />
+                <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Date of Birth *</label>
+                <input type="date" required value={dob} onChange={e => setDob(e.target.value)} className="input-field" max={new Date().toISOString().split('T')[0]} />
               </div>
               <div style={{ flex: 1 }}>
                 <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Gender</label>

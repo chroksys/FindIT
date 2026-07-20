@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useUserContext, type HostProfile } from '../../context/UserContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Storefront, EnvelopeSimple, Globe, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
@@ -8,6 +8,7 @@ import { PhoneInput } from '../PhoneInput';
 export const HostAccount = () => {
   const { profile, updateProfile } = useUserContext();
   const hostProfile = profile as HostProfile;
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<any>(profile || { name: '', email: '' });
   const [isSaved, setIsSaved] = useState(false);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
@@ -62,11 +63,14 @@ export const HostAccount = () => {
     e.preventDefault();
     updateProfile(formData);
     setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    setTimeout(() => {
+      setIsSaved(false);
+      navigate('/dashboard');
+    }, 1500);
   };
 
   return (
-    <div className="container section" style={{ maxWidth: '800px' }}>
+    <div className="container section" style={{ maxWidth: '800px', paddingTop: 'calc(env(safe-area-inset-top) + 80px)' }}>
       <div style={{ marginBottom: 'var(--spacing-xlarge)' }}>
         <h1 className="text-hero animate-fade-in-up" style={{ fontSize: '32px', marginBottom: 'var(--spacing-micro)' }}>Account Settings</h1>
         <p className="text-body animate-fade-in-up" style={{ color: 'var(--text-secondary)', animationDelay: '0.1s' }}>Manage your host profile and subscription.</p>
