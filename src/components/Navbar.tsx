@@ -14,16 +14,17 @@ export const Navbar: React.FC = () => {
   
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const getDropdownIcon = (type: string, link: string | null) => {
-    if (type === 'follow' && link?.startsWith('/organizer/')) {
-      const orgId = link.split('/organizer/')[1];
+  const getDropdownIcon = (notif: any) => {
+    const isFollow = notif.type === 'follow' || notif.message?.includes('following') || notif.link?.startsWith('/organizer/');
+    if (isFollow && notif.link?.startsWith('/organizer/')) {
+      const orgId = notif.link.split('/organizer/')[1];
       if (avatars && avatars[orgId]) {
         return <img src={avatars[orgId]} alt="Avatar" style={{ width: '20px', height: '20px', borderRadius: '50%', objectFit: 'cover' }} />;
       }
       return <UserCircle size={20} color="var(--color-info)" weight="fill" />;
     }
     
-    switch (type) {
+    switch (notif.type) {
       case 'ticket': return <Ticket size={20} color="var(--color-success)" />;
       case 'live': return <Heart size={20} color="var(--color-error)" weight="fill" />;
       case 'review': return <Star size={20} color="var(--color-warning)" weight="fill" />;
@@ -155,7 +156,7 @@ export const Navbar: React.FC = () => {
                         gap: '12px'
                       }} className="hover-lift">
                         <div style={{ padding: '8px', backgroundColor: 'var(--bg-default)', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          {getDropdownIcon(notification.type, notification.link)}
+                          {getDropdownIcon(notification)}
                         </div>
                         <div style={{ flexGrow: 1 }}>
                           <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px', fontWeight: notification.read ? 400 : 600 }}>{notification.message.replace('👤 ', '')}</div>

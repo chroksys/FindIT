@@ -19,16 +19,17 @@ export const Notifications = () => {
     return `${days}d ago`;
   };
 
-  const getIcon = (type: string, link: string | null) => {
-    if (type === 'follow' && link?.startsWith('/organizer/')) {
-      const organizerId = link.split('/organizer/')[1];
+  const getIcon = (notif: any) => {
+    const isFollow = notif.type === 'follow' || notif.message?.includes('following') || notif.link?.startsWith('/organizer/');
+    if (isFollow && notif.link?.startsWith('/organizer/')) {
+      const organizerId = notif.link.split('/organizer/')[1];
       if (avatars[organizerId]) {
         return <img src={avatars[organizerId]} alt="Follower Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />;
       }
       return <UserCircle size={24} color="var(--color-info)" weight="fill" />;
     }
     
-    switch (type) {
+    switch (notif.type) {
       case 'ticket': return <Ticket size={24} color="var(--color-success)" />;
       case 'live': return <Heart size={24} color="var(--color-error)" weight="fill" />;
       case 'review': return <Star size={24} color="var(--color-warning)" weight="fill" />;
@@ -41,7 +42,7 @@ export const Notifications = () => {
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
 
   return (
-    <div className="container section" style={{ maxWidth: '800px', margin: '0 auto', paddingTop: 'calc(var(--spacing-hero) + 20px)', paddingBottom: 'var(--spacing-xlarge)' }}>
+    <div className="container section" style={{ maxWidth: '800px', margin: '0 auto', paddingTop: 'calc(var(--spacing-hero) + 80px)', paddingBottom: 'var(--spacing-xlarge)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-base)', marginBottom: 'var(--spacing-xlarge)' }}>
         <Link to="/" className="btn-ghost hover-scale" style={{ padding: '8px' }}>
           <CaretLeft size={24} />
@@ -121,7 +122,7 @@ export const Notifications = () => {
                   }}
                 >
                   <div style={{ padding: '12px', backgroundColor: 'var(--bg-default)', borderRadius: '50%', flexShrink: 0 }}>
-                    {getIcon(notif.type, notif.link)}
+                    {getIcon(notif)}
                   </div>
                   <div style={{ flexGrow: 1 }}>
                     <div className="text-body" style={{ fontWeight: notif.read ? 400 : 600, marginBottom: '4px' }}>
