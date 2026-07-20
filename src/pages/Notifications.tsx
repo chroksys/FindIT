@@ -1,39 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Heart, Bell, Ticket, ChatCircleText, CaretLeft, Star, SpinnerGap, UserCircle } from '@phosphor-icons/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
-import { supabase } from '../lib/supabase';
 
 export const Notifications = () => {
   const navigate = useNavigate();
-  const { role, isLoading, notifications, unreadCount, markNotificationsAsRead } = useUserContext();
+  const { role, isLoading, notifications, unreadCount, markNotificationsAsRead, avatars } = useUserContext();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
-  const [avatars, setAvatars] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const fetchAvatars = async () => {
-      const followNotifs = notifications.filter(n => n.type === 'follow' && n.link?.startsWith('/organizer/'));
-      const organizerIds = followNotifs.map(n => n.link!.split('/organizer/')[1]).filter(id => !avatars[id]);
-      
-      if (organizerIds.length > 0) {
-        // Unique IDs
-        const uniqueIds = [...new Set(organizerIds)];
-        const { data } = await supabase.from('profiles').select('id, avatar_url').in('id', uniqueIds);
-        
-        if (data) {
-          const newAvatars = { ...avatars };
-          data.forEach(p => {
-            if (p.avatar_url) newAvatars[p.id] = p.avatar_url;
-          });
-          setAvatars(newAvatars);
-        }
-      }
-    };
-    
-    if (notifications.length > 0) {
-      fetchAvatars();
-    }
-  }, [notifications]);
 
   const formatTime = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -68,7 +41,7 @@ export const Notifications = () => {
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
 
   return (
-    <div className="container section" style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: 'var(--spacing-xlarge)' }}>
+    <div className="container section" style={{ maxWidth: '800px', margin: '0 auto', paddingTop: 'calc(var(--spacing-hero) + 20px)', paddingBottom: 'var(--spacing-xlarge)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-base)', marginBottom: 'var(--spacing-xlarge)' }}>
         <Link to="/" className="btn-ghost hover-scale" style={{ padding: '8px' }}>
           <CaretLeft size={24} />
@@ -152,7 +125,7 @@ export const Notifications = () => {
                   </div>
                   <div style={{ flexGrow: 1 }}>
                     <div className="text-body" style={{ fontWeight: notif.read ? 400 : 600, marginBottom: '4px' }}>
-                      {notif.message}
+                      {notif.message.replace('👤 ', '')}
                     </div>
                     <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>
                       {formatTime(notif.created_at)}

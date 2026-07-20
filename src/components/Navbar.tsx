@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank, MapTrifold } from '@phosphor-icons/react';
+import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank, MapTrifold, Ticket, Heart, Star, ChatCircleText } from '@phosphor-icons/react';
 import { useTheme } from '../context/ThemeContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -9,10 +9,28 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { resolvedTheme } = useTheme();
-  const { role, profile, notifications, unreadCount, markNotificationsAsRead } = useUserContext();
+  const { role, profile, notifications, unreadCount, markNotificationsAsRead, avatars } = useUserContext();
   const { t } = useLanguage();
   
   const [showNotifications, setShowNotifications] = useState(false);
+
+  const getDropdownIcon = (type: string, link: string | null) => {
+    if (type === 'follow' && link?.startsWith('/organizer/')) {
+      const orgId = link.split('/organizer/')[1];
+      if (avatars && avatars[orgId]) {
+        return <img src={avatars[orgId]} alt="Avatar" style={{ width: '20px', height: '20px', borderRadius: '50%', objectFit: 'cover' }} />;
+      }
+      return <UserCircle size={20} color="var(--color-info)" weight="fill" />;
+    }
+    
+    switch (type) {
+      case 'ticket': return <Ticket size={20} color="var(--color-success)" />;
+      case 'live': return <Heart size={20} color="var(--color-error)" weight="fill" />;
+      case 'review': return <Star size={20} color="var(--color-warning)" weight="fill" />;
+      case 'chat': return <ChatCircleText size={20} color="var(--color-info)" />;
+      default: return <Bell size={20} color="var(--color-pin-orange)" />;
+    }
+  };
   
   // Hide entire global navbar for immersive live pages and isolated pages
   if (location.pathname.startsWith('/live/') && location.pathname !== '/live') return null;
@@ -131,11 +149,19 @@ export const Navbar: React.FC = () => {
                         padding: 'var(--spacing-base)', 
                         borderBottom: '1px solid var(--border-color)',
                         backgroundColor: notification.read ? 'transparent' : 'rgba(255,107,0,0.05)',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '12px'
                       }} className="hover-lift">
-                        <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px' }}>{notification.message}</div>
-                        <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-                          {new Date(notification.created_at).toLocaleDateString()}
+                        <div style={{ padding: '8px', backgroundColor: 'var(--bg-default)', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {getDropdownIcon(notification.type, notification.link)}
+                        </div>
+                        <div style={{ flexGrow: 1 }}>
+                          <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px', fontWeight: notification.read ? 400 : 600 }}>{notification.message.replace('👤 ', '')}</div>
+                          <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                            {new Date(notification.created_at).toLocaleDateString()}
+                          </div>
                         </div>
                       </div>
                     )) : (

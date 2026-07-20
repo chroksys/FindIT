@@ -66,6 +66,7 @@ interface UserContextType {
   notifications: AppNotification[];
   unreadCount: number;
   markNotificationsAsRead: (id?: string) => Promise<void>;
+  avatars: Record<string, string>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -80,6 +81,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [pendingPromoters] = useState<HostProfile[]>([]);
 
+  const [avatars, setAvatars] = useState<Record<string, string>>({});
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const markNotificationsAsRead = async (id?: string) => {
@@ -93,13 +96,35 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const fetchAvatarsForNotifs = async (notifs: AppNotification[]) => {
+    const followNotifs = notifs.filter(n => n.type === 'follow' && n.link?.startsWith('/organizer/'));
+    const organizerIds = followNotifs.map(n => n.link!.split('/organizer/')[1]);
+    
+    if (organizerIds.length > 0) {
+      const uniqueIds = [...new Set(organizerIds)];
+      const { data } = await supabase.from('profiles').select('id, avatar_url').in('id', uniqueIds);
+      if (data) {
+        setAvatars(prev => {
+          const newAvatars = { ...prev };
+          data.forEach(p => {
+            if (p.avatar_url) newAvatars[p.id] = p.avatar_url;
+          });
+          return newAvatars;
+        });
+      }
+    }
+  };
+
   const fetchNotifications = async (userId: string) => {
     const { data } = await supabase
       .from('notifications')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
-    if (data) setNotifications(data);
+    if (data) {
+      setNotifications(data);
+      fetchAvatarsForNotifs(data);
+    }
   };
 
   useEffect(() => {
@@ -154,12 +179,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const newNotif = payload.new as AppNotification;
           setNotifications((prev) => [newNotif, ...prev]);
           
+          if (newNotif.type === 'follow' && newNotif.link?.startsWith('/organizer/')) {
+            const orgId = newNotif.link.split('/organizer/')[1];
+            const { data } = await supabase.from('profiles').select('avatar_url').eq('id', orgId).single();
+            if (data?.avatar_url) {
+              setAvatars(prev => ({ ...prev, [orgId]: data.avatar_url }));
+            }
+          }
+          
           if (Capacitor.isNativePlatform()) {
             await LocalNotifications.schedule({
               notifications: [
                 {
                   title: newNotif.title || 'New FindIt Notification',
-                  body: newNotif.message,
+                  body: newNotif.message.replace('👤 ', ''),
                   id: new Date().getTime(),
                   schedule: { at: new Date(Date.now() + 1000) },
                   sound: undefined,
@@ -396,7 +429,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const rejectPromoter = (_email: string) => {};
 
   return (
-    <UserContext.Provider value={{ role, profile, isLoading, registerUser, registerHost, logout, updateProfile, updateSubscription, getEventLimit, loginMock, submitKyb, pendingPromoters, approvePromoter, rejectPromoter, savedEventIds, toggleSaveEvent, notifications, unreadCount, markNotificationsAsRead }}>
+    <UserContext.Provider value={{ role, profile, isLoading, registerUser, registerHost, logout, updateProfile, updateSubscription, getEventLimit, loginMock, submitKyb, pendingPromoters, approvePromoter, rejectPromoter, savedEventIds, toggleSaveEvent, notifications, unreadCount, markNotificationsAsRead, avatars }}>
       {children}
     </UserContext.Provider>
   );
