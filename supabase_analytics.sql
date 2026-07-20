@@ -78,6 +78,10 @@ CREATE POLICY "Hosts can read page views for their events" ON public.page_views 
 );
 
 -- 3. Create Trigger to update follower_count
+-- SECURITY DEFINER is required: the trigger fires in the follower's auth context,
+-- but needs to UPDATE the host's profile row. Without SECURITY DEFINER, RLS
+-- blocks the UPDATE (the follower can't update another user's profile), so the
+-- count silently stays at 0. SECURITY DEFINER makes it run as the DB owner.
 CREATE OR REPLACE FUNCTION update_follower_count()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -94,7 +98,7 @@ BEGIN
   END IF;
   RETURN NULL;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS on_follow_change ON public.follows;
 CREATE TRIGGER on_follow_change
