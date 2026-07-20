@@ -80,7 +80,7 @@ export const UserDashboard: React.FC = () => {
       {/* Section 1: Identity */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 'var(--spacing-base)' }}>
         <img 
-          src={userProfile?.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'} 
+          src={userProfile?.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Fallback'} 
           alt="Profile" 
           style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--border-color)' }}
         />

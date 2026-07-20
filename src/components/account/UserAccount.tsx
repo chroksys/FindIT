@@ -88,7 +88,7 @@ export const UserAccount = () => {
             <div className="form-group" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--spacing-xlarge)' }}>
               <div style={{ position: 'relative' }}>
                 <img
-                  src={formData.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
+                  src={formData.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Fallback'}
                   alt="Profile"
                   style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--color-deep-navy)' }}
                 />

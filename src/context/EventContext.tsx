@@ -156,7 +156,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         organizer: {
           id: d.profiles?.id,
           name: d.profiles?.name || 'Unknown',
-          avatarUrl: d.profiles?.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+          avatarUrl: d.profiles?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Fallback',
           bannerUrl: d.profiles?.banner_url,
           bio: d.profiles?.bio,
           phone: d.profiles?.phone,
