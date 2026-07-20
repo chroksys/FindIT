@@ -344,6 +344,24 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return;
     }
 
+    // Notify all followers
+    if (insertData && insertData[0]) {
+      const newEvent = insertData[0];
+      const { data: followers } = await supabase.from('follows').select('follower_id').eq('host_id', profile.id);
+      
+      if (followers && followers.length > 0) {
+        const notificationsPayload = followers.map(f => ({
+          user_id: f.follower_id,
+          title: 'New Event',
+          type: 'event',
+          message: `📢 ${profile.name || 'A host you follow'} just posted a new event: "${newEvent.title}"`,
+          link: `/events/${newEvent.id}`,
+          read: false
+        }));
+        await supabase.from('notifications').insert(notificationsPayload);
+      }
+    }
+
     console.log('[addEvent] insert succeeded, refreshing events...');
     await fetchEvents();
     console.log('[addEvent] fetchEvents done');
