@@ -24,7 +24,7 @@ const CATEGORIES = [
 ];
 
 export const Search = () => {
-  const { events } = useEventContext();
+  const { events, followHost, unfollowHost, followedHostIds } = useEventContext();
   const { role } = useUserContext();
   const location = useLocation();
   const navigate = useNavigate();
@@ -181,7 +181,7 @@ export const Search = () => {
               <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: 'var(--spacing-base)' }}>Hosts</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-medium)' }}>
                 {matchedHosts.map(host => {
-                  const isFollowing = host.isFollowed;
+                  const isFollowing = followedHostIds.includes(host.id || '');
                   return (
                     <div key={host.id} className="hover-scale" style={{ 
                       display: 'flex', 
@@ -210,7 +210,11 @@ export const Search = () => {
                           if (role === 'guest') {
                             navigate('/login');
                           } else {
-                            alert('Follow toggle functionality coming soon!');
+                            if (isFollowing) {
+                              unfollowHost(host.id || '');
+                            } else {
+                              followHost(host.id || '', host.name);
+                            }
                           }
                         }}
                       >
