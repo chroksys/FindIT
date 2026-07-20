@@ -37,16 +37,15 @@ export const Home = () => {
     if (userInterests.some(i => i.toLowerCase() === a.category.toLowerCase())) scoreA += 100;
     if (userInterests.some(i => i.toLowerCase() === b.category.toLowerCase())) scoreB += 100;
 
-    // Primary sort: soonest events first (ascending date)
+    // Primary sort: User interests score
     const timeA = new Date(a.date).getTime();
     const timeB = new Date(b.date).getTime();
     
-    // Sort by time first. If times are somehow exactly equal, sort by interest score.
-    if (timeA !== timeB) {
-      return timeA - timeB;
+    if (scoreA !== scoreB) {
+      return scoreB - scoreA; // Highest score first
     }
     
-    return scoreB - scoreA;
+    return timeA - timeB; // Then nearest time first
   });
 
   // Separate count for the live teaser banner (not filtered by city/category)
