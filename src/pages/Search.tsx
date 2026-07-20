@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEventContext } from '../context/EventContext';
+import { useUserContext } from '../context/UserContext';
 import { EventCard } from '../components/EventCard';
 import { SkeletonCard } from '../components/SkeletonCard';
-import { MagnifyingGlass, Palette, Briefcase, AirplaneTilt, UsersThree, PersonSimpleRun, GameController, HandsClapping, Books, MusicNote, Star, Gift, Heart, Wine } from '@phosphor-icons/react';
+import { MagnifyingGlass, Palette, Briefcase, AirplaneTilt, UsersThree, PersonSimpleRun, GameController, HandsClapping, Books, MusicNote, Star, Gift, Heart, Wine, CheckCircle } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
 const CATEGORIES = [
@@ -24,7 +25,9 @@ const CATEGORIES = [
 
 export const Search = () => {
   const { events } = useEventContext();
+  const { role } = useUserContext();
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useLanguage();
   
   const queryParams = new URLSearchParams(location.search);
@@ -45,13 +48,27 @@ export const Search = () => {
 
   const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId);
 
+  const searchLower = keyword.toLowerCase();
+  
+  const matchedHostsMap = new Map();
+  if (keyword) {
+    events.forEach(event => {
+      if (event.organizer?.name?.toLowerCase().includes(searchLower)) {
+        if (event.organizer.id && !matchedHostsMap.has(event.organizer.id)) {
+          matchedHostsMap.set(event.organizer.id, event.organizer);
+        }
+      }
+    });
+  }
+  const matchedHosts = Array.from(matchedHostsMap.values());
+
   const filteredEvents = activeEvents.filter(event => {
-    const searchLower = keyword.toLowerCase();
     const matchesKeyword = 
       (event.title?.toLowerCase() || '').includes(searchLower) ||
       (event.description?.toLowerCase() || '').includes(searchLower) ||
       (event.venue?.toLowerCase() || '').includes(searchLower) ||
-      (event.category?.toLowerCase() || '').includes(searchLower);
+      (event.category?.toLowerCase() || '').includes(searchLower) ||
+      (event.organizer?.name?.toLowerCase() || '').includes(searchLower);
 
     const matchesCategory = category === 'All' || event.category === category;
 
@@ -157,9 +174,58 @@ export const Search = () => {
       ) : (
         /* Results Feed */
         <div className="animate-fade-in-up">
+          
+          {/* Matched Hosts */}
+          {matchedHosts.length > 0 && (
+            <div style={{ marginBottom: 'var(--spacing-xlarge)' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: 'var(--spacing-base)' }}>Hosts</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-medium)' }}>
+                {matchedHosts.map(host => {
+                  const isFollowing = host.isFollowed;
+                  return (
+                    <div key={host.id} className="hover-scale" style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between',
+                      backgroundColor: 'var(--bg-card)',
+                      padding: 'var(--spacing-medium)',
+                      borderRadius: 'var(--radius-card)',
+                      border: '1px solid var(--border-color)',
+                      cursor: 'pointer'
+                    }} onClick={() => navigate(`/organizer/${host.id}`)}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-small)' }}>
+                        <img src={host.avatarUrl} alt={host.name} style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            {host.name}
+                            {host.verified && <CheckCircle size={16} color="var(--color-success)" weight="fill" />}
+                          </div>
+                          <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>{host.followers || 0} followers</div>
+                        </div>
+                      </div>
+                      <button 
+                        className={isFollowing ? "btn-secondary" : "btn-primary"}
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          if (role === 'guest') {
+                            navigate('/login');
+                          } else {
+                            alert('Follow toggle functionality coming soon!');
+                          }
+                        }}
+                      >
+                        {isFollowing ? 'Following' : 'Follow'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-large)' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: 700 }}>
-              {category !== 'All' ? `${category} Events` : 'Search Results'}
+            <h2 style={{ fontSize: '20px', fontWeight: 700 }}>
+              {category !== 'All' ? `${category} Events` : 'Events'}
             </h2>
             {category !== 'All' && (
               <button 
