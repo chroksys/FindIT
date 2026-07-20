@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../components/EventCard';
 import { MapPin, MagnifyingGlass, CaretDown, Broadcast } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
+import { useUserContext } from '../context/UserContext';
+import type { UserProfile } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Home = () => {
   const { events, selectedCity, setSelectedCity, getEventStatus } = useEventContext();
+  const { profile } = useUserContext();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
@@ -23,10 +26,27 @@ export const Home = () => {
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
     if (selectedCategory !== 'All' && e.category !== selectedCategory) return false;
     return true;
-  }).sort((a, b) =>
-    // Upcoming events sorted soonest first
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  }).sort((a, b) => {
+    // Scoring logic for personalization
+    let scoreA = 0;
+    let scoreB = 0;
+    
+    const userInterests = (profile as UserProfile)?.interests || [];
+    
+    // +100 points if the event's category matches a user's interest
+    if (userInterests.some(i => i.toLowerCase() === a.category.toLowerCase())) scoreA += 100;
+    if (userInterests.some(i => i.toLowerCase() === b.category.toLowerCase())) scoreB += 100;
+
+    // Secondary sort: soonest events first (ascending date)
+    const timeA = new Date(a.date).getTime();
+    const timeB = new Date(b.date).getTime();
+    
+    if (scoreA !== scoreB) {
+      return scoreB - scoreA; // Highest score first
+    }
+    
+    return timeA - timeB; // Then nearest time first
+  });
 
   // Separate count for the live teaser banner (not filtered by city/category)
   const liveCount = events.filter(e =>

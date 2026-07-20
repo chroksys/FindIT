@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 import { ArrowRight, UserCircle, CheckCircle, Image as ImageIcon, CaretLeft, Spinner } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
+import { PhoneInput } from '../PhoneInput';
+
+const COUNTRIES = [
+  'Uganda', 'Kenya', 'Tanzania', 'Rwanda', 'Burundi',
+  'South Sudan', 'Democratic Republic of the Congo',
+  'Nigeria', 'South Africa', 'Ghana', 'Other'
+];
 
 const INTERESTS = [
   { id: 'music', label: '🎵 Music' },
@@ -32,6 +39,10 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [password, setPassword] = useState('');
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [location, setLocation] = useState('');
+  const [country, setCountry] = useState('Uganda');
+  const [phone, setPhone] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('Prefer not to say');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
@@ -39,6 +50,11 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 8) return alert('Password must be at least 8 characters.');
+    if (!phone) return alert('Phone number is required.');
+    const ageNum = parseInt(age);
+    if (!age || isNaN(ageNum) || ageNum < 16) {
+      return alert('You must be at least 16 years old to register.');
+    }
     setStep(2); // Go to interests
   };
 
@@ -70,6 +86,10 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         email,
         interests: selectedInterests,
         city: skip ? undefined : location,
+        country,
+        phone,
+        age: parseInt(age),
+        gender,
         avatarUrl: avatarUrl || undefined,
       }, password);
       navigate('/dashboard');
@@ -122,7 +142,26 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
               <input type="email" required value={email} onChange={e => setEmail(e.target.value)} className="input-field" placeholder="john@example.com" />
             </div>
             <div>
-              <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Password</label>
+              <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Phone Number *</label>
+              <PhoneInput value={phone} onChange={setPhone} required />
+            </div>
+            <div style={{ display: 'flex', gap: 'var(--spacing-base)' }}>
+              <div style={{ flex: 1 }}>
+                <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Age *</label>
+                <input type="number" required min={16} max={120} value={age} onChange={e => setAge(e.target.value)} className="input-field" placeholder="16+" />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Gender</label>
+                <select value={gender} onChange={e => setGender(e.target.value)} className="input-field" style={{ appearance: 'none' }}>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Password *</label>
               <input type="password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)} className="input-field" placeholder="Min. 8 characters" />
             </div>
             <button type="submit" className="btn-primary hover-scale" style={{ width: '100%', marginTop: 'var(--spacing-base)', justifyContent: 'center' }}>
@@ -210,8 +249,16 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
           </div>
 
           <div style={{ marginBottom: 'var(--spacing-large)' }}>
-            <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Location / City</label>
-            <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="input-field" placeholder="e.g., Kampala, Ntinda" />
+            <div style={{ marginBottom: 'var(--spacing-base)' }}>
+              <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Country</label>
+              <select value={country} onChange={e => setCountry(e.target.value)} className="input-field" style={{ appearance: 'none' }}>
+                {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Location / City</label>
+              <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="input-field" placeholder="e.g., Kampala, Ntinda" />
+            </div>
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-base)' }}>

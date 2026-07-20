@@ -13,6 +13,9 @@ export interface BaseProfile {
   email: string;
   phone?: string;
   city?: string;
+  country?: string;
+  age?: number;
+  gender?: string;
   avatarUrl?: string;
   bannerUrl?: string;
 }
@@ -226,6 +229,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         bannerUrl: data.banner_url,
         phone: data.phone,
         city: data.city,
+        country: data.country,
+        age: data.age,
+        gender: data.gender,
         interests: data.interests || [],
         businessName: data.business_name,
         organizerType: data.organizer_type,
@@ -283,6 +289,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             avatar_url: data.avatarUrl,
             phone: data.phone,
             city: data.city,
+            country: data.country,
+            age: data.age,
+            gender: data.gender,
             interests: data.interests || []
           }
         ]);
