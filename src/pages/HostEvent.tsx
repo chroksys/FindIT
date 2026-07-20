@@ -65,8 +65,10 @@ export const HostEvent: React.FC = () => {
     coordinates: { lat: 0.3476, lng: 32.5825 } // Default to Kampala
   });
 
+  const [initializedId, setInitializedId] = useState<string | null>(null);
+
   useEffect(() => {
-    if (isEditing && id) {
+    if (isEditing && id && initializedId !== id) {
       const eventToEdit = events.find(e => e.id === id);
       if (eventToEdit) {
         if (eventToEdit.organizer?.id !== profile?.id) {
@@ -95,9 +97,10 @@ export const HostEvent: React.FC = () => {
           parentEventId: eventToEdit.parentEventId || '',
           coordinates: eventToEdit.coordinates || { lat: 0.3476, lng: 32.5825 }
         });
+        setInitializedId(id);
       }
     }
-  }, [id, isEditing, events]);
+  }, [id, isEditing, events, initializedId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

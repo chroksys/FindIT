@@ -22,8 +22,18 @@ import { EventProvider } from './context/EventContext';
 import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { useEffect } from 'react';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 
 function App() {
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: '#050505' }).catch(() => {});
+    }
+  }, []);
+
   return (
     <ThemeProvider>
       <LanguageProvider>
