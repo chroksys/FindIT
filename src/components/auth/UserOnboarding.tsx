@@ -8,12 +8,7 @@ import {
 } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
-
-const COUNTRIES = [
-  'Uganda', 'Kenya', 'Tanzania', 'Rwanda', 'Burundi',
-  'South Sudan', 'Democratic Republic of the Congo',
-  'Nigeria', 'South Africa', 'Ghana', 'Other'
-];
+import { COUNTRIES } from '../../lib/countries';
 
 const INTERESTS = [
   { id: 'music', label: 'Music', icon: <MusicNotes size={20} /> },
@@ -193,9 +188,9 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                   style={{
                     padding: '12px 20px',
                     borderRadius: 'var(--radius-pill)',
-                    border: `2px solid ${isSelected ? 'var(--color-pin-orange)' : 'var(--border-color)'}`,
-                    backgroundColor: isSelected ? 'rgba(255, 87, 34, 0.1)' : 'transparent',
-                    color: isSelected ? 'var(--color-pin-orange)' : 'var(--text-primary)',
+                    border: `2px solid ${isSelected ? 'var(--color-white)' : 'var(--border-color)'}`,
+                    backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                    color: isSelected ? 'var(--color-white)' : 'var(--text-primary)',
                     fontWeight: 600,
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
@@ -256,7 +251,7 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             <div style={{ marginBottom: 'var(--spacing-base)' }}>
               <label className="text-caption" style={{ display: 'block', marginBottom: '4px', fontWeight: 600 }}>Country</label>
               <select value={country} onChange={e => setCountry(e.target.value)} className="input-field" style={{ appearance: 'none' }}>
-                {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
               </select>
             </div>
             <div>

@@ -1,23 +1,26 @@
 import React, { useRef, useState } from 'react';
 import { useUserContext, type UserProfile } from '../../context/UserContext';
-import { EnvelopeSimple, MapPin, User, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
+import { EnvelopeSimple, MapPin, User, UploadSimple, ShieldCheck, Spinner,
+  MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, HandsPraying, 
+  UsersThree, Martini, MicrophoneStage, Barbell } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
 import { useNavigate } from 'react-router-dom';
+import { COUNTRIES } from '../../lib/countries';
 
 const INTERESTS = [
-  { id: 'music', label: '🎵 Music' },
-  { id: 'sports', label: '⚽ Sports' },
-  { id: 'tech', label: '💻 Tech' },
-  { id: 'business', label: '💼 Business' },
-  { id: 'education', label: '📚 Education' },
-  { id: 'fashion', label: '👗 Fashion' },
-  { id: 'festivals', label: '🎉 Festivals' },
-  { id: 'religious', label: '🙏 Religious' },
-  { id: 'community', label: '🤝 Community' },
-  { id: 'nightlife', label: '🌙 Nightlife' },
-  { id: 'concerts', label: '🎤 Concerts' },
-  { id: 'fitness', label: '🏃 Fitness' },
+  { id: 'music', label: 'Music', icon: <MusicNotes size={16} /> },
+  { id: 'sports', label: 'Sports', icon: <SoccerBall size={16} /> },
+  { id: 'tech', label: 'Tech', icon: <Laptop size={16} /> },
+  { id: 'business', label: 'Business', icon: <Briefcase size={16} /> },
+  { id: 'education', label: 'Education', icon: <Books size={16} /> },
+  { id: 'fashion', label: 'Fashion', icon: <TShirt size={16} /> },
+  { id: 'festivals', label: 'Festivals', icon: <Confetti size={16} /> },
+  { id: 'religious', label: 'Religious', icon: <HandsPraying size={16} /> },
+  { id: 'community', label: 'Community', icon: <UsersThree size={16} /> },
+  { id: 'nightlife', label: 'Nightlife', icon: <Martini size={16} /> },
+  { id: 'concerts', label: 'Concerts', icon: <MicrophoneStage size={16} /> },
+  { id: 'fitness', label: 'Fitness', icon: <Barbell size={16} /> },
 ];
 
 export const UserAccount = () => {
@@ -145,6 +148,30 @@ export const UserAccount = () => {
               />
             </div>
 
+            <div style={{ display: 'flex', gap: 'var(--spacing-base)' }}>
+              <div className="form-group" style={{ flex: 1 }}>
+                <label className="form-label">Age</label>
+                <input name="age" value={formData.age || ''} onChange={handleChange} type="number" min={16} max={120} className="input-field" />
+              </div>
+              <div className="form-group" style={{ flex: 1 }}>
+                <label className="form-label">Gender</label>
+                <select name="gender" value={formData.gender || ''} onChange={handleChange as any} className="input-field" style={{ appearance: 'none' }}>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Country</label>
+              <select name="country" value={formData.country || ''} onChange={handleChange as any} className="input-field" style={{ appearance: 'none' }}>
+                <option value="">Select a country</option>
+                {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
+              </select>
+            </div>
+
             <div className="form-group">
               <label className="form-label">City / Location</label>
               <div style={{ position: 'relative' }}>
@@ -168,15 +195,19 @@ export const UserAccount = () => {
                       style={{
                         padding: '8px 16px',
                         borderRadius: 'var(--radius-pill)',
-                        border: `2px solid ${isSelected ? 'var(--color-pin-orange)' : 'var(--border-color)'}`,
-                        backgroundColor: isSelected ? 'rgba(255, 87, 34, 0.1)' : 'transparent',
-                        color: isSelected ? 'var(--color-pin-orange)' : 'var(--text-primary)',
+                        border: `2px solid ${isSelected ? 'var(--color-white)' : 'var(--border-color)'}`,
+                        backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                        color: isSelected ? 'var(--color-white)' : 'var(--text-primary)',
                         fontWeight: 600,
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
                       }}
                     >
-                      {interest.label}
+                      {interest.icon}
+                      <span style={{ fontFamily: 'var(--font-family, inherit)' }}>{interest.label}</span>
                     </button>
                   );
                 })}

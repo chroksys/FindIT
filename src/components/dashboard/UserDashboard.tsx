@@ -133,7 +133,7 @@ export const UserDashboard: React.FC = () => {
             userProfile.interests.map(id => {
               const interest = INTEREST_ICONS[id];
               return (
-                <span key={id} className="badge" style={{ padding: '8px 12px', backgroundColor: 'rgba(255, 87, 34, 0.1)', color: 'var(--color-pin-orange)', border: '1px solid var(--color-pin-orange)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <span key={id} className="badge" style={{ padding: '8px 12px', backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'var(--color-white)', border: '1px solid var(--color-white)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                   {interest?.icon}
                   <span style={{ fontFamily: 'var(--font-family, inherit)' }}>{interest?.label || id}</span>
                 </span>
