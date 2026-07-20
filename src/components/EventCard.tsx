@@ -62,7 +62,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
-        height: '200px',
+        height: '280px',
         width: '100%'
       }}
     >
