@@ -402,8 +402,8 @@ input:focus, textarea:focus, select:focus {
 
   .navbar-top {
     border-bottom: none;
-    padding-bottom: 0;
-    padding-top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+    padding-bottom: 8px !important;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 16px) !important;
   }
 
   .navbar-bottom {
