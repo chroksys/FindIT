@@ -3,6 +3,7 @@ import { useUserContext, type UserProfile } from '../../context/UserContext';
 import { EnvelopeSimple, MapPin, User, UploadSimple, ShieldCheck, Spinner } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
+import { useNavigate } from 'react-router-dom';
 
 const INTERESTS = [
   { id: 'music', label: '🎵 Music' },
@@ -22,6 +23,7 @@ const INTERESTS = [
 export const UserAccount = () => {
   const { profile, updateProfile } = useUserContext();
   const userProfile = (profile as UserProfile) || { name: '', email: '', interests: [] };
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState(userProfile);
   const [isSaved, setIsSaved] = useState(false);
@@ -70,11 +72,14 @@ export const UserAccount = () => {
     e.preventDefault();
     updateProfile(formData);
     setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    setTimeout(() => {
+      setIsSaved(false);
+      navigate('/dashboard');
+    }, 1500);
   };
 
   return (
-    <div className="container section" style={{ maxWidth: '800px' }}>
+    <div className="container section" style={{ maxWidth: '800px', paddingTop: 'calc(env(safe-area-inset-top) + 80px)' }}>
       <div style={{ marginBottom: 'var(--spacing-xlarge)' }}>
         <h1 className="text-hero animate-fade-in-up" style={{ fontSize: '32px', marginBottom: 'var(--spacing-micro)' }}>Edit Profile</h1>
         <p className="text-body animate-fade-in-up" style={{ color: 'var(--text-secondary)', animationDelay: '0.1s' }}>Manage your personal details and interests.</p>

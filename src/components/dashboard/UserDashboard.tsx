@@ -20,14 +20,24 @@ import {
   Translate,
   Monitor,
   X,
-  CheckCircle
+  CheckCircle,
+  MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, HandsPraying, 
+  UsersThree, Martini, MicrophoneStage, Barbell
 } from '@phosphor-icons/react';
 
-const INTEREST_ICONS: Record<string, string> = {
-  music: '🎵 Music', sports: '⚽ Sports', tech: '💻 Tech', business: '💼 Business',
-  education: '📚 Education', fashion: '👗 Fashion', festivals: '🎉 Festivals',
-  religious: '🙏 Religious', community: '🤝 Community', nightlife: '🌙 Nightlife',
-  concerts: '🎤 Concerts', fitness: '🏃 Fitness'
+const INTEREST_ICONS: Record<string, { label: string, icon: React.ReactNode }> = {
+  music: { label: 'Music', icon: <MusicNotes size={16} /> },
+  sports: { label: 'Sports', icon: <SoccerBall size={16} /> },
+  tech: { label: 'Tech', icon: <Laptop size={16} /> },
+  business: { label: 'Business', icon: <Briefcase size={16} /> },
+  education: { label: 'Education', icon: <Books size={16} /> },
+  fashion: { label: 'Fashion', icon: <TShirt size={16} /> },
+  festivals: { label: 'Festivals', icon: <Confetti size={16} /> },
+  religious: { label: 'Religious', icon: <HandsPraying size={16} /> },
+  community: { label: 'Community', icon: <UsersThree size={16} /> },
+  nightlife: { label: 'Nightlife', icon: <Martini size={16} /> },
+  concerts: { label: 'Concerts', icon: <MicrophoneStage size={16} /> },
+  fitness: { label: 'Fitness', icon: <Barbell size={16} /> }
 };
 
 export const UserDashboard: React.FC = () => {
@@ -117,15 +127,18 @@ export const UserDashboard: React.FC = () => {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
           <h3 className="text-card-title">My Interests</h3>
-          <button className="text-caption" style={{ color: 'var(--color-pin-orange)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Edit</button>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-small)' }}>
           {userProfile?.interests?.length > 0 ? (
-            userProfile.interests.map(id => (
-              <span key={id} className="badge" style={{ padding: '8px 12px', backgroundColor: 'rgba(255, 87, 34, 0.1)', color: 'var(--color-pin-orange)', border: '1px solid var(--color-pin-orange)' }}>
-                {INTEREST_ICONS[id] || id}
-              </span>
-            ))
+            userProfile.interests.map(id => {
+              const interest = INTEREST_ICONS[id];
+              return (
+                <span key={id} className="badge" style={{ padding: '8px 12px', backgroundColor: 'rgba(255, 87, 34, 0.1)', color: 'var(--color-pin-orange)', border: '1px solid var(--color-pin-orange)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  {interest?.icon}
+                  <span style={{ fontFamily: 'var(--font-family, inherit)' }}>{interest?.label || id}</span>
+                </span>
+              );
+            })
           ) : (
             <span className="text-caption" style={{ color: 'var(--text-secondary)' }}>No interests selected.</span>
           )}
