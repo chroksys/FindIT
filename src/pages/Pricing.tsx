@@ -63,7 +63,7 @@ export const Pricing = () => {
 
   return (
     <div className="container section">
-      <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-hero)', maxWidth: '600px', margin: '0 auto var(--spacing-hero)' }}>
+      <div style={{ textAlign: 'center', maxWidth: '600px', margin: 'var(--spacing-hero) auto var(--spacing-hero)' }}>
         <h1 className="text-hero animate-fade-in-up" style={{ fontSize: '48px', marginBottom: 'var(--spacing-base)' }}>Simple, transparent pricing</h1>
         <p className="text-body animate-fade-in-up" style={{ color: 'var(--text-secondary)', fontSize: '18px', animationDelay: '0.1s' }}>
           Choose the plan that fits your hosting needs. No hidden fees. Cancel anytime.

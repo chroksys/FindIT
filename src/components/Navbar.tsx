@@ -14,9 +14,10 @@ export const Navbar: React.FC = () => {
   
   const [showNotifications, setShowNotifications] = useState(false);
   
-  // Hide entire global navbar for immersive live pages
+  // Hide entire global navbar for immersive live pages and isolated pages
   if (location.pathname.startsWith('/live/') && location.pathname !== '/live') return null;
   if (location.pathname.startsWith('/host/live/')) return null;
+  if (location.pathname === '/notifications') return null;
 
 
   return (
