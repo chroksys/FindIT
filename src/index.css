@@ -259,6 +259,21 @@ button:active, .social-icon-btn:active {
   transform: scale(0.97);
 }
 
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+.horizontal-scroll > * {
+  scroll-snap-align: start;
+}
+
 .category-card {
   transition: all 0.3s ease;
 }

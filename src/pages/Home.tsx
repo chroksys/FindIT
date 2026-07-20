@@ -288,15 +288,19 @@ export const Home = () => {
             </div>
           </div>
           
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-            gap: 'var(--spacing-medium)' 
+          <div className="horizontal-scroll" style={{ 
+            gap: 'var(--spacing-medium)',
+            paddingBottom: 'var(--spacing-small)',
+            margin: '0 calc(-1 * var(--spacing-base))',
+            paddingLeft: 'var(--spacing-base)',
+            paddingRight: 'var(--spacing-base)'
           }}>
             {hottestEvents.length > 0 ? hottestEvents.map(event => (
-              <EventCard key={`hottest-${event.id}`} {...event} date={event.displayDate} />
+              <div key={`hottest-${event.id}`} style={{ width: '85vw', maxWidth: '340px', flexShrink: 0 }}>
+                <EventCard {...event} date={event.displayDate} />
+              </div>
             )) : (
-              <p className="text-caption">No premium events matching this location.</p>
+              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>No premium events matching this location.</p>
             )}
           </div>
         </div>
@@ -311,15 +315,19 @@ export const Home = () => {
             </div>
           </div>
           
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-            gap: 'var(--spacing-medium)' 
+          <div className="horizontal-scroll" style={{ 
+            gap: 'var(--spacing-medium)',
+            paddingBottom: 'var(--spacing-small)',
+            margin: '0 calc(-1 * var(--spacing-base))',
+            paddingLeft: 'var(--spacing-base)',
+            paddingRight: 'var(--spacing-base)'
           }}>
             {followedEvents.length > 0 ? followedEvents.map(event => (
-              <EventCard key={`followed-${event.id}`} {...event} date={event.displayDate} />
+              <div key={`followed-${event.id}`} style={{ width: '85vw', maxWidth: '340px', flexShrink: 0 }}>
+                <EventCard {...event} date={event.displayDate} />
+              </div>
             )) : (
-              <p className="text-caption">You aren't following any active hosts in this location.</p>
+              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>You aren't following any active hosts in this location.</p>
             )}
           </div>
         </div>
