@@ -95,10 +95,14 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // When user logs in/out after mount, reload follows then events
   useEffect(() => {
     if (profile?.id) {
+      if (profile.city) {
+        setSelectedCity(profile.city);
+      }
       fetchFollowedHosts(profile.id).then(ids => fetchEvents(ids));
     } else {
       setFollowedHostIds([]);
       fetchEvents([]);
+      setSelectedCity('All');
     }
   }, [profile?.id]);
 

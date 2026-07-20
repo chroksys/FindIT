@@ -3,6 +3,7 @@ import Map, { Source, Layer } from 'react-map-gl/mapbox';
 import type { HeatmapLayerSpecification, CircleLayerSpecification } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useEventContext } from '../context/EventContext';
+import { useUserContext } from '../context/UserContext';
 import type { Event } from '../context/EventContext';
 import { EventCard } from '../components/EventCard';
 import { X } from '@phosphor-icons/react';
@@ -87,8 +88,20 @@ const circleLayer: CircleLayerSpecification = {
 };
 
 export const MapView: React.FC = () => {
-  const { events } = useEventContext();
+  const { events, selectedCity } = useEventContext();
+  const { profile } = useUserContext();
   const [selectedEvents, setSelectedEvents] = useState<Event[] | null>(null);
+
+  const defaultCoords: Record<string, { lng: number; lat: number }> = {
+    'Kampala': { lng: 32.5825, lat: 0.3476 },
+    'Nairobi': { lng: 36.8219, lat: -1.2921 },
+    'Kigali': { lng: 30.0588, lat: -1.9441 },
+    'Dar es Salaam': { lng: 39.2683, lat: -6.7924 },
+    'Mombasa': { lng: 39.6682, lat: -4.0435 },
+  };
+
+  const targetCity = selectedCity !== 'All' ? selectedCity : (profile?.city || 'Kampala');
+  const initialCoords = defaultCoords[targetCity] || defaultCoords['Kampala'];
 
   // Generate GeoJSON from events
   const data = useMemo(() => {
@@ -149,8 +162,8 @@ export const MapView: React.FC = () => {
       <Map
         style={{ width: '100vw', height: '100vh' }}
         initialViewState={{
-          longitude: 32.5825,
-          latitude: 0.3476,
+          longitude: initialCoords.lng,
+          latitude: initialCoords.lat,
           zoom: 11
         }}
         mapStyle="mapbox://styles/mapbox/dark-v11"
