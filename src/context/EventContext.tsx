@@ -100,7 +100,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const fetchEvents = async () => {
+  // Accepts an optional overrideFollowedIds to avoid stale-closure issues
+  // when called immediately after updating followedHostIds state.
+  const fetchEvents = async (overrideFollowedIds?: string[]) => {
     const { data } = await supabase
       .from('events')
       .select('*, profiles!events_host_id_fkey(id, name, avatar_url, banner_url, subscription, bio, phone, website, follower_count), event_rsvps(status, user_id, profiles(avatar_url))')
@@ -112,6 +114,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .from('reviews')
         .select('*')
         .order('created_at', { ascending: false });
+
+      // Use the override if provided (avoids stale closure), otherwise use current state
+      const currentFollowedIds = overrideFollowedIds ?? followedHostIds;
 
       const mappedEvents: Event[] = data.map((d: any) => ({
         id: d.id,
@@ -147,7 +152,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           verified: false,
           followers: d.profiles?.follower_count || 0,
           subscriptionTier: d.profiles?.subscription,
-          isFollowed: followedHostIds.includes(d.host_id)
+          isFollowed: currentFollowedIds.includes(d.host_id)
         },
         gallery: [],
         reviews: (reviewsData || []).filter((r: any) => r.event_id === d.id),
@@ -181,8 +186,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
     if (error) { console.error('Follow error:', error); return; }
 
-    // Update local state immediately
-    setFollowedHostIds(prev => [...prev, hostId]);
+    // Build the updated list synchronously so fetchEvents gets the correct ids
+    const updatedIds = [...followedHostIds, hostId];
+    setFollowedHostIds(updatedIds);
 
     // Send notification to the host
     const { error: notifError } = await supabase.from('notifications').insert({
@@ -198,8 +204,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.error('Notifications insert error details:', JSON.stringify(notifError, null, 2));
     }
 
-    // Refresh events to reflect isFollowed change
-    await fetchEvents();
+    // Pass updated list to avoid stale-closure race condition
+    await fetchEvents(updatedIds);
   };
 
   const unfollowHost = async (hostId: string) => {
@@ -209,10 +215,12 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .eq('follower_id', profile.id)
       .eq('host_id', hostId);
 
-    // Update local state immediately
-    setFollowedHostIds(prev => prev.filter(id => id !== hostId));
+    // Build the updated list synchronously
+    const updatedIds = followedHostIds.filter(id => id !== hostId);
+    setFollowedHostIds(updatedIds);
 
-    await fetchEvents();
+    // Pass updated list to avoid stale-closure race condition
+    await fetchEvents(updatedIds);
   };
 
   const addReview = async (eventId: string, rating: number, comment: string) => {

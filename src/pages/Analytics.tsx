@@ -20,13 +20,12 @@ export const Analytics = () => {
       if (!profile?.id) return;
       setIsLoading(true);
       try {
-        // Fetch follower count
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('follower_count')
-          .eq('id', profile.id)
-          .single();
-        if (profileData) setFollowersCount(profileData.follower_count || 0);
+        // Fetch live follower count directly from follows table (always accurate)
+        const { count } = await supabase
+          .from('follows')
+          .select('*', { count: 'exact', head: true })
+          .eq('host_id', profile.id);
+        setFollowersCount(count || 0);
 
         // Fetch page views for all host's events
         const eventIds = hostEvents.map(e => e.id);
@@ -45,6 +44,26 @@ export const Analytics = () => {
       }
     };
     fetchData();
+
+    // Real-time subscription: update follower count live as users follow/unfollow
+    if (!profile?.id) return;
+    const channel = supabase
+      .channel(`follows-host-${profile.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'follows', filter: `host_id=eq.${profile.id}` },
+        () => setFollowersCount(prev => prev + 1)
+      )
+      .on(
+        'postgres_changes',
+        { event: 'DELETE', schema: 'public', table: 'follows', filter: `host_id=eq.${profile.id}` },
+        () => setFollowersCount(prev => Math.max(0, prev - 1))
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [profile?.id, hostEvents]);
 
   const totalEvents = hostEvents.length;

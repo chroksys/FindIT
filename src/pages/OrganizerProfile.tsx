@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle, Heart, Phone, Globe, Star, ArrowRight, SpinnerGap } from '@phosphor-icons/react';
 import { EventCard } from '../components/EventCard';
@@ -22,6 +22,19 @@ export const OrganizerProfile: React.FC = () => {
 
   const { events, getEventStatus, followedHostIds, followHost, unfollowHost, loadingEvents } = useEventContext();
 
+  // Derive organizer data first so we can initialize localFollowerCount from it
+  // We compute it early (before early returns) using a safe default
+  const hostEvents = loadingEvents ? [] : events.filter(e => e.organizer.id === id || (!e.organizer.id && id === '1'));
+  const firstEventForCount = hostEvents[0];
+  const [localFollowerCount, setLocalFollowerCount] = useState<number>(firstEventForCount?.organizer?.followers || 0);
+
+  // Keep localFollowerCount in sync whenever the events state refreshes with new DB data
+  useEffect(() => {
+    if (firstEventForCount?.organizer?.followers !== undefined) {
+      setLocalFollowerCount(firstEventForCount.organizer.followers);
+    }
+  }, [firstEventForCount?.organizer?.followers]);
+
   if (loadingEvents) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>
@@ -30,7 +43,6 @@ export const OrganizerProfile: React.FC = () => {
     );
   }
 
-  const hostEvents = events.filter(e => e.organizer.id === id || (!e.organizer.id && id === '1'));
   
   // Dynamic Data for the Organizer Profile
   const firstEvent = hostEvents[0];
@@ -110,8 +122,10 @@ export const OrganizerProfile: React.FC = () => {
         <button 
           onClick={() => handleAction(() => {
             if (followedHostIds.includes(organizer.id)) {
+              setLocalFollowerCount(prev => Math.max(0, prev - 1));
               unfollowHost(organizer.id);
             } else {
+              setLocalFollowerCount(prev => prev + 1);
               followHost(organizer.id, organizer.name);
             }
           })}
@@ -143,7 +157,7 @@ export const OrganizerProfile: React.FC = () => {
         <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', textAlign: 'center' }}>
             <div style={{ borderRight: '1px solid var(--border-color)' }}>
-              <div className="text-section" style={{ fontSize: '24px' }}>{organizer.stats.followers}</div>
+              <div className="text-section" style={{ fontSize: '24px' }}>{localFollowerCount}</div>
               <div className="text-caption">Followers</div>
             </div>
             <div style={{ borderRight: '1px solid var(--border-color)' }}>
