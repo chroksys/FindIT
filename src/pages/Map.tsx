@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import Map, { Source, Layer } from 'react-map-gl/mapbox';
 import type { HeatmapLayerSpecification, CircleLayerSpecification } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -103,6 +103,31 @@ export const MapView: React.FC = () => {
   const targetCity = selectedCity !== 'All' ? selectedCity : (profile?.city || 'Kampala');
   const initialCoords = defaultCoords[targetCity] || defaultCoords['Kampala'];
 
+  const mapRef = useRef<any>(null);
+
+  useEffect(() => {
+    const fly = (lng: number, lat: number) => {
+      if (mapRef.current) {
+        mapRef.current.flyTo({ center: [lng, lat], zoom: 11, duration: 1500 });
+      }
+    };
+    
+    if (defaultCoords[targetCity]) {
+      fly(defaultCoords[targetCity].lng, defaultCoords[targetCity].lat);
+    } else if (MAPBOX_TOKEN) {
+      // Use Mapbox Geocoding API for automatic coordinate resolution
+      fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(targetCity)}.json?access_token=${MAPBOX_TOKEN}&types=place`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.features && data.features.length > 0) {
+            const [lng, lat] = data.features[0].center;
+            fly(lng, lat);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [targetCity]);
+
   // Generate GeoJSON from events
   const data = useMemo(() => {
     // In a real app, you'd filter out events without coordinates.
@@ -160,6 +185,7 @@ export const MapView: React.FC = () => {
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#000', zIndex: 10 }}>
       <Map
+        ref={mapRef}
         style={{ width: '100vw', height: '100vh' }}
         initialViewState={{
           longitude: initialCoords.lng,
