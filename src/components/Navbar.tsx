@@ -144,7 +144,9 @@ export const Navbar: React.FC = () => {
                     {notifications.length > 0 ? notifications.slice(0, 5).map((notification) => (
                       <div key={notification.id} onClick={() => { 
                         markNotificationsAsRead(notification.id);
-                        if (notification.link) navigate(notification.link); 
+                        if (notification.link && notification.type !== 'follow') {
+                          navigate(notification.link); 
+                        }
                         setShowNotifications(false); 
                       }} style={{ 
                         padding: 'var(--spacing-base)', 

@@ -107,7 +107,9 @@ export const Notifications = () => {
                   key={notif.id}
                   onClick={() => {
                     markNotificationsAsRead(notif.id);
-                    if (notif.link) navigate(notif.link);
+                    if (notif.link && notif.type !== 'follow') {
+                      navigate(notif.link);
+                    }
                   }}
                   className="animate-fade-in-up hover-lift card-padding"
                   style={{
