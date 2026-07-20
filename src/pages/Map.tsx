@@ -88,7 +88,7 @@ const circleLayer: CircleLayerSpecification = {
 };
 
 export const MapView: React.FC = () => {
-  const { events, selectedCity } = useEventContext();
+  const { events, selectedCity, getEventStatus } = useEventContext();
   const { profile } = useUserContext();
   const [selectedEvents, setSelectedEvents] = useState<Event[] | null>(null);
 
@@ -132,7 +132,7 @@ export const MapView: React.FC = () => {
   const data = useMemo(() => {
     // In a real app, you'd filter out events without coordinates.
     // For this demo, let's artificially assign coordinates around Kampala to events without them
-    const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId);
+    const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId && getEventStatus(e) !== 'Ended');
     const features = activeEvents.map((event) => {
       // Create deterministic random offset based on event ID string length so it doesn't jump
       if (!event.coordinates) return null;
