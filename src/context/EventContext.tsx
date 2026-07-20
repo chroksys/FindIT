@@ -207,7 +207,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       user_id: hostId,
       title: 'New Follower',
       type: 'follow',
-      message: `👤 ${profile.name || 'Someone'} started following you!`,
+      message: `${profile.name || 'Someone'} started following you!`,
       link: `/organizer/${profile.id}`,
       read: false
     });

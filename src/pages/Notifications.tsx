@@ -1,12 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, Bell, Ticket, ChatCircleText, CaretLeft, Star, SpinnerGap, UserCircle } from '@phosphor-icons/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
+import { supabase } from '../lib/supabase';
 
 export const Notifications = () => {
   const navigate = useNavigate();
   const { role, isLoading, notifications, unreadCount, markNotificationsAsRead } = useUserContext();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [avatars, setAvatars] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      const followNotifs = notifications.filter(n => n.type === 'follow' && n.link?.startsWith('/organizer/'));
+      const organizerIds = followNotifs.map(n => n.link!.split('/organizer/')[1]).filter(id => !avatars[id]);
+      
+      if (organizerIds.length > 0) {
+        // Unique IDs
+        const uniqueIds = [...new Set(organizerIds)];
+        const { data } = await supabase.from('profiles').select('id, avatar_url').in('id', uniqueIds);
+        
+        if (data) {
+          const newAvatars = { ...avatars };
+          data.forEach(p => {
+            if (p.avatar_url) newAvatars[p.id] = p.avatar_url;
+          });
+          setAvatars(newAvatars);
+        }
+      }
+    };
+    
+    if (notifications.length > 0) {
+      fetchAvatars();
+    }
+  }, [notifications]);
 
   const formatTime = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -19,7 +46,15 @@ export const Notifications = () => {
     return `${days}d ago`;
   };
 
-  const getIcon = (type: string) => {
+  const getIcon = (type: string, link: string | null) => {
+    if (type === 'follow' && link?.startsWith('/organizer/')) {
+      const organizerId = link.split('/organizer/')[1];
+      if (avatars[organizerId]) {
+        return <img src={avatars[organizerId]} alt="Follower Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />;
+      }
+      return <UserCircle size={24} color="var(--color-info)" weight="fill" />;
+    }
+    
     switch (type) {
       case 'ticket': return <Ticket size={24} color="var(--color-success)" />;
       case 'live': return <Heart size={24} color="var(--color-error)" weight="fill" />;
@@ -113,7 +148,7 @@ export const Notifications = () => {
                   }}
                 >
                   <div style={{ padding: '12px', backgroundColor: 'var(--bg-default)', borderRadius: '50%', flexShrink: 0 }}>
-                    {getIcon(notif.type)}
+                    {getIcon(notif.type, notif.link)}
                   </div>
                   <div style={{ flexGrow: 1 }}>
                     <div className="text-body" style={{ fontWeight: notif.read ? 400 : 600, marginBottom: '4px' }}>
