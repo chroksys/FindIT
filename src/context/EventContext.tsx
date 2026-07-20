@@ -313,6 +313,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       distance: eventData.distance,
       banner_url: eventData.bannerUrl,
       price: eventData.price || null,
+      vip_price: eventData.vipPrice || null,
+      currency: eventData.currency || 'USD',
       ticket_link: (eventData as any).ticketLink || null,
       latitude: eventData.coordinates?.lat || null,
       longitude: eventData.coordinates?.lng || null,
@@ -368,6 +370,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     mapField('distance', 'distance');
     mapField('bannerUrl', 'banner_url');
     mapField('price', 'price');
+    mapField('vipPrice', 'vip_price');
+    mapField('currency', 'currency');
     mapField('isPaused', 'is_paused');
     mapField('parentEventId', 'parent_event_id');
 

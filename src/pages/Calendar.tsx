@@ -50,9 +50,9 @@ export const Calendar = () => {
   const savedEvents = events.filter(e => !e.isPaused && !e.parentEventId); 
   
   const mappedEvents = savedEvents.map((e) => {
-    // Parse the displayDate string (e.g., "August 15, 2026" or "Sat, 05 Nov 2024")
-    // If it's a rough string, Date.parse usually handles standard formats well
-    const eventDate = new Date(e.displayDate);
+    // Parse the ISO date string (e.g., "2026-08-15") rather than the displayDate string
+    // Adding T12:00:00 ensures we don't accidentally shift by a day due to timezone differences
+    const eventDate = new Date(e.date ? `${e.date}T12:00:00` : e.displayDate);
     
     // If the date is invalid (maybe just says "Tomorrow"), fallback to today + random days
     if (isNaN(eventDate.getTime())) {
