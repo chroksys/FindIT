@@ -263,7 +263,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         title: 'New Review',
         type: 'review',
         message: `⭐ ${profile.name || 'Someone'} left a ${rating}-star review on "${event?.title}"`,
-        link: `/event/${eventId}`,
+        link: `/events/${eventId}?reviewer=${profile.id}`,
         read: false
       });
     }

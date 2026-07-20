@@ -1,37 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank, MapTrifold, Ticket, Heart, Star, ChatCircleText } from '@phosphor-icons/react';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { MagnifyingGlass, UserCircle, Compass, Plus, User, Broadcast, Bell, CalendarBlank, MapTrifold } from '@phosphor-icons/react';
 import { useTheme } from '../context/ThemeContext';
 import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { resolvedTheme } = useTheme();
-  const { role, profile, notifications, unreadCount, markNotificationsAsRead, avatars } = useUserContext();
+  const { role, profile, unreadCount } = useUserContext();
   const { t } = useLanguage();
-  
-  const [showNotifications, setShowNotifications] = useState(false);
-
-  const getDropdownIcon = (notif: any) => {
-    const isFollow = notif.type === 'follow' || notif.message?.includes('following') || notif.link?.startsWith('/organizer/');
-    if (isFollow && notif.link?.startsWith('/organizer/')) {
-      const orgId = notif.link.split('/organizer/')[1];
-      if (avatars && avatars[orgId]) {
-        return <img src={avatars[orgId]} alt="Avatar" style={{ width: '20px', height: '20px', borderRadius: '50%', objectFit: 'cover' }} />;
-      }
-      return <UserCircle size={20} color="var(--color-info)" weight="fill" />;
-    }
-    
-    switch (notif.type) {
-      case 'ticket': return <Ticket size={20} color="var(--color-success)" />;
-      case 'live': return <Heart size={20} color="var(--color-error)" weight="fill" />;
-      case 'review': return <Star size={20} color="var(--color-warning)" weight="fill" />;
-      case 'chat': return <ChatCircleText size={20} color="var(--color-info)" />;
-      default: return <Bell size={20} color="var(--color-pin-orange)" />;
-    }
-  };
   
   // Hide entire global navbar for immersive live pages and isolated pages
   if (location.pathname.startsWith('/live/') && location.pathname !== '/live') return null;
@@ -105,10 +83,10 @@ export const Navbar: React.FC = () => {
 
             {/* Notifications */}
             <div style={{ position: 'relative' }}>
-              <button 
+              <Link 
+                to="/notifications"
                 className="btn-ghost hover-scale" 
                 aria-label="Notifications" 
-                onClick={() => setShowNotifications(!showNotifications)}
                 style={{ padding: '8px', position: 'relative' }}
               >
                 <Bell size={24} color="var(--text-primary)" />
@@ -129,55 +107,7 @@ export const Navbar: React.FC = () => {
                     {unreadCount}
                   </span>
                 )}
-              </button>
-
-              {showNotifications && (
-                <div className="glass-dropdown animate-fade-in-up" style={{ 
-                  position: 'absolute', top: '100%', right: '-10px', 
-                  width: '320px', padding: '0', overflow: 'hidden', zIndex: 100 
-                }}>
-                  <div style={{ padding: 'var(--spacing-base)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'transparent' }}>
-                    <h3 className="text-section" style={{ fontSize: '16px', margin: 0 }}>{t('notifications')}</h3>
-                    <button onClick={() => markNotificationsAsRead()} className="text-caption" style={{ color: 'var(--color-pin-orange)', background: 'none', border: 'none', cursor: 'pointer' }}>{t('mark_all_read')}</button>
-                  </div>
-                  <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                    {notifications.length > 0 ? notifications.slice(0, 5).map((notification) => (
-                      <div key={notification.id} onClick={() => { 
-                        markNotificationsAsRead(notification.id);
-                        if (notification.link && notification.type !== 'follow') {
-                          navigate(notification.link); 
-                        }
-                        setShowNotifications(false); 
-                      }} style={{ 
-                        padding: 'var(--spacing-base)', 
-                        borderBottom: '1px solid var(--border-color)',
-                        backgroundColor: notification.read ? 'transparent' : 'rgba(255,107,0,0.05)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '12px'
-                      }} className="hover-lift">
-                        <div style={{ padding: '8px', backgroundColor: 'var(--bg-default)', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          {getDropdownIcon(notification)}
-                        </div>
-                        <div style={{ flexGrow: 1 }}>
-                          <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px', fontWeight: notification.read ? 400 : 600 }}>{notification.message.replace('👤 ', '')}</div>
-                          <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-                            {new Date(notification.created_at).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </div>
-                    )) : (
-                      <div style={{ padding: 'var(--spacing-large)', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                        No new notifications
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ padding: 'var(--spacing-small)', textAlign: 'center', backgroundColor: 'transparent', borderTop: '1px solid var(--border-color)' }}>
-                    <Link to="/notifications" onClick={() => setShowNotifications(false)} className="text-caption hover-scale" style={{ color: 'var(--text-primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, display: 'inline-block' }}>{t('view_all')}</Link>
-                  </div>
-                </div>
-              )}
+              </Link>
             </div>
 
             <div className="hide-on-mobile" style={{ display: 'flex', gap: 'var(--spacing-large)', alignItems: 'center' }}>

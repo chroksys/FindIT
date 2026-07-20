@@ -29,6 +29,13 @@ export const Notifications = () => {
       return <UserCircle size={24} color="var(--color-info)" weight="fill" />;
     }
     
+    if (notif.type === 'review' && notif.link?.includes('?reviewer=')) {
+      const reviewerId = notif.link.split('?reviewer=')[1];
+      if (avatars[reviewerId]) {
+        return <img src={avatars[reviewerId]} alt="Reviewer Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />;
+      }
+    }
+    
     switch (notif.type) {
       case 'ticket': return <Ticket size={24} color="var(--color-success)" />;
       case 'live': return <Heart size={24} color="var(--color-error)" weight="fill" />;
