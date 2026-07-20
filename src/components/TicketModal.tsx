@@ -6,22 +6,23 @@ interface TicketModalProps {
   onClose: () => void;
 }
 
+import { Share } from '@capacitor/share';
+
 export const TicketModal: React.FC<TicketModalProps> = ({ event, onClose }) => {
   const handleDownload = () => {
-    // In a real app, this would trigger a PDF generation or download
-    // For now, triggering the print dialog is a great way to simulate saving as PDF
-    window.print();
+    alert('In the native app, this will save the ticket image to your camera roll/gallery.');
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
+  const handleShare = async () => {
+    try {
+      await Share.share({
         title: `My Ticket to ${event.title}`,
         text: `I'm going to ${event.title}! Get your tickets on FindIt.`,
         url: window.location.href,
-      }).catch(console.error);
-    } else {
-      alert('Share feature is not supported on this browser. Try copying the link!');
+        dialogTitle: 'Share Ticket',
+      });
+    } catch (err) {
+      console.error('Error sharing:', err);
     }
   };
 

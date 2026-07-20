@@ -9,7 +9,7 @@ import Map, { Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from '../lib/supabase';
 import { uploadFile } from '../lib/uploadFile';
-import { CameraModal } from '../components/CameraModal';
+import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 interface ChatMessage {
   id: string;
@@ -31,8 +31,8 @@ export const AttendeeLiveMode: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'feed' | 'map'>('feed');
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const event = events.find(e => e.id === id);
 
@@ -135,28 +135,38 @@ export const AttendeeLiveMode: React.FC = () => {
     });
   };
 
-  const handleCapturePhoto = async (file: File) => {
-    setIsCameraOpen(false);
-    setIsUploading(true);
+  const handleCameraClick = async () => {
     try {
-      const url = await uploadFile(file, 'live-feed-images');
-      await handleSendMessage(undefined, url);
-    } catch (err) {
-      console.error('Failed to upload image', err);
-      alert('Failed to upload image');
-    } finally {
-      setIsUploading(false);
+      const image = await CapacitorCamera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera
+      });
+      
+      if (image.webPath) {
+        setIsUploading(true);
+        try {
+          const response = await fetch(image.webPath);
+          const blob = await response.blob();
+          const file = new File([blob], `live_capture_${Date.now()}.${image.format}`, { type: `image/${image.format}` });
+          const url = await uploadFile(file, 'live-feed-images');
+          await handleSendMessage(undefined, url);
+        } catch (err) {
+          console.error('Failed to upload image', err);
+          alert('Failed to upload image');
+        } finally {
+          setIsUploading(false);
+        }
+      }
+    } catch (e) {
+      // User cancelled or camera error
+      console.log('Camera error or cancelled', e);
     }
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#050505' }}>
-      {isCameraOpen && (
-        <CameraModal 
-          onCapture={handleCapturePhoto} 
-          onClose={() => setIsCameraOpen(false)} 
-        />
-      )}
       
       {/* Sticky Header and Tabs */}
       <div style={{ 
@@ -315,7 +325,7 @@ export const AttendeeLiveMode: React.FC = () => {
             <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '8px' }}>
               <button 
                 type="button" 
-                onClick={() => setIsCameraOpen(true)}
+                onClick={handleCameraClick}
                 disabled={isUploading}
                 className="btn-ghost" 
                 style={{ padding: '10px', backgroundColor: 'var(--bg-card)', borderRadius: '50%' }}
