@@ -30,17 +30,24 @@ export const TicketModal: React.FC<TicketModalProps> = ({ event, onClose }) => {
   const mockTicketId = `TKT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 'var(--spacing-medium)'
-    }}>
-      <div className="animate-fade-in-up" style={{
-        backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-card)',
-        width: '100%', maxWidth: '400px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
-        boxShadow: 'var(--shadow-strong)',
-        maxHeight: '90vh'
-      }}>
+    <div 
+      onClick={onClose}
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 'var(--spacing-medium)'
+      }}
+    >
+      <div 
+        className="animate-fade-in-up" 
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-card)',
+          width: '100%', maxWidth: '400px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          boxShadow: 'var(--shadow-strong)',
+          maxHeight: '90vh'
+        }}
+      >
         
         {/* Header Actions */}
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--spacing-base)' }}>

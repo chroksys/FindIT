@@ -42,16 +42,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
   };
 
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 'var(--spacing-medium)'
-    }}>
-      <div className="animate-fade-in-up" style={{
-        backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-card)',
-        width: '100%', maxWidth: '480px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
-        maxHeight: '90vh'
-      }}>
+    <div 
+      onClick={onClose}
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 'var(--spacing-medium)'
+      }}
+    >
+      <div 
+        className="animate-fade-in-up" 
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-card)',
+          width: '100%', maxWidth: '480px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          maxHeight: '90vh'
+        }}
+      >
         
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--spacing-base)', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-default)' }}>

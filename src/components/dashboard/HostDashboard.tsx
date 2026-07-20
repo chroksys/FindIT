@@ -354,12 +354,18 @@ export const HostDashboard: React.FC = () => {
 
       {/* Boost Modal */}
       {boostModalEventId && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-        }}>
-          <div className="animate-fade-in-up" style={{
+        <div 
+          onClick={() => setBoostModalEventId(null)}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
+          }}
+        >
+          <div 
+            className="animate-fade-in-up" 
+            onClick={(e) => e.stopPropagation()}
+            style={{
             backgroundColor: 'var(--color-deep-navy)',
             borderRadius: '24px',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -450,12 +456,18 @@ export const HostDashboard: React.FC = () => {
 
       {/* Affiliate Modal */}
       {affiliateModalEventId && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-        }}>
-          <div className="animate-fade-in-up" style={{
+        <div 
+          onClick={() => setAffiliateModalEventId(null)}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
+          }}
+        >
+          <div 
+            className="animate-fade-in-up" 
+            onClick={(e) => e.stopPropagation()}
+            style={{
             backgroundColor: 'var(--color-deep-navy)',
             borderRadius: '24px',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -482,12 +494,18 @@ export const HostDashboard: React.FC = () => {
 
       {/* WhatsApp & SMS Blast Modal */}
       {isBlastModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-        }}>
-          <div className="animate-fade-in-up" style={{
+        <div 
+          onClick={() => setIsBlastModalOpen(false)}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
+          }}
+        >
+          <div 
+            className="animate-fade-in-up" 
+            onClick={(e) => e.stopPropagation()}
+            style={{
             backgroundColor: 'var(--color-deep-navy)',
             borderRadius: '24px',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -566,12 +584,18 @@ export const HostDashboard: React.FC = () => {
 
       {/* Email Modal */}
       {emailModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-        }}>
-          <div className="animate-fade-in-up" style={{
+        <div 
+          onClick={() => setEmailModalOpen(false)}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
+          }}
+        >
+          <div 
+            className="animate-fade-in-up" 
+            onClick={(e) => e.stopPropagation()}
+            style={{
             backgroundColor: 'var(--color-deep-navy)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)',
             padding: '32px', maxWidth: '400px', width: '100%', textAlign: 'center', position: 'relative'
           }}>
@@ -615,12 +639,18 @@ export const HostDashboard: React.FC = () => {
 
       {/* Support Modal */}
       {supportModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-        }}>
-          <div className="animate-fade-in-up" style={{
+        <div 
+          onClick={() => setSupportModalOpen(false)}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
+          }}
+        >
+          <div 
+            className="animate-fade-in-up" 
+            onClick={(e) => e.stopPropagation()}
+            style={{
             backgroundColor: 'var(--color-deep-navy)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)',
             padding: '32px', maxWidth: '400px', width: '100%', textAlign: 'center', position: 'relative'
           }}>

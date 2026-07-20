@@ -301,15 +301,22 @@ export const UserDashboard: React.FC = () => {
     {passwordModalOpen && <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />}
 
     {supportModalOpen && (
-      <div style={{
-        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
-      }}>
-        <div className="animate-fade-in-up" style={{
-          backgroundColor: 'var(--bg-navbar)', borderRadius: '24px', border: '1px solid var(--border-color)',
-          padding: '32px', maxWidth: '400px', width: '100%', textAlign: 'center', position: 'relative'
-        }}>
+      <div 
+        onClick={() => setSupportModalOpen(false)}
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--spacing-medium)'
+        }}
+      >
+        <div 
+          className="animate-fade-in-up" 
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            backgroundColor: 'var(--bg-navbar)', borderRadius: '24px', border: '1px solid var(--border-color)',
+            padding: '32px', maxWidth: '400px', width: '100%', textAlign: 'center', position: 'relative'
+          }}
+        >
           {supportStep !== 'processing' && (
             <button onClick={() => setSupportModalOpen(false)} className="hover-scale" style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}>
               <X size={24} />
