@@ -27,7 +27,8 @@ export const Navbar: React.FC = () => {
         backdropFilter: 'blur(10px)',
         position: 'sticky',
         top: 0,
-        zIndex: 1000
+        zIndex: 1000,
+        padding: '12px 0' // Added padding here for desktop
       }}>
         <div className="container flex items-center justify-between">
           {/* Logo */}
@@ -36,7 +37,7 @@ export const Navbar: React.FC = () => {
               src={resolvedTheme === 'light' ? '/logo(Dark).svg' : '/logo(Light).svg'} 
               alt="FindIt Logo" 
               style={{ 
-                height: '36px',
+                height: '42px', // Increased from 36px
                 width: 'auto',
                 filter: resolvedTheme === 'dark' ? 'drop-shadow(0 0 8px rgba(255, 87, 34, 0.3))' : 'none'
               }}
@@ -45,9 +46,9 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Right Side: Desktop Nav + Universal Theme Toggle */}
-          <div style={{ display: 'flex', gap: 'var(--spacing-large)', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 'var(--spacing-large)', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
             
-            <div className="hide-on-mobile" style={{ display: 'flex', gap: 'var(--spacing-large)', alignItems: 'center' }}>
+            <div className="hide-on-mobile" style={{ display: 'flex', gap: 'var(--spacing-large)', alignItems: 'center', marginRight: 'auto', marginLeft: 'var(--spacing-large)' }}>
               <Link to="/" className="text-body hover-scale" style={{ 
                 fontWeight: location.pathname === '/' ? 700 : 400,
                 color: location.pathname === '/' ? 'var(--text-primary)' : 'var(--text-secondary)'
