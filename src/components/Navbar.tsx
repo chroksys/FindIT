@@ -9,13 +9,10 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { resolvedTheme } = useTheme();
-  const { role, profile } = useUserContext();
+  const { role, profile, notifications, unreadCount, markNotificationsAsRead } = useUserContext();
   const { t } = useLanguage();
   
   const [showNotifications, setShowNotifications] = useState(false);
-  const mockNotifications: any[] = [];
-  
-  const unreadCount = mockNotifications.filter(n => !n.read).length;
   
   // Hide entire global navbar for immersive live pages
   if (location.pathname.startsWith('/live/') && location.pathname !== '/live') return null;
@@ -121,18 +118,24 @@ export const Navbar: React.FC = () => {
                 }}>
                   <div style={{ padding: 'var(--spacing-base)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'transparent' }}>
                     <h3 className="text-section" style={{ fontSize: '16px', margin: 0 }}>{t('notifications')}</h3>
-                    <button className="text-caption" style={{ color: 'var(--color-pin-orange)', background: 'none', border: 'none', cursor: 'pointer' }}>{t('mark_all_read')}</button>
+                    <button onClick={() => markNotificationsAsRead()} className="text-caption" style={{ color: 'var(--color-pin-orange)', background: 'none', border: 'none', cursor: 'pointer' }}>{t('mark_all_read')}</button>
                   </div>
                   <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                    {mockNotifications.length > 0 ? mockNotifications.map(notification => (
-                      <div key={notification.id} onClick={() => { navigate(notification.link); setShowNotifications(false); }} style={{ 
+                    {notifications.length > 0 ? notifications.slice(0, 5).map((notification) => (
+                      <div key={notification.id} onClick={() => { 
+                        markNotificationsAsRead(notification.id);
+                        if (notification.link) navigate(notification.link); 
+                        setShowNotifications(false); 
+                      }} style={{ 
                         padding: 'var(--spacing-base)', 
                         borderBottom: '1px solid var(--border-color)',
                         backgroundColor: notification.read ? 'transparent' : 'rgba(255,107,0,0.05)',
                         cursor: 'pointer'
                       }} className="hover-lift">
-                        <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px' }}>{notification.text}</div>
-                        <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{notification.time}</div>
+                        <div className="text-body" style={{ fontSize: '14px', marginBottom: '4px' }}>{notification.message}</div>
+                        <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                          {new Date(notification.created_at).toLocaleDateString()}
+                        </div>
                       </div>
                     )) : (
                       <div style={{ padding: 'var(--spacing-large)', textAlign: 'center', color: 'var(--text-secondary)' }}>

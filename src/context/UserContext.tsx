@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { Capacitor } from '@capacitor/core';
 
 export type SubscriptionTier = 'Free Trial' | 'Starter' | 'Growth' | 'Pro';
 export type Role = 'guest' | 'user' | 'host' | 'admin';
@@ -32,6 +34,16 @@ export interface HostProfile extends BaseProfile {
   documentUrls?: string[];
 }
 
+export interface AppNotification {
+  id: string;
+  type: string;
+  title?: string;
+  message: string;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+}
+
 type AnyProfile = UserProfile | HostProfile;
 
 interface UserContextType {
@@ -51,6 +63,9 @@ interface UserContextType {
   rejectPromoter: (email: string) => void;
   savedEventIds: string[];
   toggleSaveEvent: (eventId: string) => Promise<void>;
+  notifications: AppNotification[];
+  unreadCount: number;
+  markNotificationsAsRead: (id?: string) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -59,15 +74,49 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [role, setRole] = useState<Role>('guest');
   const [profile, setProfile] = useState<AnyProfile | null>(null);
   const [savedEventIds, setSavedEventIds] = useState<string[]>([]);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isRegisteringRef = useRef(false);
 
   const [pendingPromoters] = useState<HostProfile[]>([]);
 
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markNotificationsAsRead = async (id?: string) => {
+    if (!profile?.id) return;
+    if (id) {
+      await supabase.from('notifications').update({ read: true }).eq('id', id);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    } else {
+      await supabase.from('notifications').update({ read: true }).eq('user_id', profile.id).eq('read', false);
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    }
+  };
+
+  const fetchNotifications = async (userId: string) => {
+    const { data } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if (data) setNotifications(data);
+  };
+
   useEffect(() => {
+    const checkPermissions = async () => {
+      if (Capacitor.isNativePlatform()) {
+        const { display } = await LocalNotifications.checkPermissions();
+        if (display !== 'granted') {
+          await LocalNotifications.requestPermissions();
+        }
+      }
+    };
+    checkPermissions();
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         fetchProfile(session.user.id, session.user.email || '').finally(() => setIsLoading(false));
+        fetchNotifications(session.user.id);
       } else {
         setIsLoading(false);
       }
@@ -76,14 +125,59 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         fetchProfile(session.user.id, session.user.email || '');
+        fetchNotifications(session.user.id);
       } else {
         setProfile(null);
         setRole('guest');
+        setNotifications([]);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!profile?.id) return;
+    
+    // Subscribe to new notifications
+    const channel = supabase
+      .channel('public:notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${profile.id}`
+        },
+        async (payload) => {
+          const newNotif = payload.new as AppNotification;
+          setNotifications((prev) => [newNotif, ...prev]);
+          
+          if (Capacitor.isNativePlatform()) {
+            await LocalNotifications.schedule({
+              notifications: [
+                {
+                  title: newNotif.title || 'New FindIt Notification',
+                  body: newNotif.message,
+                  id: new Date().getTime(),
+                  schedule: { at: new Date(Date.now() + 1000) },
+                  sound: undefined,
+                  attachments: undefined,
+                  actionTypeId: '',
+                  extra: null
+                }
+              ]
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.id]);
 
   const fetchProfile = async (userId: string, email: string) => {
     if (isRegisteringRef.current) return;
@@ -302,7 +396,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const rejectPromoter = (_email: string) => {};
 
   return (
-    <UserContext.Provider value={{ role, profile, isLoading, registerUser, registerHost, logout, updateProfile, updateSubscription, getEventLimit, loginMock, submitKyb, pendingPromoters, approvePromoter, rejectPromoter, savedEventIds, toggleSaveEvent }}>
+    <UserContext.Provider value={{ role, profile, isLoading, registerUser, registerHost, logout, updateProfile, updateSubscription, getEventLimit, loginMock, submitKyb, pendingPromoters, approvePromoter, rejectPromoter, savedEventIds, toggleSaveEvent, notifications, unreadCount, markNotificationsAsRead }}>
       {children}
     </UserContext.Provider>
   );

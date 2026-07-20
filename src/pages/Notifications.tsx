@@ -1,54 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Heart, Bell, Ticket, ChatCircleText, CaretLeft, Star, SpinnerGap } from '@phosphor-icons/react';
+import { useState } from 'react';
+import { Heart, Bell, Ticket, ChatCircleText, CaretLeft, Star, SpinnerGap, UserCircle } from '@phosphor-icons/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import { useUserContext } from '../context/UserContext';
-
-interface Notification {
-  id: string;
-  type: string;
-  title?: string;
-  message: string;
-  link: string | null;
-  read: boolean;
-  created_at: string;
-}
 
 export const Notifications = () => {
   const navigate = useNavigate();
-  const { profile, role } = useUserContext();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { role, isLoading, notifications, unreadCount, markNotificationsAsRead } = useUserContext();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
-
-  useEffect(() => {
-    if (profile?.id) {
-      fetchNotifications();
-    } else {
-      setLoading(false);
-    }
-  }, [profile?.id]);
-
-  const fetchNotifications = async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from('notifications')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (data) setNotifications(data);
-    setLoading(false);
-  };
-
-  const markAllAsRead = async () => {
-    if (!profile?.id) return;
-    await supabase.from('notifications').update({ read: true }).eq('user_id', profile.id).eq('read', false);
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const markAsRead = async (id: string) => {
-    await supabase.from('notifications').update({ read: true }).eq('id', id);
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-  };
 
   const formatTime = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -67,12 +25,12 @@ export const Notifications = () => {
       case 'live': return <Heart size={24} color="var(--color-error)" weight="fill" />;
       case 'review': return <Star size={24} color="var(--color-warning)" weight="fill" />;
       case 'chat': return <ChatCircleText size={24} color="var(--color-info)" />;
+      case 'follow': return <UserCircle size={24} color="var(--color-info)" weight="fill" />;
       default: return <Bell size={24} color="var(--color-pin-orange)" />;
     }
   };
 
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="container section" style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: 'var(--spacing-xlarge)' }}>
@@ -116,13 +74,13 @@ export const Notifications = () => {
               </button>
             </div>
             {unreadCount > 0 && (
-              <button className="btn-ghost text-caption" style={{ color: 'var(--text-secondary)' }} onClick={markAllAsRead}>
+              <button className="btn-ghost text-caption" style={{ color: 'var(--text-secondary)' }} onClick={() => markNotificationsAsRead()}>
                 Mark all as read
               </button>
             )}
           </div>
 
-          {loading ? (
+          {isLoading ? (
             <div style={{ textAlign: 'center', padding: 'var(--spacing-hero) 0' }}>
               <SpinnerGap size={32} color="var(--color-pin-orange)" style={{ animation: 'spin 1s linear infinite' }} />
             </div>
@@ -139,7 +97,7 @@ export const Notifications = () => {
                 <div
                   key={notif.id}
                   onClick={() => {
-                    markAsRead(notif.id);
+                    markNotificationsAsRead(notif.id);
                     if (notif.link) navigate(notif.link);
                   }}
                   className="animate-fade-in-up hover-lift card-padding"
