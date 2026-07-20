@@ -9,10 +9,25 @@ CREATE TABLE IF NOT EXISTS public.follows (
 
 ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
 
--- Allow users to follow/unfollow
-DROP POLICY IF EXISTS "Users can manage their own follows" ON public.follows;
-CREATE POLICY "Users can manage their own follows" 
-ON public.follows FOR ALL USING (auth.uid() = follower_id);
+-- Follower can see their own follows (needed by fetchFollowedHosts)
+DROP POLICY IF EXISTS "follows_select_follower" ON public.follows;
+CREATE POLICY "follows_select_follower"
+ON public.follows FOR SELECT USING (auth.uid() = follower_id);
+
+-- Host can see rows where they are the host (needed by Analytics COUNT query)
+DROP POLICY IF EXISTS "follows_select_host" ON public.follows;
+CREATE POLICY "follows_select_host"
+ON public.follows FOR SELECT USING (auth.uid() = host_id);
+
+-- Follower can insert their own follow record
+DROP POLICY IF EXISTS "follows_insert" ON public.follows;
+CREATE POLICY "follows_insert"
+ON public.follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+
+-- Follower can delete their own follow record
+DROP POLICY IF EXISTS "follows_delete" ON public.follows;
+CREATE POLICY "follows_delete"
+ON public.follows FOR DELETE USING (auth.uid() = follower_id);
 
 -- Ensure the notifications table exists (fixes the 400 Bad Request error)
 CREATE TABLE IF NOT EXISTS public.notifications (

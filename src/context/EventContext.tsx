@@ -77,27 +77,39 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [followedHostIds, setFollowedHostIds] = useState<string[]>([]);
   const { profile } = useUserContext();
 
+  // On mount: if a session exists, load follows first then events (so isFollowed is correct from the start).
+  // If no user yet, just fetch events with empty followedIds.
   useEffect(() => {
-    fetchEvents();
+    const init = async () => {
+      if (profile?.id) {
+        const ids = await fetchFollowedHosts(profile.id);
+        await fetchEvents(ids);
+      } else {
+        fetchEvents([]);
+      }
+    };
+    init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load followed hosts when user logs in
+  // When user logs in/out after mount, reload follows then events
   useEffect(() => {
     if (profile?.id) {
-      fetchFollowedHosts(profile.id);
+      fetchFollowedHosts(profile.id).then(ids => fetchEvents(ids));
     } else {
       setFollowedHostIds([]);
+      fetchEvents([]);
     }
   }, [profile?.id]);
 
-  const fetchFollowedHosts = async (userId: string) => {
+  const fetchFollowedHosts = async (userId: string): Promise<string[]> => {
     const { data } = await supabase
       .from('follows')
       .select('host_id')
       .eq('follower_id', userId);
-    if (data) {
-      setFollowedHostIds(data.map((f: any) => f.host_id));
-    }
+    const ids = data ? data.map((f: any) => f.host_id) : [];
+    setFollowedHostIds(ids);
+    return ids;
   };
 
   // Accepts an optional overrideFollowedIds to avoid stale-closure issues

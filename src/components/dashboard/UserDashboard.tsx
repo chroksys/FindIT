@@ -31,7 +31,7 @@ const INTEREST_ICONS: Record<string, string> = {
 };
 
 export const UserDashboard: React.FC = () => {
-  const { events } = useEventContext();
+  const { events, followedHostIds } = useEventContext();
   const { profile, logout, savedEventIds } = useUserContext();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
@@ -103,7 +103,7 @@ export const UserDashboard: React.FC = () => {
             <div className="text-caption">Saved</div>
           </div>
           <div style={{ borderRight: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{followedHostIds.length}</div>
             <div className="text-caption">Following</div>
           </div>
           <div>
