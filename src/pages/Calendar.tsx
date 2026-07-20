@@ -82,7 +82,7 @@ export const Calendar = () => {
 
   return (
     <div style={{ paddingBottom: '120px' }}>
-      <section style={{ paddingTop: 'var(--spacing-hero)', position: 'relative' }}>
+      <section className="page-with-nav" style={{ position: 'relative' }}>
         <div className="container">
           
           <h1 className="animate-fade-in-up" style={{ 

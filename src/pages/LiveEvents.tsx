@@ -19,8 +19,7 @@ export const LiveEvents = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)', paddingBottom: 'var(--spacing-xlarge)' }}>
       {/* Header Section */}
-      <section style={{ 
-        paddingTop: 'var(--spacing-hero)',
+      <section className="page-with-nav" style={{ 
         paddingBottom: 'var(--spacing-large)',
         backgroundColor: 'rgba(255, 255, 255, 0.03)',
         backdropFilter: 'blur(20px)',

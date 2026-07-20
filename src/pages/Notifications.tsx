@@ -42,7 +42,7 @@ export const Notifications = () => {
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
 
   return (
-    <div className="container section" style={{ maxWidth: '800px', margin: '0 auto', paddingTop: 'calc(var(--spacing-hero) + 80px)', paddingBottom: 'var(--spacing-xlarge)' }}>
+    <div className="container section page-no-nav" style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: 'var(--spacing-xlarge)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-base)', marginBottom: 'var(--spacing-xlarge)' }}>
         <Link to="/" className="btn-ghost hover-scale" style={{ padding: '8px' }}>
           <CaretLeft size={24} />

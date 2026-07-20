@@ -31,13 +31,15 @@ const LoginView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   };
 
   return (
-    <div className="container" style={{ 
+    <div className="container page-no-nav" style={{ 
       minHeight: '80vh', 
       display: 'flex', 
       flexDirection: 'column', 
       justifyContent: 'center', 
       alignItems: 'center',
-      padding: 'var(--spacing-hero) var(--spacing-medium)'
+      paddingBottom: 'var(--spacing-hero)',
+      paddingLeft: 'var(--spacing-medium)',
+      paddingRight: 'var(--spacing-medium)'
     }}>
       <div className="card-padding animate-fade-in-up" style={{ width: '100%', maxWidth: '480px', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
         <button onClick={onBack} className="btn-ghost" style={{ padding: 0, marginBottom: 'var(--spacing-base)', color: 'var(--text-secondary)' }}>
@@ -84,13 +86,15 @@ export const Auth: React.FC = () => {
   }
 
   return (
-    <div className="container" style={{ 
+    <div className="container page-no-nav" style={{ 
       minHeight: '80vh', 
       display: 'flex', 
       flexDirection: 'column', 
       justifyContent: 'center', 
       alignItems: 'center',
-      padding: 'var(--spacing-hero) var(--spacing-medium)'
+      paddingBottom: 'var(--spacing-hero)',
+      paddingLeft: 'var(--spacing-medium)',
+      paddingRight: 'var(--spacing-medium)'
     }}>
       <div className="animate-fade-in-up" style={{ textAlign: 'center', marginBottom: 'var(--spacing-xlarge)' }}>
         <h1 className="text-hero" style={{ fontSize: '40px', marginBottom: 'var(--spacing-base)' }}>Join FindIt</h1>

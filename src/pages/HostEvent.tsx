@@ -190,7 +190,7 @@ export const HostEvent: React.FC = () => {
   };
 
   return (
-    <div className="container section mobile-page-pad" style={{ maxWidth: '800px' }}>
+    <div className="container section page-with-nav" style={{ maxWidth: '800px' }}>
       {role !== 'host' ? (
         <div className="card-padding text-center animate-fade-in-up" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', margin: '40px auto' }}>
           <WarningCircle size={48} color="var(--color-pin-orange)" style={{ margin: '0 auto 16px', display: 'block' }} />

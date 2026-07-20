@@ -377,6 +377,14 @@ input:focus, textarea:focus, select:focus {
     padding-top: var(--spacing-large);
   }
 
+  .page-with-nav {
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--spacing-hero)) !important;
+  }
+
+  .page-no-nav {
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--spacing-base)) !important;
+  }
+
   .navbar-top {
     border-bottom: none;
     padding-bottom: 0;

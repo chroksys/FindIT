@@ -26,7 +26,7 @@ export const PromoterVerification = () => {
   // If not a host, they shouldn't be here
   if (role !== 'host') {
     return (
-      <div className="container section" style={{ textAlign: 'center', paddingTop: '100px' }}>
+      <div className="container section page-with-nav" style={{ textAlign: 'center' }}>
         <WarningCircle size={48} color="var(--color-error)" style={{ margin: '0 auto var(--spacing-base)' }} />
         <h2>Access Denied</h2>
         <p style={{ color: 'var(--text-secondary)' }}>You must be a registered host to access KYB verification.</p>
@@ -38,7 +38,7 @@ export const PromoterVerification = () => {
   // If already pending or verified
   if (hostProfile?.verificationStatus === 'pending_review' || hostProfile?.verificationStatus === 'verified') {
     return (
-      <div className="container section" style={{ textAlign: 'center', paddingTop: '100px' }}>
+      <div className="container section page-with-nav" style={{ textAlign: 'center' }}>
         <CheckCircle size={48} color="var(--color-success)" style={{ margin: '0 auto var(--spacing-base)' }} />
         <h2>Verification Submitted</h2>
         <p style={{ color: 'var(--text-secondary)' }}>Your profile is currently: {hostProfile.verificationStatus}</p>
@@ -96,7 +96,7 @@ export const PromoterVerification = () => {
   };
 
   return (
-    <div className="container section mobile-page-pad" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="container section page-with-nav" style={{ maxWidth: '600px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-small)', marginBottom: 'var(--spacing-large)' }}>
         <button className="btn-ghost" onClick={() => navigate(-1)} style={{ padding: 0 }}>
           <CaretLeft size={24} />

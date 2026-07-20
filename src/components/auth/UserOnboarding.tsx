@@ -122,13 +122,15 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   };
 
   return (
-    <div className="container" style={{ 
+    <div className="container page-no-nav" style={{ 
       minHeight: '80vh', 
       display: 'flex', 
       flexDirection: 'column', 
       justifyContent: 'center', 
       alignItems: 'center',
-      padding: 'var(--spacing-hero) var(--spacing-medium)'
+      paddingBottom: 'var(--spacing-hero)',
+      paddingLeft: 'var(--spacing-medium)',
+      paddingRight: 'var(--spacing-medium)'
     }}>
       
       {step === 1 && (

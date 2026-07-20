@@ -70,7 +70,7 @@ export const HostAccount = () => {
   };
 
   return (
-    <div className="container section" style={{ maxWidth: '800px', paddingTop: 'calc(env(safe-area-inset-top) + 80px)' }}>
+    <div className="container section page-with-nav" style={{ maxWidth: '800px' }}>
       <div style={{ marginBottom: 'var(--spacing-xlarge)' }}>
         <h1 className="text-hero animate-fade-in-up" style={{ fontSize: '32px', marginBottom: 'var(--spacing-micro)' }}>Account Settings</h1>
         <p className="text-body animate-fade-in-up" style={{ color: 'var(--text-secondary)', animationDelay: '0.1s' }}>Manage your host profile and subscription.</p>

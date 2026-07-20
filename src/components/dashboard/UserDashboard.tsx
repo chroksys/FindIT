@@ -85,7 +85,7 @@ export const UserDashboard: React.FC = () => {
   };
 
   return (
-    <div className="container section mobile-page-pad" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
+    <div className="container section page-with-nav" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
       
       {/* Section 1: Identity */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 'var(--spacing-base)' }}>

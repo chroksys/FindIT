@@ -9,7 +9,7 @@ export const AdminDashboard = () => {
   // Protect route
   if (role !== 'admin') {
     return (
-      <div className="container section" style={{ textAlign: 'center', paddingTop: '100px' }}>
+      <div className="container section page-with-nav" style={{ textAlign: 'center' }}>
         <h2>Access Denied</h2>
         <p style={{ color: 'var(--text-secondary)' }}>You must be an administrator to view this page.</p>
         <button className="btn-primary mt-4" onClick={() => navigate('/')}>Back to Home</button>
@@ -18,7 +18,7 @@ export const AdminDashboard = () => {
   }
 
   return (
-    <div className="container section mobile-page-pad">
+    <div className="container section page-with-nav">
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-small)', marginBottom: 'var(--spacing-large)' }}>
         <button className="btn-ghost" onClick={() => navigate(-1)} style={{ padding: 0 }}>
           <CaretLeft size={24} />

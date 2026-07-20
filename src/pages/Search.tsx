@@ -61,7 +61,7 @@ export const Search = () => {
   const isBrowsingCategories = category === 'All' && keyword === '';
 
   return (
-    <div className="container section mobile-page-pad" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-large)', paddingBottom: 'calc(var(--spacing-hero) * 2)' }}>
+    <div className="container section page-with-nav" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-large)', paddingBottom: 'calc(var(--spacing-hero) * 2)' }}>
       
       {/* Search Bar (Floating Style) */}
       <div className="animate-fade-in-up" style={{ position: 'relative', maxWidth: '100%', zIndex: 10 }}>

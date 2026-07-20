@@ -79,7 +79,7 @@ export const HostDashboard: React.FC = () => {
   };
 
   return (
-    <div className="container section mobile-page-pad">
+    <div className="container section page-with-nav">
       <div style={{ marginBottom: 'var(--spacing-large)' }}>
         <h1 className="text-hero" style={{ fontSize: '32px', marginBottom: 'var(--spacing-micro)' }}>Profile</h1>
         <p className="text-body" style={{ color: 'var(--text-secondary)' }}>Manage your hosted experiences and account.</p>

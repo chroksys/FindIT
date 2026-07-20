@@ -61,8 +61,7 @@ export const Home = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
       {/* Hero / Search Section */}
-      <section style={{ 
-        paddingTop: 'var(--spacing-hero)',
+      <section className="page-with-nav" style={{ 
         paddingBottom: 'var(--spacing-large)',
         position: 'relative'
       }}>
