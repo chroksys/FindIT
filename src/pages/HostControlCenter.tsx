@@ -183,7 +183,7 @@ export const HostControlCenter: React.FC = () => {
         position: 'sticky', top: 0, zIndex: 50, 
         backgroundColor: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(10px)',
         borderBottom: '1px solid var(--border-color)', padding: 'var(--spacing-small) var(--spacing-base)',
-        paddingTop: 'max(env(safe-area-inset-top), 24px)'
+        paddingTop: 'calc(env(safe-area-inset-top, 0px) + 48px)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button className="btn-ghost" onClick={() => navigate('/dashboard')} style={{ padding: 0 }}>

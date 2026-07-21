@@ -173,7 +173,7 @@ export const AttendeeLiveMode: React.FC = () => {
         backgroundColor: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(10px)',
         borderBottom: '1px solid var(--border-color)'
       }}>
-        <div style={{ padding: 'var(--spacing-base)', paddingBottom: '16px', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
+        <div style={{ padding: 'var(--spacing-base)', paddingBottom: '16px', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 48px)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-base)' }}>
             <button className="btn-ghost" onClick={() => navigate(-1)} style={{ padding: 0 }}>
               <CaretLeft size={24} />
