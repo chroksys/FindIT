@@ -62,7 +62,7 @@ export const Home = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
       {/* Hero / Search Section */}
       <section className="page-with-nav" style={{ 
-        paddingBottom: 'var(--spacing-large)',
+        paddingBottom: '0',
         position: 'relative'
       }}>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
@@ -228,7 +228,7 @@ export const Home = () => {
 
       {/* Live Events Teaser Banner — shown only when events are live */}
       {liveCount > 0 && (
-        <section style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <section style={{ paddingTop: 0, paddingBottom: 0, marginTop: '-24px' }}>
           <div className="container">
             <button
               onClick={() => navigate('/live')}
