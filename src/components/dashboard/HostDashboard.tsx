@@ -35,6 +35,30 @@ export const HostDashboard: React.FC = () => {
   const [supportStep, setSupportStep] = useState<'form' | 'processing' | 'success'>('form');
   const [supportMessage, setSupportMessage] = useState('');
 
+  const [totalViews, setTotalViews] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
+
+  React.useEffect(() => {
+    if (!profile?.id) return;
+    const loadHostStats = async () => {
+      const { count: fCount } = await supabase
+        .from('follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('host_id', profile.id);
+      setFollowersCount(fCount || 0);
+
+      const eventIds = events.filter(e => e.organizer?.id === profile.id).map(e => e.id);
+      if (eventIds.length > 0) {
+        const { count: vCount } = await supabase
+          .from('page_views')
+          .select('*', { count: 'exact', head: true })
+          .in('event_id', eventIds);
+        setTotalViews(vCount || 0);
+      }
+    };
+    loadHostStats();
+  }, [profile?.id, events]);
+
   const handleSupportSubmit = async () => {
     if (!supportMessage.trim() || !profile) return;
     setSupportStep('processing');
@@ -147,15 +171,17 @@ export const HostDashboard: React.FC = () => {
             <div className="text-caption">Events</div>
           </div>
           <div style={{ borderLeft: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{totalViews}</div>
             <div className="text-caption">Views</div>
           </div>
           <div style={{ borderLeft: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>0</div>
-            <div className="text-caption">Saves</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {userEvents.reduce((acc, e) => acc + (e.rsvps?.length || 0), 0)}
+            </div>
+            <div className="text-caption">RSVPs</div>
           </div>
           <div style={{ borderLeft: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-pin-orange)' }}>0</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-pin-orange)' }}>{followersCount}</div>
             <div className="text-caption">Followers</div>
           </div>
         </div>

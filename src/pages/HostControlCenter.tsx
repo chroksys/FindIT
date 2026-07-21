@@ -29,6 +29,7 @@ export const HostControlCenter: React.FC = () => {
   const [broadcastText, setBroadcastText] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [pageViewsCount, setPageViewsCount] = useState<number>(0);
   
   const event = events.find(e => e.id === id);
 
@@ -57,7 +58,16 @@ export const HostControlCenter: React.FC = () => {
       }
     };
 
+    const fetchViews = async () => {
+      const { count } = await supabase
+        .from('page_views')
+        .select('*', { count: 'exact', head: true })
+        .eq('event_id', event.id);
+      setPageViewsCount(count || 0);
+    };
+
     fetchMessages();
+    fetchViews();
 
     const subscription = supabase
       .channel('host_public:live_feed_messages')
@@ -199,18 +209,24 @@ export const HostControlCenter: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-small)' }}>
             <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
               <Users size={24} color="var(--color-pin-orange)" style={{ marginBottom: '4px' }} />
-              <div style={{ fontSize: '20px', fontWeight: 700 }}>1.2k</div>
-              <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>Check-ins</div>
+              <div style={{ fontSize: '20px', fontWeight: 700 }}>
+                {event.rsvps ? event.rsvps.filter(r => r.status === 'going').length : 0}
+              </div>
+              <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>Going / RSVPs</div>
             </div>
             <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
               <DeviceMobile size={24} color="var(--color-success)" style={{ marginBottom: '4px' }} />
-              <div style={{ fontSize: '20px', fontWeight: 700 }}>458</div>
-              <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>App Active</div>
+              <div style={{ fontSize: '20px', fontWeight: 700 }}>
+                {new Set(messages.map(m => m.user_id)).size}
+              </div>
+              <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>Chat Active</div>
             </div>
             <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
               <Ticket size={24} color="var(--text-primary)" style={{ marginBottom: '4px' }} />
-              <div style={{ fontSize: '20px', fontWeight: 700 }}>2k</div>
-              <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>Capacity</div>
+              <div style={{ fontSize: '20px', fontWeight: 700 }}>
+                {pageViewsCount}
+              </div>
+              <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>Page Views</div>
             </div>
           </div>
         </div>
