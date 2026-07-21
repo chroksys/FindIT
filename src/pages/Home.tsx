@@ -164,7 +164,7 @@ export const Home = () => {
               maxWidth: '300px',
               margin: 0
             }}>
-              Choose Today's Event
+              Find Your Next Experience
             </h1>
             
             <button 
