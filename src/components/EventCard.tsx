@@ -96,20 +96,41 @@ export const EventCard: React.FC<EventCardProps> = ({
         justifyContent: 'space-between',
         alignItems: 'flex-start'
       }}>
-        {/* Glassmorphic Price Pill */}
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(12px)',
-          padding: '8px 16px',
-          borderRadius: '999px',
-          color: '#ffffff',
-          fontWeight: 700,
-          fontSize: '15px',
-          border: '1px solid rgba(255,255,255,0.2)'
-        }}>
-          {(!price || price === '0' || price === '00' || price.toLowerCase() === 'free') 
-            ? 'Free' 
-            : (price.includes(currency || 'USD') ? price : `${price} ${currency || 'USD'}`)}
+        {/* Glassmorphic Price Pill & Live Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {isLiveMode && (
+            <div style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '6px', 
+              backgroundColor: '#e74c3c', 
+              padding: '6px 12px', 
+              borderRadius: '999px', 
+              fontWeight: 700, 
+              fontSize: '12px', 
+              color: 'white', 
+              boxShadow: '0 4px 12px rgba(231, 76, 60, 0.4)',
+              letterSpacing: '0.5px'
+            }}>
+              <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%', animation: 'livePulse 1.5s ease-in-out infinite' }}></span>
+              LIVE
+            </div>
+          )}
+
+          <div style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(12px)',
+            padding: '8px 16px',
+            borderRadius: '999px',
+            color: '#ffffff',
+            fontWeight: 700,
+            fontSize: '15px',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            {(!price || price === '0' || price === '00' || price.toLowerCase() === 'free') 
+              ? 'Free' 
+              : (price.includes(currency || 'USD') ? price : `${price} ${currency || 'USD'}`)}
+          </div>
         </div>
 
         {/* Heart Icon */}

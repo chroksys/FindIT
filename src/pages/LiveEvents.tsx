@@ -70,14 +70,7 @@ export const LiveEvents = () => {
             }}>
               {liveEvents.map((event, idx) => (
                 <div key={event.id} className="animate-fade-in-up" style={{ animationDelay: `${0.1 * (idx + 1)}s` }}>
-                  {/* Additional Live indicator specifically for this view */}
-                  <div style={{ position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 2, display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--color-error)', padding: '4px 12px', borderRadius: 'var(--radius-pill)', fontWeight: 600, fontSize: '12px', color: 'white', boxShadow: '0 4px 12px rgba(231, 76, 60, 0.3)' }}>
-                      <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%', animation: 'pulse 2s infinite' }}></span>
-                      LIVE
-                    </div>
-                    <EventCard {...event} date={event.displayDate} isLiveMode={true} />
-                  </div>
+                  <EventCard {...event} date={event.displayDate} isLiveMode={true} />
                 </div>
               ))}
             </div>
