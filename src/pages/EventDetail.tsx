@@ -207,69 +207,107 @@ export const EventDetail = () => {
   }
 
   return (
-    <div style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + var(--spacing-xlarge))' }}>
+    <div style={{ paddingBottom: '100px' }}>
+      {/* Top Header Bar */}
+      <div style={{ 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 100, 
+        backgroundColor: 'var(--bg-navbar)', 
+        backdropFilter: 'blur(16px)', 
+        borderBottom: '1px solid var(--border-color)',
+        padding: '12px var(--spacing-medium)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="hover-scale"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '50%',
+            width: '40px',
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--text-primary)'
+          }}
+        >
+          <CaretLeft size={20} weight="bold" />
+        </button>
+
+        <span style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)' }}>
+          Event Details
+        </span>
+
+        <button 
+          onClick={handleShare}
+          className="hover-scale"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '50%',
+            width: '40px',
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--text-primary)'
+          }}
+        >
+          <ShareNetwork size={20} weight="bold" />
+        </button>
+      </div>
+
       {/* Banner / Hero Section */}
-      <div style={{ position: 'relative', width: '100%', height: '60vh', minHeight: '400px', backgroundColor: 'var(--bg-page)' }}>
-        <img 
-          src={event.bannerUrl} 
-          alt={event.title} 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', opacity: 0.9 }} 
-        />
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, var(--bg-page) 65%, var(--bg-page) 100%)',
-          pointerEvents: 'none'
-        }}></div>
+      <div className="container" style={{ marginTop: 'var(--spacing-medium)' }}>
+        <div style={{ 
+          position: 'relative', 
+          width: '100%', 
+          height: '45vh', 
+          minHeight: '300px', 
+          maxHeight: '500px',
+          borderRadius: '24px', 
+          overflow: 'hidden',
+          backgroundColor: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
+          boxShadow: 'var(--shadow-soft)'
+        }}>
+          <img 
+            src={event.bannerUrl} 
+            alt={event.title} 
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center' }} 
+          />
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 100%)',
+            pointerEvents: 'none'
+          }}></div>
+          
+          {/* Category Badge, Title & Host Overlay */}
+          <div style={{ position: 'absolute', bottom: '20px', left: '20px', right: '20px', zIndex: 10 }}>
+            <span className="badge badge-default" style={{ backgroundColor: 'var(--color-pin-orange)', marginBottom: '8px', display: 'inline-block' }}>
+              {event.category}
+            </span>
+            <h1 style={{ color: '#ffffff', fontSize: 'clamp(24px, 5vw, 36px)', fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
+              {event.title}
+            </h1>
 
-        {/* Top Controls (Back & Share) */}
-        <div style={{ position: 'absolute', top: 'calc(env(safe-area-inset-top, 20px) + 20px)', left: 'max(env(safe-area-inset-left, 0px), var(--spacing-medium))', right: 'max(env(safe-area-inset-right, 0px), var(--spacing-medium))', display: 'flex', justifyContent: 'space-between', zIndex: 10, maxWidth: '1200px', margin: '0 auto' }}>
-          <Link to="/" style={{ 
-            display: 'flex', alignItems: 'center', justifyContent: 'center', 
-            width: '44px', height: '44px', borderRadius: '50%', 
-            backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', color: 'white' 
-          }} className="hover-scale">
-            <CaretLeft size={24} />
-          </Link>
-
-          <div>
-            <button 
-              className="hover-scale" 
-              onClick={handleShare} 
-              style={{ 
-                display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                width: '44px', height: '44px', borderRadius: '50%', 
-                backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', color: 'white', border: 'none', cursor: 'pointer'
-              }}
-            >
-              <ShareNetwork size={22} />
-            </button>
-          </div>
-        </div>
-        
-        {/* Title and Category */}
-        <div className="container" style={{ position: 'absolute', bottom: 'var(--spacing-large)', left: 0, right: 0 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-small)' }}>
-            <div>
-              <span className="badge badge-default animate-fade-in-up" style={{ backgroundColor: 'var(--color-pin-orange)' }}>
-                {event.category}
-              </span>
-            </div>
-            <h1 className="text-hero animate-fade-in-up" style={{ margin: 0, lineHeight: 1.1, textShadow: '0 2px 20px var(--bg-page)' }}>{event.title}</h1>
-            
             {event.organizer && (
-              <div 
-                className="animate-fade-in-up" 
-                style={{ animationDelay: '0.1s', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}
-              >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
                 <div 
                   className="hover-scale"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', backgroundColor: 'rgba(25,25,45,0.7)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(16px)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer' }}
                   onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
                 >
-                  <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
                   <div>
-                    <div className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '10px', lineHeight: 1 }}>Hosted by</div>
-                    <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', lineHeight: 1.2 }}>
+                    <div style={{ color: '#ffffff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px' }}>
                       {event.organizer.name}
                       {event.organizer.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
                     </div>
@@ -280,17 +318,11 @@ export const EventDetail = () => {
                   <div 
                     key={c.id}
                     className="hover-scale"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', backgroundColor: 'rgba(255,107,0,0.15)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--color-pin-orange)', cursor: 'pointer' }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: 'rgba(255,107,0,0.2)', backdropFilter: 'blur(16px)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--color-pin-orange)', cursor: 'pointer' }}
                     onClick={() => navigate(`/organizer/${c.hostId}`)}
                   >
-                    <img src={c.avatarUrl} alt={c.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <div>
-                      <div className="text-caption" style={{ color: 'var(--color-pin-orange)', fontSize: '10px', lineHeight: 1, fontWeight: 700 }}>Co-Host</div>
-                      <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', lineHeight: 1.2 }}>
-                        {c.name}
-                        {c.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
-                      </div>
-                    </div>
+                    <img src={c.avatarUrl} alt={c.name} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <span style={{ color: '#ffffff', fontWeight: 600, fontSize: '13px' }}>{c.name}</span>
                   </div>
                 ))}
               </div>
@@ -736,6 +768,56 @@ export const EventDetail = () => {
 
           </div>
 
+        </div>
+      </div>
+
+      {/* Sticky Bottom Action Bar */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'var(--bg-navbar)',
+        backdropFilter: 'blur(20px)',
+        borderTop: '1px solid var(--border-color)',
+        padding: '14px 24px calc(env(safe-area-inset-bottom, 12px) + 12px)',
+        zIndex: 900,
+        boxShadow: '0 -10px 40px rgba(0,0,0,0.3)'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px'
+        }}>
+          <div>
+            <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>Price</span>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
+              {(!event.price || event.price === '0' || event.price === '00' || event.price.toLowerCase() === 'free') 
+                ? 'Free' 
+                : (event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`)}
+            </div>
+          </div>
+
+          {event.organizer.verified ? (
+            event.ticketLink ? (
+              <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <button className="btn-accent hover-scale" style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 700, borderRadius: '999px' }}>
+                  Buy Ticket
+                </button>
+              </a>
+            ) : (
+              <button className="btn-accent hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 700, borderRadius: '999px' }}>
+                Buy Ticket
+              </button>
+            )
+          ) : (
+            <button className="btn-primary hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 700, borderRadius: '999px' }}>
+              RSVP / Join
+            </button>
+          )}
         </div>
       </div>
 

@@ -140,6 +140,7 @@ export const Navbar: React.FC = () => {
 
 
       {/* Mobile Bottom Navigation */}
+      {!location.pathname.startsWith('/events/') && (
       <nav className="navbar-bottom hide-on-desktop">
         <Link to="/" className={`nav-item-mobile ${location.pathname === '/' ? 'active' : ''}`}>
           <Compass size={24} weight={location.pathname === '/' ? 'fill' : 'regular'} />
@@ -172,6 +173,7 @@ export const Navbar: React.FC = () => {
             </Link>
         )}
       </nav>
+      )}
     </>
   );
 };

@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../components/EventCard';
-import { MapPin, MagnifyingGlass, CaretDown, Broadcast } from '@phosphor-icons/react';
+import { MapPin, MagnifyingGlass, CaretDown, Broadcast, Bell, SlidersHorizontal } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import type { UserProfile } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
-import { CATEGORIES_LIST } from '../lib/categories';
 
 export const Home = () => {
   const { events, selectedCity, setSelectedCity, getEventStatus } = useEventContext();
-  const { profile } = useUserContext();
+  const { profile, unreadCount } = useUserContext();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   
   const dynamicCities = Array.from(new Set(events.map(e => e.city).filter(Boolean))).sort();
   const CITIES = ['All', ...dynamicCities];
@@ -25,7 +23,6 @@ export const Home = () => {
     if (getEventStatus(e) === 'Ended') return false;   // Hide past events
     if (getEventStatus(e) === 'Live') return false;    // Live events belong on the Live page
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
-    if (selectedCategory !== 'All' && e.category !== selectedCategory) return false;
     return true;
   }).sort((a, b) => {
     // Scoring logic for personalization
@@ -68,161 +65,202 @@ export const Home = () => {
       }}>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           
-          {/* Location / City Selection */}
+          {/* Top Bar: Location Header + Top Icons */}
           <div className="animate-fade-in-up" style={{ 
-            display: 'inline-flex', 
+            display: 'flex', 
             alignItems: 'center', 
-            gap: '8px', 
-            marginBottom: '24px',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
             position: 'relative',
-            zIndex: 100 /* higher z-index for dropdown */
+            zIndex: 100
           }}>
-            <MapPin size={18} color="#ffffff" weight="fill" />
-            
-            {/* Custom Dropdown Trigger */}
-            <div 
-              onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
-              style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '6px' }}
-            >
-              <span style={{ 
-                color: '#ffffff',
-                fontSize: '16px',
-                fontWeight: 600,
-              }}>
-                {selectedCity === 'All' ? t('all_cities') : selectedCity}
+            {/* Left: Location Picker with "Find events in" caption */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'relative' }}>
+              <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
+                Find events in
               </span>
-              <CaretDown 
-                size={14} 
-                color="#ffffff" 
-                weight="bold" 
-                style={{ 
-                  transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease'
-                }} 
-              />
+              
+              <div 
+                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+                style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '6px' }}
+              >
+                <MapPin size={18} color="var(--color-pin-orange)" weight="fill" />
+                <span style={{ 
+                  color: 'var(--text-primary)',
+                  fontSize: '18px',
+                  fontWeight: 700,
+                }}>
+                  {selectedCity === 'All' ? t('all_cities') : selectedCity}
+                </span>
+                <CaretDown 
+                  size={14} 
+                  color="var(--text-primary)" 
+                  weight="bold" 
+                  style={{ 
+                    transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease'
+                  }} 
+                />
+              </div>
+
+              {/* Custom Dropdown Menu */}
+              {isCityDropdownOpen && (
+                <>
+                  <div 
+                    onClick={() => setIsCityDropdownOpen(false)} 
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 90 }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: '8px',
+                    backgroundColor: 'var(--bg-card)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '16px',
+                    padding: '8px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    minWidth: '180px',
+                    zIndex: 100,
+                    boxShadow: 'var(--shadow-soft)'
+                  }}>
+                    {CITIES.map(city => (
+                      <button
+                        key={city}
+                        onClick={() => {
+                          setSelectedCity(city);
+                          setIsCityDropdownOpen(false);
+                        }}
+                        style={{
+                          background: selectedCity === city ? 'var(--color-deep-navy)' : 'transparent',
+                          border: 'none',
+                          color: selectedCity === city ? 'var(--text-primary)' : 'var(--text-secondary)',
+                          padding: '10px 16px',
+                          textAlign: 'left',
+                          borderRadius: '10px',
+                          fontSize: '14px',
+                          fontWeight: selectedCity === city ? 700 : 500,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        className="hover-scale"
+                      >
+                        {city === 'All' ? t('all_cities') : city}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Custom Dropdown Menu */}
-            {isCityDropdownOpen && (
-              <>
-                {/* Backdrop to close when clicking outside */}
-                <div 
-                  onClick={() => setIsCityDropdownOpen(false)} 
-                  style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 90 }} 
-                />
-                
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: 0,
-                  marginTop: '12px',
-                  backgroundColor: 'rgba(25, 25, 30, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '16px',
-                  padding: '8px',
+            {/* Right: Quick Icons (Live & Notification Bell) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button 
+                onClick={() => navigate('/live')}
+                className="hover-scale"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '50%',
+                  width: '42px',
+                  height: '42px',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px',
-                  minWidth: '160px',
-                  zIndex: 100,
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
-                }}>
-                  {CITIES.map(city => (
-                    <button
-                      key={city}
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setIsCityDropdownOpen(false);
-                      }}
-                      style={{
-                        background: selectedCity === city ? 'rgba(255,255,255,0.1)' : 'transparent',
-                        border: 'none',
-                        color: selectedCity === city ? '#ffffff' : 'var(--text-secondary)',
-                        padding: '10px 16px',
-                        textAlign: 'left',
-                        borderRadius: '8px',
-                        fontSize: '15px',
-                        fontWeight: selectedCity === city ? 600 : 500,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                      className="hover-scale"
-                    >
-                      {city === 'All' ? t('all_cities') : city}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'var(--text-primary)',
+                  position: 'relative'
+                }}
+              >
+                <Broadcast size={20} color="var(--color-pin-orange)" weight="fill" />
+              </button>
+
+              <button 
+                onClick={() => navigate('/notifications')}
+                className="hover-scale"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '50%',
+                  width: '42px',
+                  height: '42px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'var(--text-primary)',
+                  position: 'relative'
+                }}
+              >
+                <Bell size={20} weight="bold" />
+                {unreadCount > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '4px',
+                    right: '4px',
+                    width: '8px',
+                    height: '8px',
+                    backgroundColor: 'var(--color-pin-orange)',
+                    borderRadius: '50%'
+                  }} />
+                )}
+              </button>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-large)' }}>
-            <h1 className="animate-fade-in-up" style={{ 
-              fontSize: 'clamp(36px, 10vw, 56px)', 
-              fontWeight: 800, 
-              lineHeight: 1.1,
-              maxWidth: '300px',
-              margin: 0
-            }}>
-              Find Your Next Experience
-            </h1>
-            
+          {/* Search Bar + Filter Icon Row */}
+          <div className="animate-fade-in-up" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '12px',
+            marginBottom: 'var(--spacing-medium)'
+          }}>
+            {/* Search Input Trigger */}
+            <div 
+              onClick={() => navigate('/search')}
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '999px',
+                padding: '14px 20px',
+                cursor: 'pointer',
+                boxShadow: 'var(--shadow-soft)'
+              }}
+            >
+              <MagnifyingGlass size={20} color="var(--text-secondary)" weight="bold" />
+              <span style={{ color: 'var(--text-secondary)', fontSize: '15px', fontWeight: 500 }}>
+                Search events, venues, hosts...
+              </span>
+            </div>
+
+            {/* Filter Button */}
             <button 
               onClick={() => navigate('/search')}
-              className="hover-scale animate-fade-in-up"
+              className="hover-scale"
               style={{
-                backgroundColor: '#ffffff',
+                backgroundColor: 'var(--text-primary)',
+                color: 'var(--bg-page)',
                 border: 'none',
-                borderRadius: '999px',
-                width: '64px',
-                height: '80px',
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-                animationDelay: '0.1s',
-                flexShrink: 0
+                flexShrink: 0,
+                boxShadow: 'var(--shadow-soft)'
               }}
             >
-              <MagnifyingGlass size={28} weight="bold" color="#000000" />
+              <SlidersHorizontal size={22} weight="bold" />
             </button>
-          </div>
-          
-          {/* Categories */}
-          <div className="horizontal-scroll animate-fade-in-up" style={{ 
-            gap: '12px', 
-            paddingBottom: '16px', 
-            margin: '0',
-            width: '100%',
-            animationDelay: '0.2s' 
-          }}>
-            {['All', ...CATEGORIES_LIST].map((cat) => {
-              const isActive = selectedCategory === cat;
-              return (
-                <button 
-                  key={cat} 
-                  onClick={() => setSelectedCategory(cat)}
-                  className="hover-scale" 
-                  style={{
-                    background: isActive ? 'var(--text-primary)' : 'transparent',
-                    border: isActive ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
-                    color: isActive ? 'var(--bg-page)' : 'var(--text-secondary)',
-                    fontWeight: 600,
-                    fontSize: '15px',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    padding: '10px 24px',
-                    borderRadius: '999px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                  {cat}
-                </button>
-              );
-            })}
           </div>
         </div>
       </section>
@@ -284,9 +322,21 @@ export const Home = () => {
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <h2 className="text-section">{t('hottest_events')}</h2>
-            </div>
+            <h2 className="text-section">{t('hottest_events')}</h2>
+            <button 
+              onClick={() => navigate('/search')}
+              className="hover-scale"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-pin-orange)',
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              See All
+            </button>
           </div>
           
           <div className="horizontal-scroll" style={{ 
@@ -310,10 +360,22 @@ export const Home = () => {
       {/* Followed Hosts Section */}
       <section className="section" style={{ paddingTop: 0, paddingBottom: 'var(--spacing-xlarge)' }}>
         <div className="container">
-          <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)', flexWrap: 'wrap', gap: 'var(--spacing-base)' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <h2 className="text-section">{t('from_hosts_you_follow')}</h2>
-            </div>
+          <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)' }}>
+            <h2 className="text-section">{t('from_hosts_you_follow')}</h2>
+            <button 
+              onClick={() => navigate('/search')}
+              className="hover-scale"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-pin-orange)',
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              See All
+            </button>
           </div>
           
           <div className="horizontal-scroll" style={{ 
@@ -338,9 +400,21 @@ export const Home = () => {
       <section className="section" style={{ paddingTop: 'var(--spacing-xlarge)' }}>
         <div className="container">
           <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <h2 className="text-section">{t('discover_more')}</h2>
-            </div>
+            <h2 className="text-section">{t('discover_more')}</h2>
+            <button 
+              onClick={() => navigate('/search')}
+              className="hover-scale"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-pin-orange)',
+                fontSize: '14px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              See All
+            </button>
           </div>
           
           <div style={{ 

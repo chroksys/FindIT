@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MapPin, CalendarBlank, UsersThree } from '@phosphor-icons/react';
+import { Heart, MapPin, CalendarBlank } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 import { AvatarCluster } from './AvatarCluster';
@@ -40,7 +40,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   venue,
   bannerUrl,
   organizer,
-  coHosts = [],
+  coHosts: _coHosts = [],
   isLiveMode,
   price,
   currency,
@@ -49,7 +49,6 @@ export const EventCard: React.FC<EventCardProps> = ({
   const navigate = useNavigate();
   const { role, savedEventIds, toggleSaveEvent } = useUserContext();
   const isSaved = savedEventIds?.includes(id);
-  const acceptedCoHosts = coHosts.filter(c => c.status === 'accepted');
 
   const handleAction = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -60,20 +59,26 @@ export const EventCard: React.FC<EventCardProps> = ({
     }
   };
 
+  // Extract short date display (e.g. "16 Dec" or "Sat, 24")
+  const formattedDate = date ? date.split(',')[0] : 'TBD';
+
   return (
     <div 
-      className="event-card hover-lift"
+      className="event-card hover-scale"
       onClick={() => navigate(isLiveMode ? `/live/${id}` : `/events/${id}`)}
       style={{
         position: 'relative',
-        borderRadius: '32px',
+        borderRadius: '24px',
         overflow: 'hidden',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+        boxShadow: 'var(--shadow-soft)',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'space-between',
         cursor: 'pointer',
-        height: '280px',
-        width: '100%'
+        height: '320px',
+        width: '100%',
+        backgroundColor: 'var(--bg-card)',
+        border: '1px solid var(--border-color)'
       }}
     >
       {/* Background Image */}
@@ -89,184 +94,188 @@ export const EventCard: React.FC<EventCardProps> = ({
         }} 
       />
       
-      {/* Gradient Overlay */}
+      {/* Gradient Overlay for visual clarity */}
       <div style={{
         position: 'absolute',
         top: 0, left: 0, right: 0, bottom: 0,
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 35%, rgba(0,0,0,0.6) 75%, rgba(0,0,0,0.95) 100%)',
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.85) 100%)',
         zIndex: 1
       }}></div>
 
-      {/* Top Elements (Price & Heart) */}
+      {/* Top Overlay Controls */}
       <div style={{ 
         position: 'relative', 
         zIndex: 2, 
-        padding: '20px',
+        padding: '14px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        alignItems: 'center'
       }}>
-        {/* Glassmorphic Price Pill & Live Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        {/* Left: Organizer & Going count */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {organizer && (
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/organizer/${(organizer as any).id || '1'}`);
+              }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                backdropFilter: 'blur(16px)',
+                padding: '5px 10px',
+                borderRadius: '999px',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                cursor: 'pointer'
+              }}
+            >
+              <img 
+                src={organizer.avatarUrl} 
+                alt={organizer.name}
+                style={{ width: '22px', height: '22px', borderRadius: '50%', objectFit: 'cover' }}
+              />
+              <span style={{ color: '#ffffff', fontSize: '12px', fontWeight: 600 }}>{organizer.name}</span>
+            </div>
+          )}
+
+          {rsvps.length > 0 && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.65)',
+              backdropFilter: 'blur(16px)',
+              padding: '5px 10px',
+              borderRadius: '999px',
+              border: '1px solid rgba(255, 255, 255, 0.15)'
+            }}>
+              <AvatarCluster rsvps={rsvps} size={20} />
+            </div>
+          )}
+
           {isLiveMode && (
             <div style={{ 
               display: 'inline-flex', 
               alignItems: 'center', 
               gap: '6px', 
-              backgroundColor: '#e74c3c', 
-              padding: '6px 12px', 
+              backgroundColor: '#e8542c', 
+              padding: '5px 10px', 
               borderRadius: '999px', 
               fontWeight: 700, 
-              fontSize: '12px', 
-              color: 'white', 
-              boxShadow: '0 4px 12px rgba(231, 76, 60, 0.4)',
-              letterSpacing: '0.5px'
+              fontSize: '11px', 
+              color: '#ffffff'
             }}>
-              <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%', animation: 'livePulse 1.5s ease-in-out infinite' }}></span>
+              <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%' }}></span>
               LIVE
             </div>
           )}
-
-          {acceptedCoHosts.length > 0 && (
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              backgroundColor: 'rgba(255, 107, 0, 0.9)',
-              backdropFilter: 'blur(12px)',
-              padding: '6px 12px',
-              borderRadius: '999px',
-              color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '12px',
-              border: '1px solid rgba(255,255,255,0.3)',
-              boxShadow: '0 4px 12px rgba(255, 107, 0, 0.3)'
-            }}>
-              <UsersThree size={14} weight="bold" />
-              Collab
-            </div>
-          )}
-
-          <div style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.15)',
-            backdropFilter: 'blur(12px)',
-            padding: '8px 16px',
-            borderRadius: '999px',
-            color: '#ffffff',
-            fontWeight: 700,
-            fontSize: '15px',
-            border: '1px solid rgba(255,255,255,0.2)'
-          }}>
-            {(!price || price === '0' || price === '00' || price.toLowerCase() === 'free') 
-              ? 'Free' 
-              : (price.includes(currency || 'USD') ? price : `${price} ${currency || 'USD'}`)}
-          </div>
         </div>
 
-        {/* Heart Icon */}
+        {/* Right: Save Button */}
         <button 
           onClick={handleAction}
           style={{
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.2)',
+            background: 'rgba(0, 0, 0, 0.65)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             borderRadius: '50%',
-            width: '42px',
-            height: '42px',
+            width: '38px',
+            height: '38px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             color: '#ffffff',
-            transition: 'all 0.2s ease',
             padding: 0
           }}
-          className="hover-scale"
         >
-          <Heart size={22} weight={isSaved ? "fill" : "regular"} color={isSaved ? "var(--color-error)" : "white"} />
+          <Heart size={18} weight={isSaved ? "fill" : "bold"} color={isSaved ? "var(--color-pin-orange)" : "white"} />
         </button>
       </div>
 
-      {/* Center Elements Spacer */}
-      <div style={{
-        position: 'relative',
-        zIndex: 2,
-        flexGrow: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-      </div>
-
-      {/* Bottom Content Area */}
+      {/* Floating Details Card Overlay at Bottom */}
       <div style={{ 
         position: 'relative', 
         zIndex: 2, 
-        padding: '24px 20px',
+        margin: '12px',
+        padding: '12px 16px',
+        borderRadius: '20px',
+        backgroundColor: 'var(--bg-navbar)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid var(--border-color)',
         display: 'flex',
-        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         gap: '12px'
       }}>
-        <h3 style={{ 
-          color: '#ffffff', 
-          fontSize: '24px', 
-          fontWeight: 800,
-          lineHeight: 1.1,
-          textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-          margin: 0
+        {/* Left: Date Badge */}
+        <div style={{
+          backgroundColor: 'var(--bg-page)',
+          border: '1px solid var(--border-color)',
+          borderRadius: '14px',
+          padding: '8px 10px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minWidth: '50px',
+          textAlign: 'center'
         }}>
-          {title}
-        </h3>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.9)' }}>
-            <CalendarBlank size={16} weight="bold" />
-            <span style={{ fontSize: '14px', fontWeight: 600 }}>{date}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.9)' }}>
-            <MapPin size={16} weight="bold" />
-            <span style={{ fontSize: '14px', fontWeight: 600 }}>{venue}</span>
+          <CalendarBlank size={16} color="var(--color-pin-orange)" weight="bold" />
+          <span style={{ 
+            fontSize: '11px', 
+            fontWeight: 700, 
+            color: 'var(--text-primary)',
+            marginTop: '2px',
+            lineHeight: 1.1,
+            whiteSpace: 'nowrap'
+          }}>
+            {formattedDate}
+          </span>
+        </div>
+
+        {/* Middle: Title & Venue */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{ 
+            color: 'var(--text-primary)', 
+            fontSize: '16px', 
+            fontWeight: 700,
+            margin: 0,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            lineHeight: 1.2
+          }}>
+            {title}
+          </h3>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '4px', 
+            color: 'var(--text-secondary)',
+            fontSize: '12px',
+            marginTop: '4px'
+          }}>
+            <MapPin size={13} weight="bold" color="var(--color-pin-orange)" />
+            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{venue}</span>
           </div>
         </div>
 
-        {/* Organizer / Host info */}
-        {organizer && (
-          <div 
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/organizer/${(organizer as any).id || '1'}`);
-            }}
-            className="hover-scale"
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8px',
-              marginTop: '8px',
-              paddingTop: '12px',
-              borderTop: '1px solid rgba(255,255,255,0.15)',
-              cursor: 'pointer'
-            }}
-          >
-            <img 
-              src={organizer.avatarUrl} 
-              alt={organizer.name}
-              style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }}
-            />
-            <span style={{ color: '#ffffff', fontSize: '13px', fontWeight: 600 }}>{organizer.name}</span>
-            {organizer.verified && (
-              <span style={{ color: 'var(--color-success)', display: 'flex' }} title="Verified Organizer">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/>
-                </svg>
-              </span>
-            )}
-            
-            <div style={{ marginLeft: 'auto' }}>
-              <AvatarCluster rsvps={rsvps} size={24} />
-            </div>
-          </div>
-        )}
+        {/* Right: Price Badge */}
+        <div style={{
+          backgroundColor: 'var(--color-pin-orange)',
+          color: '#ffffff',
+          fontWeight: 700,
+          fontSize: '13px',
+          padding: '6px 12px',
+          borderRadius: '12px',
+          whiteSpace: 'nowrap'
+        }}>
+          {(!price || price === '0' || price === '00' || price.toLowerCase() === 'free') 
+            ? 'Free' 
+            : (price.includes(currency || 'USD') ? price : `${price} ${currency || 'USD'}`)}
+        </div>
       </div>
     </div>
   );
