@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from '../components/EventCard';
-import { MapPin, MagnifyingGlass, CaretDown, Broadcast, Bell, SlidersHorizontal } from '@phosphor-icons/react';
+import { MapPin, MagnifyingGlass, CaretDown, Broadcast, Bell, SlidersHorizontal, X } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import type { UserProfile } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 export const Home = () => {
   const { events, selectedCity, setSelectedCity, getEventStatus } = useEventContext();
   const { profile, unreadCount } = useUserContext();
+  const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const dynamicCities = Array.from(new Set(events.map(e => e.city).filter(Boolean))).sort();
   const CITIES = ['All', ...dynamicCities];
@@ -25,36 +28,44 @@ export const Home = () => {
     if (selectedCity !== 'All' && e.city !== selectedCity) return false;
     return true;
   }).sort((a, b) => {
-    // Scoring logic for personalization
     let scoreA = 0;
     let scoreB = 0;
     
     const userInterests = (profile as UserProfile)?.interests || [];
     
-    // +100 points if the event's category matches a user's interest
     if (userInterests.some(i => i.toLowerCase() === a.category.toLowerCase())) scoreA += 100;
     if (userInterests.some(i => i.toLowerCase() === b.category.toLowerCase())) scoreB += 100;
 
-    // Primary sort: User interests score
     const timeA = new Date(a.date).getTime();
     const timeB = new Date(b.date).getTime();
     
     if (scoreA !== scoreB) {
-      return scoreB - scoreA; // Highest score first
+      return scoreB - scoreA;
     }
     
-    return timeA - timeB; // Then nearest time first
+    return timeA - timeB;
   });
 
-  // Separate count for the live teaser banner (not filtered by city/category)
+  // Filter events in real-time when user types in the homepage search bar
+  const filteredEvents = activeEvents.filter(e => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+    return (
+      e.title.toLowerCase().includes(q) ||
+      e.venue.toLowerCase().includes(q) ||
+      (e.city && e.city.toLowerCase().includes(q)) ||
+      e.category.toLowerCase().includes(q) ||
+      (e.organizer?.name && e.organizer.name.toLowerCase().includes(q))
+    );
+  });
+
+  // Separate count for the live teaser banner
   const liveCount = events.filter(e =>
     !e.isPaused && !e.parentEventId && getEventStatus(e) === 'Live'
   ).length;
 
-  const hottestEvents = activeEvents.filter(e => e.isBoosted);
-  const followedEvents = activeEvents.filter(e => e.organizer.isFollowed);
-
-  // Discover more: all upcoming events, sorted above
+  const hottestEvents = filteredEvents.filter(e => e.isBoosted);
+  const followedEvents = filteredEvents.filter(e => e.organizer.isFollowed);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
@@ -65,7 +76,7 @@ export const Home = () => {
       }}>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           
-          {/* Top Bar: Location Header + Top Icons */}
+          {/* Top Bar: Logo + Location Header + Action Icons */}
           <div className="animate-fade-in-up" style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -74,183 +85,220 @@ export const Home = () => {
             position: 'relative',
             zIndex: 100
           }}>
-            {/* Left: Location Picker with "Find events in" caption */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'relative' }}>
-              <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
-                Find events in
-              </span>
-              
-              <div 
-                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
-                style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '6px' }}
-              >
-                <MapPin size={18} color="var(--color-pin-orange)" weight="fill" />
-                <span style={{ 
-                  color: 'var(--text-primary)',
-                  fontSize: '18px',
-                  fontWeight: 700,
-                }}>
-                  {selectedCity === 'All' ? t('all_cities') : selectedCity}
+            {/* Left: Brand Logo & Location Picker */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <img 
+                src={resolvedTheme === 'light' ? '/logo(Dark).svg' : '/logo(Light).svg'} 
+                alt="FindIt Logo" 
+                style={{ height: '36px', width: 'auto' }}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'relative' }}>
+                <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 500, lineHeight: 1 }}>
+                  Find events in
                 </span>
-                <CaretDown 
-                  size={14} 
-                  color="var(--text-primary)" 
-                  weight="bold" 
-                  style={{ 
-                    transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease'
-                  }} 
-                />
-              </div>
-
-              {/* Custom Dropdown Menu */}
-              {isCityDropdownOpen && (
-                <>
-                  <div 
-                    onClick={() => setIsCityDropdownOpen(false)} 
-                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 90 }} 
-                  />
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    marginTop: '8px',
-                    backgroundColor: 'var(--bg-card)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '16px',
-                    padding: '8px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    minWidth: '180px',
-                    zIndex: 100,
-                    boxShadow: 'var(--shadow-soft)'
+                
+                <div 
+                  onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '4px' }}
+                >
+                  <MapPin size={16} color="var(--color-pin-orange)" weight="fill" />
+                  <span style={{ 
+                    color: 'var(--text-primary)',
+                    fontSize: '16px',
+                    fontWeight: 700,
                   }}>
-                    {CITIES.map(city => (
-                      <button
-                        key={city}
-                        onClick={() => {
-                          setSelectedCity(city);
-                          setIsCityDropdownOpen(false);
-                        }}
-                        style={{
-                          background: selectedCity === city ? 'var(--color-deep-navy)' : 'transparent',
-                          border: 'none',
-                          color: selectedCity === city ? 'var(--text-primary)' : 'var(--text-secondary)',
-                          padding: '10px 16px',
-                          textAlign: 'left',
-                          borderRadius: '10px',
-                          fontSize: '14px',
-                          fontWeight: selectedCity === city ? 700 : 500,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                        className="hover-scale"
-                      >
-                        {city === 'All' ? t('all_cities') : city}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+                    {selectedCity === 'All' ? t('all_cities') : selectedCity}
+                  </span>
+                  <CaretDown 
+                    size={12} 
+                    color="var(--text-primary)" 
+                    weight="bold" 
+                    style={{ 
+                      transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease'
+                    }} 
+                  />
+                </div>
+
+                {/* Custom Dropdown Menu */}
+                {isCityDropdownOpen && (
+                  <>
+                    <div 
+                      onClick={() => setIsCityDropdownOpen(false)} 
+                      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 90 }} 
+                    />
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      marginTop: '8px',
+                      backgroundColor: 'var(--bg-card)',
+                      backdropFilter: 'blur(20px)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '16px',
+                      padding: '8px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                      minWidth: '180px',
+                      zIndex: 100,
+                      boxShadow: 'var(--shadow-soft)'
+                    }}>
+                      {CITIES.map(city => (
+                        <button
+                          key={city}
+                          onClick={() => {
+                            setSelectedCity(city);
+                            setIsCityDropdownOpen(false);
+                          }}
+                          style={{
+                            background: selectedCity === city ? 'var(--color-deep-navy)' : 'transparent',
+                            border: 'none',
+                            color: selectedCity === city ? 'var(--text-primary)' : 'var(--text-secondary)',
+                            padding: '10px 16px',
+                            textAlign: 'left',
+                            borderRadius: '10px',
+                            fontSize: '14px',
+                            fontWeight: selectedCity === city ? 700 : 500,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                          className="hover-scale"
+                        >
+                          {city === 'All' ? t('all_cities') : city}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Right: Quick Icons (Live & Notification Bell) */}
+            {/* Right: Bold Action Icons (Live & Notification Bell) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button 
                 onClick={() => navigate('/live')}
                 className="hover-scale"
+                title="Live Events"
                 style={{
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border-color)',
                   borderRadius: '50%',
-                  width: '42px',
-                  height: '42px',
+                  width: '46px',
+                  height: '46px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                   color: 'var(--text-primary)',
-                  position: 'relative'
+                  position: 'relative',
+                  boxShadow: 'var(--shadow-soft)'
                 }}
               >
-                <Broadcast size={20} color="var(--color-pin-orange)" weight="fill" />
+                <Broadcast size={24} color="var(--color-pin-orange)" weight="fill" />
               </button>
 
               <button 
                 onClick={() => navigate('/notifications')}
                 className="hover-scale"
+                title="Notifications"
                 style={{
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border-color)',
                   borderRadius: '50%',
-                  width: '42px',
-                  height: '42px',
+                  width: '46px',
+                  height: '46px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                   color: 'var(--text-primary)',
-                  position: 'relative'
+                  position: 'relative',
+                  boxShadow: 'var(--shadow-soft)'
                 }}
               >
-                <Bell size={20} weight="bold" />
+                <Bell size={24} weight="bold" />
                 {unreadCount > 0 && (
                   <span style={{
                     position: 'absolute',
-                    top: '4px',
-                    right: '4px',
-                    width: '8px',
-                    height: '8px',
+                    top: '6px',
+                    right: '6px',
+                    width: '10px',
+                    height: '10px',
                     backgroundColor: 'var(--color-pin-orange)',
-                    borderRadius: '50%'
+                    borderRadius: '50%',
+                    border: '2px solid var(--bg-card)'
                   }} />
                 )}
               </button>
             </div>
           </div>
 
-          {/* Search Bar + Filter Icon Row */}
+          {/* Real-time Search Input Row + Filter Icon Button */}
           <div className="animate-fade-in-up" style={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: '12px',
             marginBottom: 'var(--spacing-medium)'
           }}>
-            {/* Search Input Trigger */}
-            <div 
-              onClick={() => navigate('/search')}
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '999px',
-                padding: '14px 20px',
-                cursor: 'pointer',
-                boxShadow: 'var(--shadow-soft)'
-              }}
-            >
+            {/* Working Search Input */}
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '999px',
+              padding: '12px 18px',
+              boxShadow: 'var(--shadow-soft)'
+            }}>
               <MagnifyingGlass size={20} color="var(--text-secondary)" weight="bold" />
-              <span style={{ color: 'var(--text-secondary)', fontSize: '15px', fontWeight: 500 }}>
-                Search events, venues, hosts...
-              </span>
+              <input
+                type="text"
+                placeholder="Search events, venues, hosts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: 'var(--text-primary)',
+                  fontSize: '15px',
+                  fontWeight: 500
+                }}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: 0
+                  }}
+                >
+                  <X size={18} weight="bold" />
+                </button>
+              )}
             </div>
 
             {/* Filter Button */}
             <button 
               onClick={() => navigate('/search')}
               className="hover-scale"
+              title="Advanced Search & Categories"
               style={{
                 backgroundColor: 'var(--text-primary)',
                 color: 'var(--bg-page)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '50px',
-                height: '50px',
+                width: '48px',
+                height: '48px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -265,7 +313,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Live Events Teaser Banner — shown only when events are live */}
+      {/* Live Events Teaser Banner */}
       {liveCount > 0 && (
         <section style={{ paddingTop: 0, paddingBottom: 0, marginTop: '-24px' }}>
           <div className="container">
@@ -351,7 +399,7 @@ export const Home = () => {
                 <EventCard {...event} date={event.displayDate} />
               </div>
             )) : (
-              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>No premium events matching this location.</p>
+              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>No premium events matching this search or location.</p>
             )}
           </div>
         </div>
@@ -390,7 +438,7 @@ export const Home = () => {
                 <EventCard {...event} date={event.displayDate} />
               </div>
             )) : (
-              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>You aren't following any active hosts in this location.</p>
+              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>You aren't following any active hosts matching this search.</p>
             )}
           </div>
         </div>
@@ -422,7 +470,7 @@ export const Home = () => {
             gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
             gap: 'var(--spacing-medium)' 
           }}>
-            {activeEvents.map(event => (
+            {filteredEvents.map(event => (
               <EventCard key={`trending-${event.id}`} {...event} date={event.displayDate} />
             ))}
           </div>
