@@ -22,7 +22,7 @@ import { formatCompactPrice } from '../lib/formatters';
 export const EventDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { events, addReview, followHost, unfollowHost, followedHostIds, rsvpToEvent } = useEventContext();
+  const { events, addReview, followHost, unfollowHost, followedHostIds, rsvpToEvent, getEventStatus } = useEventContext();
   const { role, profile } = useUserContext();
   const { t } = useLanguage();
   
@@ -39,6 +39,7 @@ export const EventDetail = () => {
   const [showCheckout, setShowCheckout] = useState(false);
 
   const event = events.find(e => e.id === id);
+  const isEnded = event ? getEventStatus(event) === 'Ended' : false;
   const myRsvp = event?.rsvps?.find(r => r.userId === profile?.id);
   const isAlreadyGoing = myRsvp?.status === 'going';
   const collaborations = events.filter(e => event?.collaborations?.includes(e.id));
@@ -372,59 +373,83 @@ export const EventDetail = () => {
             </div>
 
             {/* 5. Action Card (3 Buttons: Add to Calendar, Interested, Going) */}
-            <div className="animate-fade-in-up" style={{ 
-              animationDelay: '0.2s',
-              backgroundColor: 'var(--bg-card)', 
-              padding: '16px 20px', 
-              borderRadius: '18px', 
-              border: '1px solid var(--border-color)',
-              marginBottom: '24px',
-              boxShadow: 'var(--shadow-soft)'
-            }}>
-              <div style={{ display: 'flex', gap: '10px', width: '100%', flexWrap: 'wrap' }}>
-                <div style={{ position: 'relative', flex: '1 1 auto', minWidth: '130px' }}>
-                  <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 14px', fontSize: '13px' }}>
-                    <CalendarPlus size={18} /> {t('add_to_calendar')}
-                  </button>
-                  {showCalendar && (
-                    <div className="glass-dropdown" style={{ left: 0, right: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '100%', top: '100%', marginTop: '8px' }}>
-                      <button className="btn-ghost" onClick={handleGoogleCalendar} style={{ justifyContent: 'flex-start' }}><GoogleLogo size={18} /> Google</button>
-                      <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><AppleLogo size={18} /> Apple</button>
-                      <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><MicrosoftOutlookLogo size={18} /> Outlook</button>
-                    </div>
-                  )}
+            {isEnded ? (
+              <div className="animate-fade-in-up" style={{ 
+                animationDelay: '0.2s',
+                backgroundColor: 'rgba(232, 84, 44, 0.08)', 
+                padding: '16px 20px', 
+                borderRadius: '18px', 
+                border: '1px solid rgba(232, 84, 44, 0.3)',
+                marginBottom: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <CalendarBlank size={24} color="var(--color-pin-orange)" weight="fill" style={{ flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--color-pin-orange)', marginBottom: '2px' }}>
+                    Event Has Ended
+                  </div>
+                  <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                    Ticket reservations, going status, and reviews are closed for past events.
+                  </div>
                 </div>
-                
-                {(() => {
-                  const userRsvp = profile?.id ? event.rsvps?.find(r => r.userId === profile.id)?.status : null;
-                  
-                  return (
-                    <>
-                      <button 
-                        className={userRsvp === 'interested' ? "btn-accent hover-lift" : "btn-secondary hover-lift"} 
-                        onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'interested' ? null : 'interested'))} 
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flex: '1 1 auto', minWidth: '110px', padding: '10px 14px', fontSize: '13px' }}
-                      >
-                        <ThumbsUp size={18} weight={userRsvp === 'interested' ? "fill" : "regular"} /> {t('interested')}
-                      </button>
-                      <button 
-                        className={userRsvp === 'going' ? "btn-accent hover-lift" : "btn-primary hover-lift"} 
-                        onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'going' ? null : 'going'))} 
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flex: '1 1 auto', minWidth: '110px', padding: '10px 14px', fontSize: '13px' }}
-                      >
-                        <CheckCircle size={18} weight={userRsvp === 'going' ? "fill" : "regular"} /> {t('going')}
-                      </button>
-                    </>
-                  );
-                })()}
               </div>
-
-              {event.rsvps && event.rsvps.length > 0 && (
-                <div style={{ marginTop: '12px', width: '100%', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
-                  <AvatarCluster rsvps={event.rsvps} size={28} />
+            ) : (
+              <div className="animate-fade-in-up" style={{ 
+                animationDelay: '0.2s',
+                backgroundColor: 'var(--bg-card)', 
+                padding: '16px 20px', 
+                borderRadius: '18px', 
+                border: '1px solid var(--border-color)',
+                marginBottom: '24px',
+                boxShadow: 'var(--shadow-soft)'
+              }}>
+                <div style={{ display: 'flex', gap: '10px', width: '100%', flexWrap: 'wrap' }}>
+                  <div style={{ position: 'relative', flex: '1 1 auto', minWidth: '130px' }}>
+                    <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 14px', fontSize: '13px' }}>
+                      <CalendarPlus size={18} /> {t('add_to_calendar')}
+                    </button>
+                    {showCalendar && (
+                      <div className="glass-dropdown" style={{ left: 0, right: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '100%', top: '100%', marginTop: '8px' }}>
+                        <button className="btn-ghost" onClick={handleGoogleCalendar} style={{ justifyContent: 'flex-start' }}><GoogleLogo size={18} /> Google</button>
+                        <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><AppleLogo size={18} /> Apple</button>
+                        <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><MicrosoftOutlookLogo size={18} /> Outlook</button>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {(() => {
+                    const userRsvp = profile?.id ? event.rsvps?.find(r => r.userId === profile.id)?.status : null;
+                    
+                    return (
+                      <>
+                        <button 
+                          className={userRsvp === 'interested' ? "btn-accent hover-lift" : "btn-secondary hover-lift"} 
+                          onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'interested' ? null : 'interested'))} 
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flex: '1 1 auto', minWidth: '110px', padding: '10px 14px', fontSize: '13px' }}
+                        >
+                          <ThumbsUp size={18} weight={userRsvp === 'interested' ? "fill" : "regular"} /> {t('interested')}
+                        </button>
+                        <button 
+                          className={userRsvp === 'going' ? "btn-accent hover-lift" : "btn-primary hover-lift"} 
+                          onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'going' ? null : 'going'))} 
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flex: '1 1 auto', minWidth: '110px', padding: '10px 14px', fontSize: '13px' }}
+                        >
+                          <CheckCircle size={18} weight={userRsvp === 'going' ? "fill" : "regular"} /> {t('going')}
+                        </button>
+                      </>
+                    );
+                  })()}
                 </div>
-              )}
-            </div>
+
+                {event.rsvps && event.rsvps.length > 0 && (
+                  <div style={{ marginTop: '12px', width: '100%', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
+                    <AvatarCluster rsvps={event.rsvps} size={28} />
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Tickets & Pricing Section Card */}
             <div className="animate-fade-in-up card-padding" style={{ 
@@ -540,56 +565,58 @@ export const EventDetail = () => {
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
                 {/* Leave Review Form */}
-                <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px dashed var(--border-color)' }}>
-                  {reviewSubmitted ? (
-                    <div style={{ textAlign: 'center', padding: 'var(--spacing-base) 0' }}>
-                      <CheckCircle size={44} weight="fill" color="var(--color-success)" style={{ marginBottom: '8px' }} />
-                      <h3 className="text-card-title" style={{ marginBottom: '4px' }}>Review Submitted!</h3>
-                      <p className="text-caption" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-base)' }}>Thank you for sharing your experience.</p>
-                      <button className="btn-ghost" onClick={() => setReviewSubmitted(false)}>Write another review</button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleSubmitReview}>
-                      <h3 className="text-card-title" style={{ marginBottom: 'var(--spacing-small)' }}>{t('leave_a_review')}</h3>
-                      <div
-                        style={{ display: 'flex', marginBottom: 'var(--spacing-base)', cursor: 'pointer', gap: '4px' }}
-                        onMouseLeave={() => setHoverRating(0)}
-                      >
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            size={28}
-                            weight={(hoverRating || reviewRating) >= star ? 'fill' : 'regular'}
-                            color={(hoverRating || reviewRating) >= star ? 'var(--color-warning)' : 'var(--text-secondary)'}
-                            onClick={() => setReviewRating(star)}
-                            onMouseEnter={() => setHoverRating(star)}
-                            className="hover-scale"
-                          />
-                        ))}
+                {!isEnded && (
+                  <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px dashed var(--border-color)' }}>
+                    {reviewSubmitted ? (
+                      <div style={{ textAlign: 'center', padding: 'var(--spacing-base) 0' }}>
+                        <CheckCircle size={44} weight="fill" color="var(--color-success)" style={{ marginBottom: '8px' }} />
+                        <h3 className="text-card-title" style={{ marginBottom: '4px' }}>Review Submitted!</h3>
+                        <p className="text-caption" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-base)' }}>Thank you for sharing your experience.</p>
+                        <button className="btn-ghost" onClick={() => setReviewSubmitted(false)}>Write another review</button>
                       </div>
-                      <textarea
-                        placeholder="Share your experience..."
-                        rows={3}
-                        value={reviewComment}
-                        onChange={(e) => setReviewComment(e.target.value)}
-                        style={{ marginBottom: 'var(--spacing-small)' }}
-                      />
-                      {reviewError && (
-                        <p style={{ color: 'var(--color-error)', fontSize: '13px', marginBottom: '8px' }}>{reviewError}</p>
-                      )}
-                      <button
-                        type="submit"
-                        className="btn-primary"
-                        disabled={isSubmittingReview}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: isSubmittingReview ? 0.7 : 1 }}
-                      >
-                        {isSubmittingReview
-                          ? <><SpinnerGap size={18} style={{ animation: 'spin 1s linear infinite' }} /> Submitting...</>
-                          : t('submit_review')}
-                      </button>
-                    </form>
-                  )}
-                </div>
+                    ) : (
+                      <form onSubmit={handleSubmitReview}>
+                        <h3 className="text-card-title" style={{ marginBottom: 'var(--spacing-small)' }}>{t('leave_a_review')}</h3>
+                        <div
+                          style={{ display: 'flex', marginBottom: 'var(--spacing-base)', cursor: 'pointer', gap: '4px' }}
+                          onMouseLeave={() => setHoverRating(0)}
+                        >
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={28}
+                              weight={(hoverRating || reviewRating) >= star ? 'fill' : 'regular'}
+                              color={(hoverRating || reviewRating) >= star ? 'var(--color-warning)' : 'var(--text-secondary)'}
+                              onClick={() => setReviewRating(star)}
+                              onMouseEnter={() => setHoverRating(star)}
+                              className="hover-scale"
+                            />
+                          ))}
+                        </div>
+                        <textarea
+                          placeholder="Share your experience..."
+                          rows={3}
+                          value={reviewComment}
+                          onChange={(e) => setReviewComment(e.target.value)}
+                          style={{ marginBottom: 'var(--spacing-small)' }}
+                        />
+                        {reviewError && (
+                          <p style={{ color: 'var(--color-error)', fontSize: '13px', marginBottom: '8px' }}>{reviewError}</p>
+                        )}
+                        <button
+                          type="submit"
+                          className="btn-primary"
+                          disabled={isSubmittingReview}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: isSubmittingReview ? 0.7 : 1 }}
+                        >
+                          {isSubmittingReview
+                            ? <><SpinnerGap size={18} style={{ animation: 'spin 1s linear infinite' }} /> Submitting...</>
+                            : t('submit_review')}
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                )}
 
                 {/* Existing Reviews */}
                 {event.reviews && event.reviews.length > 0 ? (
@@ -716,7 +743,37 @@ export const EventDetail = () => {
           </div>
         </div>
 
-        {isAlreadyGoing ? (
+        {isEnded ? (
+          isAlreadyGoing ? (
+            <button 
+              className="hover-scale" 
+              onClick={() => setShowTicketModal(true)} 
+              style={{ 
+                backgroundColor: '#e8542c', 
+                color: '#ffffff', 
+                border: 'none', 
+                padding: '12px 28px', 
+                fontSize: '15px', 
+                fontWeight: 700, 
+                borderRadius: '999px',
+                cursor: 'pointer'
+              }}
+            >
+              🎫 View My Ticket
+            </button>
+          ) : (
+            <div style={{ 
+              backgroundColor: 'rgba(255, 255, 255, 0.08)', 
+              color: 'var(--text-secondary)', 
+              padding: '10px 24px', 
+              fontSize: '14px', 
+              fontWeight: 700, 
+              borderRadius: '999px'
+            }}>
+              Event Has Ended
+            </div>
+          )
+        ) : isAlreadyGoing ? (
           <button 
             className="hover-scale" 
             onClick={() => setShowTicketModal(true)} 

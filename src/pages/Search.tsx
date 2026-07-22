@@ -34,7 +34,7 @@ const CATEGORIES = [
 ];
 
 export const Search = () => {
-  const { events, followHost, unfollowHost, followedHostIds } = useEventContext();
+  const { events, followHost, unfollowHost, followedHostIds, getEventStatus } = useEventContext();
   const { role } = useUserContext();
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export const Search = () => {
     return () => clearTimeout(timer);
   }, [keyword, category]);
 
-  const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId);
+  const activeEvents = events.filter(e => !e.isPaused && !e.parentEventId && getEventStatus(e) !== 'Ended');
 
   const searchLower = keyword.toLowerCase();
   
