@@ -195,3 +195,61 @@ export const COUNTRIES = [
   { code: 'ZM', name: 'Zambia', flag: '🇿🇲' },
   { code: 'ZW', name: 'Zimbabwe', flag: '🇿🇼' }
 ];
+
+export const MAJOR_CITIES_BY_COUNTRY: Record<string, string[]> = {
+  'Uganda': ['Kampala', 'Entebbe', 'Jinja', 'Gulu', 'Mbarara', 'Fort Portal', 'Mbale', 'Arua', 'Masaka', 'Hoima'],
+  'Kenya': ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret', 'Malindi', 'Naivasha', 'Nanyuki'],
+  'Tanzania': ['Dar es Salaam', 'Dodoma', 'Arusha', 'Zanzibar City', 'Mwanza', 'Stone Town', 'Moshi'],
+  'Rwanda': ['Kigali', 'Gisenyi', 'Musanze', 'Huye', 'Rubavu'],
+  'Nigeria': ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Kano', 'Benin City', 'Enugu'],
+  'South Africa': ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Soweto', 'Port Elizabeth'],
+  'Ghana': ['Accra', 'Kumasi', 'Tamale', 'Takoradi'],
+  'Ethiopia': ['Addis Ababa', 'Dire Dawa', 'Gondar', 'Hawassa'],
+  'United States': ['New York', 'Los Angeles', 'Chicago', 'Miami', 'San Francisco', 'Las Vegas', 'Houston', 'Atlanta', 'Seattle'],
+  'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Edinburgh', 'Glasgow', 'Liverpool', 'Bristol'],
+  'Canada': ['Toronto', 'Vancouver', 'Montreal', 'Calgary', 'Ottawa', 'Edmonton'],
+  'United Arab Emirates': ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ras Al Khaimah', 'Ajman'],
+  'France': ['Paris', 'Lyon', 'Marseille', 'Nice', 'Bordeaux', 'Toulouse'],
+  'Germany': ['Berlin', 'Munich', 'Frankfurt', 'Hamburg', 'Cologne', 'Stuttgart'],
+  'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide'],
+  'India': ['Mumbai', 'Delhi', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata'],
+  'China': ['Beijing', 'Shanghai', 'Shenzhen', 'Guangzhou', 'Chengdu'],
+  'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Sapporo'],
+  'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador'],
+  'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Sharm El Sheikh'],
+  'Morocco': ['Casablanca', 'Marrakech', 'Rabat', 'Tangier', 'Fes'],
+  'Spain': ['Madrid', 'Barcelona', 'Valencia', 'Seville', 'Malaga'],
+  'Italy': ['Rome', 'Milan', 'Florence', 'Venice', 'Naples']
+};
+
+export const getMajorCities = (countryName: string): string[] => {
+  if (!countryName) return [];
+  const found = Object.keys(MAJOR_CITIES_BY_COUNTRY).find(
+    c => c.toLowerCase() === countryName.trim().toLowerCase()
+  );
+  return found ? MAJOR_CITIES_BY_COUNTRY[found] : [];
+};
+
+export const CITY_COORDINATES: Record<string, { lat: number; lng: number }> = {
+  'Kampala': { lat: 0.3476, lng: 32.5825 },
+  'Entebbe': { lat: 0.0512, lng: 32.4637 },
+  'Jinja': { lat: 0.4244, lng: 33.2042 },
+  'Gulu': { lat: 2.7747, lng: 32.2990 },
+  'Mbarara': { lat: -0.6072, lng: 30.6545 },
+  'Nairobi': { lat: -1.286389, lng: 36.817223 },
+  'Mombasa': { lat: -4.0435, lng: 39.6682 },
+  'Kisumu': { lat: -0.0917, lng: 34.7680 },
+  'Dar es Salaam': { lat: -6.7924, lng: 39.2083 },
+  'Arusha': { lat: -3.3869, lng: 36.6830 },
+  'Zanzibar City': { lat: -6.1659, lng: 39.2026 },
+  'Kigali': { lat: -1.9441, lng: 30.0619 },
+  'Lagos': { lat: 6.5244, lng: 3.3792 },
+  'Abuja': { lat: 9.0765, lng: 7.3986 },
+  'Johannesburg': { lat: -26.2041, lng: 28.0473 },
+  'Cape Town': { lat: -33.9249, lng: 18.4241 },
+  'London': { lat: 51.5074, lng: -0.1278 },
+  'New York': { lat: 40.7128, lng: -74.0060 },
+  'Dubai': { lat: 25.2048, lng: 55.2708 },
+  'Paris': { lat: 48.8566, lng: 2.3522 }
+};
+

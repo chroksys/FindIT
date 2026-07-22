@@ -9,6 +9,7 @@ import { Map } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { uploadFile } from '../lib/uploadFile';
 import { supabase } from '../lib/supabase';
+import { COUNTRIES, getMajorCities, CITY_COORDINATES } from '../lib/countries';
 
 export const HostEvent: React.FC = () => {
   const { addEvent, updateEvent, events } = useEventContext();
@@ -130,6 +131,36 @@ export const HostEvent: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCountrySelect = (countryName: string) => {
+    const suggested = getMajorCities(countryName);
+    let newCity = formData.city;
+    if (!suggested.includes(formData.city)) {
+      newCity = suggested.length > 0 ? suggested[0] : '';
+    }
+    let newCoordinates = formData.coordinates;
+    if (newCity && CITY_COORDINATES[newCity]) {
+      newCoordinates = CITY_COORDINATES[newCity];
+    }
+    setFormData(prev => ({
+      ...prev,
+      country: countryName,
+      city: newCity,
+      coordinates: newCoordinates
+    }));
+  };
+
+  const handleCitySelect = (cityName: string) => {
+    let newCoordinates = formData.coordinates;
+    if (CITY_COORDINATES[cityName]) {
+      newCoordinates = CITY_COORDINATES[cityName];
+    }
+    setFormData(prev => ({
+      ...prev,
+      city: cityName,
+      coordinates: newCoordinates
+    }));
   };
 
   const nextStep = () => setStep(s => Math.min(s + 1, 4));
@@ -391,13 +422,73 @@ export const HostEvent: React.FC = () => {
                 </div>
 
                 <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)' }}>
-                  <div className="form-group">
-                    <label className="form-label">City</label>
-                    <input name="city" value={formData.city} onChange={handleChange} type="text" placeholder="e.g. Kampala" required />
-                  </div>
+                  {/* Country Selection First */}
                   <div className="form-group">
                     <label className="form-label">Country</label>
-                    <input name="country" value={formData.country} onChange={handleChange} type="text" placeholder="e.g. Uganda" required />
+                    <select
+                      name="country"
+                      value={formData.country}
+                      onChange={(e) => handleCountrySelect(e.target.value)}
+                      className="input-field"
+                      style={{ appearance: 'none', cursor: 'pointer', width: '100%' }}
+                      required
+                    >
+                      <option value="">-- Select Country --</option>
+                      {COUNTRIES.map(c => (
+                        <option key={c.code} value={c.name}>
+                          {c.flag} {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* City Selection Second */}
+                  <div className="form-group">
+                    <label className="form-label">City</label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        name="city"
+                        value={formData.city}
+                        onChange={(e) => handleCitySelect(e.target.value)}
+                        type="text"
+                        list="city-suggestions-list"
+                        className="input-field"
+                        placeholder={formData.country ? `e.g. ${getMajorCities(formData.country)[0] || 'Kampala'}` : 'Select country first'}
+                        required
+                        style={{ width: '100%' }}
+                      />
+                      <datalist id="city-suggestions-list">
+                        {getMajorCities(formData.country).map(cityName => (
+                          <option key={cityName} value={cityName} />
+                        ))}
+                      </datalist>
+                    </div>
+
+                    {/* Major City Suggestion Pills */}
+                    {getMajorCities(formData.country).length > 0 && (
+                      <div style={{ marginTop: '8px', display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>Suggested:</span>
+                        {getMajorCities(formData.country).slice(0, 6).map(cityName => (
+                          <button
+                            key={cityName}
+                            type="button"
+                            onClick={() => handleCitySelect(cityName)}
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: '12px',
+                              fontSize: '12px',
+                              backgroundColor: formData.city === cityName ? 'var(--color-pin-orange)' : 'rgba(255, 255, 255, 0.08)',
+                              color: formData.city === cityName ? '#ffffff' : 'var(--text-secondary)',
+                              border: formData.city === cityName ? '1px solid var(--color-pin-orange)' : '1px solid rgba(255, 255, 255, 0.12)',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            {cityName}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 

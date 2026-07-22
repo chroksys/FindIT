@@ -6,7 +6,7 @@ import { EnvelopeSimple, MapPin, User, UploadSimple, ShieldCheck, Spinner,
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
 import { useNavigate } from 'react-router-dom';
-import { COUNTRIES } from '../../lib/countries';
+import { COUNTRIES, getMajorCities } from '../../lib/countries';
 
 const INTERESTS = [
   { id: 'music', label: 'Music', icon: <MusicNotes size={16} /> },
@@ -178,7 +178,20 @@ export const UserAccount = () => {
               <label className="form-label">City / Location</label>
               <div style={{ position: 'relative' }}>
                 <MapPin size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                <input name="city" value={formData.city || ''} onChange={handleChange} type="text" style={{ paddingLeft: '40px' }} placeholder="e.g. Kampala" />
+                <input
+                  name="city"
+                  value={formData.city || ''}
+                  onChange={handleChange}
+                  type="text"
+                  style={{ paddingLeft: '40px' }}
+                  placeholder="e.g. Kampala"
+                  list="account-city-suggestions"
+                />
+                <datalist id="account-city-suggestions">
+                  {getMajorCities(formData.country || '').map(cityName => (
+                    <option key={cityName} value={cityName} />
+                  ))}
+                </datalist>
               </div>
             </div>
 
