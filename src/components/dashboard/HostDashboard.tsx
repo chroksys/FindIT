@@ -323,13 +323,17 @@ export const HostDashboard: React.FC = () => {
                 )}
 
                 <div style={{ display: 'flex', borderTop: '1px solid var(--border-color)', backgroundColor: 'rgba(0,0,0,0.1)' }}>
-                  <button onClick={() => navigate(`/host/${event.id}`)} className="btn-ghost" style={{ flex: 1, padding: '12px 8px', borderRadius: 0, borderRight: '1px solid var(--border-color)' }}>
-                    <PencilSimple size={18} /> <span>Edit</span>
-                  </button>
-                  <button onClick={() => togglePauseEvent(event.id)} className="btn-ghost" style={{ flex: 1, padding: '12px 8px', borderRadius: 0, borderRight: '1px solid var(--border-color)' }}>
-                    {event.isPaused ? <PlayCircle size={18} /> : <PauseCircle size={18} />} 
-                    <span>{event.isPaused ? 'Resume' : 'Pause'}</span>
-                  </button>
+                  {status.toLowerCase() !== 'ended' && (
+                    <>
+                      <button onClick={() => navigate(`/host/${event.id}`)} className="btn-ghost" style={{ flex: 1, padding: '12px 8px', borderRadius: 0, borderRight: '1px solid var(--border-color)' }}>
+                        <PencilSimple size={18} /> <span>Edit</span>
+                      </button>
+                      <button onClick={() => togglePauseEvent(event.id)} className="btn-ghost" style={{ flex: 1, padding: '12px 8px', borderRadius: 0, borderRight: '1px solid var(--border-color)' }}>
+                        {event.isPaused ? <PlayCircle size={18} /> : <PauseCircle size={18} />} 
+                        <span>{event.isPaused ? 'Resume' : 'Pause'}</span>
+                      </button>
+                    </>
+                  )}
                   <button onClick={() => deleteEvent(event.id)} className="btn-ghost" style={{ flex: 1, padding: '12px 8px', borderRadius: 0, color: 'var(--color-error)' }}>
                     <Trash size={18} /> <span>Delete</span>
                   </button>

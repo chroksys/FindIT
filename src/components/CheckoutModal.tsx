@@ -3,6 +3,7 @@ import { X, CheckCircle, CreditCard, DeviceMobile, Ticket, ArrowRight, Spinner, 
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { PhoneInput } from './PhoneInput';
+import { formatCompactPrice } from '../lib/formatters';
 
 interface CheckoutModalProps {
   event: any;
@@ -42,8 +43,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
   const total = unitPrice * quantity;
 
   const formatPrice = (amount: number) => {
-    if (amount === 0) return 'Free';
-    return new Intl.NumberFormat('en-US').format(amount) + ` ${event.currency || 'UGX'}`;
+    return formatCompactPrice(amount, event.currency);
   };
 
   const handleCheckout = () => {
@@ -216,8 +216,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
                       style={{
                         padding: '12px 16px',
                         borderRadius: '14px',
-                        border: ticketType === 'vip' ? '2px solid #ffd700' : '1px solid var(--border-color)',
-                        backgroundColor: ticketType === 'vip' ? 'rgba(255, 215, 0, 0.1)' : 'var(--bg-page)',
+                        border: ticketType === 'vip' ? '2px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+                        backgroundColor: ticketType === 'vip' ? 'rgba(232, 84, 44, 0.1)' : 'var(--bg-page)',
                         cursor: 'pointer',
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -226,12 +226,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 700, color: '#ffd700', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <div style={{ fontWeight: 700, color: 'var(--color-pin-orange)', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <Star size={16} weight="fill" /> VIP Admission
                         </div>
                         <div className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>VIP seating & perks</div>
                       </div>
-                      <span style={{ fontWeight: 800, fontSize: '16px', color: '#ffd700' }}>
+                      <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--color-pin-orange)' }}>
                         {formatPrice(parsePrice(event.vipPrice))}
                       </span>
                     </div>

@@ -16,6 +16,7 @@ import { CheckoutModal } from '../components/CheckoutModal';
 import { AvatarCluster } from '../components/AvatarCluster';
 import { supabase } from '../lib/supabase';
 import { Share } from '@capacitor/share';
+import { formatCompactPrice } from '../lib/formatters';
 
 export const EventDetail = () => {
   const { id } = useParams();
@@ -251,14 +252,21 @@ export const EventDetail = () => {
           {/* Main Column */}
           <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             
-            {/* 1. Category and Title on the same line */}
-            <div className="animate-fade-in-up" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
-              <span className="badge badge-default" style={{ backgroundColor: 'var(--color-pin-orange)', color: '#ffffff', margin: 0, padding: '6px 14px', fontSize: '13px', borderRadius: '999px', fontWeight: 700 }}>
-                {event.category}
-              </span>
-              <h1 style={{ color: 'var(--text-primary)', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
+            {/* 1. Title on Left, Category Badge on Right (Stretched) */}
+            <div className="animate-fade-in-up" style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              gap: '12px', 
+              flexWrap: 'wrap', 
+              marginBottom: '16px' 
+            }}>
+              <h1 style={{ color: 'var(--text-primary)', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: 0, lineHeight: 1.2, flex: '1 1 auto', minWidth: '200px' }}>
                 {event.title}
               </h1>
+              <span className="badge badge-default" style={{ backgroundColor: 'var(--color-pin-orange)', color: '#ffffff', margin: 0, padding: '6px 14px', fontSize: '13px', borderRadius: '999px', fontWeight: 700, flexShrink: 0 }}>
+                {event.category}
+              </span>
             </div>
 
             {/* 2. Description or About the Event */}
@@ -434,7 +442,7 @@ export const EventDetail = () => {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ color: 'var(--color-pin-orange)', fontWeight: 700, fontSize: '14px' }}>Early Bird Offer</span>
                       <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--text-primary)' }}>
-                        {event.earlyBird.price.includes(event.currency || 'USD') ? event.earlyBird.price : `${event.earlyBird.price} ${event.currency || 'USD'}`}
+                        {formatCompactPrice(event.earlyBird.price, event.currency)}
                       </span>
                     </div>
                   </div>
@@ -442,16 +450,14 @@ export const EventDetail = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'var(--bg-page)', borderRadius: '14px', border: '1px solid var(--border-color)' }}>
                   <span style={{ fontWeight: 600 }}>General Admission</span>
                   <span style={{ fontWeight: 800 }}>
-                    {(!event.price || event.price === '0' || event.price === '00' || event.price.toLowerCase() === 'free') 
-                      ? 'Free' 
-                      : (event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`)}
+                    {formatCompactPrice(event.price, event.currency)}
                   </span>
                 </div>
                 {event.vipPrice && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'rgba(255, 215, 0, 0.1)', borderRadius: '14px', border: '1px solid #ffd700' }}>
-                    <span style={{ fontWeight: 700, color: '#ffd700' }}>VIP Admission</span>
-                    <span style={{ fontWeight: 800, color: '#ffd700' }}>
-                      {event.vipPrice.includes(event.currency || 'USD') ? event.vipPrice : `${event.vipPrice} ${event.currency || 'USD'}`}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'rgba(232, 84, 44, 0.1)', borderRadius: '14px', border: '1px solid var(--color-pin-orange)' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--color-pin-orange)' }}>VIP Admission</span>
+                    <span style={{ fontWeight: 800, color: 'var(--color-pin-orange)' }}>
+                      {formatCompactPrice(event.vipPrice, event.currency)}
                     </span>
                   </div>
                 )}
@@ -702,13 +708,11 @@ export const EventDetail = () => {
         <div>
           <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', lineHeight: 1 }}>Total Price</span>
           <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-            {(!event.price || event.price === '0' || event.price === '00' || event.price.toLowerCase() === 'free') 
-              ? 'Free' 
-              : (event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`)}
+            {formatCompactPrice(event.price, event.currency)}
           </div>
         </div>
 
-        {event.organizer.verified ? (
+        {event.organizer?.verified ? (
           event.ticketLink ? (
             <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
               <button 
@@ -721,8 +725,7 @@ export const EventDetail = () => {
                   fontSize: '15px', 
                   fontWeight: 700, 
                   borderRadius: '999px',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 16px rgba(232, 84, 44, 0.4)'
+                  cursor: 'pointer'
                 }}
               >
                 Buy Ticket
@@ -740,8 +743,7 @@ export const EventDetail = () => {
                 fontSize: '15px', 
                 fontWeight: 700, 
                 borderRadius: '999px',
-                cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(232, 84, 44, 0.4)'
+                cursor: 'pointer'
               }}
             >
               Buy Ticket
@@ -759,8 +761,7 @@ export const EventDetail = () => {
               fontSize: '15px', 
               fontWeight: 700, 
               borderRadius: '999px',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(232, 84, 44, 0.4)'
+              cursor: 'pointer'
             }}
           >
             RSVP / Join

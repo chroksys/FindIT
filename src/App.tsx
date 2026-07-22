@@ -18,6 +18,8 @@ import { AttendeeLiveMode } from './pages/AttendeeLiveMode';
 import { HostControlCenter } from './pages/HostControlCenter';
 import { Notifications } from './pages/Notifications';
 import { MapView } from './pages/Map';
+import { HottestEvents } from './pages/HottestEvents';
+import { FollowingEvents } from './pages/FollowingEvents';
 import { EventProvider } from './context/EventContext';
 import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -65,6 +67,8 @@ function App() {
                 <Route path="/host/live/:id" element={<HostControlCenter />} />
                 <Route path="/organizer/:id" element={<OrganizerProfile />} />
                 <Route path="/notifications" element={<Notifications />} />
+                <Route path="/hottest" element={<HottestEvents />} />
+                <Route path="/following" element={<FollowingEvents />} />
               </Routes>
             </main>
           </div>

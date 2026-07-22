@@ -242,6 +242,11 @@ export const Home = () => {
                 placeholder="Search events, venues, hosts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                  }
+                }}
                 style={{
                   flex: 1,
                   background: 'transparent',
@@ -355,7 +360,7 @@ export const Home = () => {
           <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)' }}>
             <h2 className="text-section">{t('hottest_events')}</h2>
             <button 
-              onClick={() => navigate('/search')}
+              onClick={() => navigate('/hottest')}
               className="hover-scale"
               style={{
                 background: 'none',
@@ -366,7 +371,7 @@ export const Home = () => {
                 cursor: 'pointer'
               }}
             >
-              See All
+              View All
             </button>
           </div>
           
@@ -394,7 +399,7 @@ export const Home = () => {
           <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)' }}>
             <h2 className="text-section">{t('from_hosts_you_follow')}</h2>
             <button 
-              onClick={() => navigate('/search')}
+              onClick={() => navigate('/following')}
               className="hover-scale"
               style={{
                 background: 'none',
@@ -405,7 +410,7 @@ export const Home = () => {
                 cursor: 'pointer'
               }}
             >
-              See All
+              View All
             </button>
           </div>
           

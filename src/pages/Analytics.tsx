@@ -103,7 +103,12 @@ export const Analytics = () => {
   }, [pageViews]);
 
   return (
-    <div className="container section" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
+    <div className="container section page-with-nav" style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: 'var(--spacing-xlarge)',
+      paddingTop: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 16px)' 
+    }}>
       
       <div className="animate-fade-in-up">
         <h1 className="text-hero" style={{ fontSize: '32px', marginBottom: 'var(--spacing-micro)' }}>Host Analytics</h1>

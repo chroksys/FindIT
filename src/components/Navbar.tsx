@@ -15,6 +15,8 @@ export const Navbar: React.FC = () => {
   if (location.pathname.startsWith('/live/') && location.pathname !== '/live') return null;
   if (location.pathname.startsWith('/host/live/')) return null;
   if (location.pathname === '/notifications') return null;
+  if (location.pathname === '/hottest') return null;
+  if (location.pathname === '/following') return null;
 
 
   return (
@@ -151,7 +153,7 @@ export const Navbar: React.FC = () => {
           <span>Calendar</span>
         </Link>
         <Link to="/host" className={`nav-item-mobile center-btn ${location.pathname.startsWith('/host') ? 'active' : ''}`}>
-          <Plus size={28} weight="bold" />
+          <Plus size={28} weight="fill" color="var(--color-pin-orange)" />
           <span>{t('host_event')}</span>
         </Link>
         <Link to="/map" className={`nav-item-mobile ${location.pathname === '/map' ? 'active' : ''}`}>

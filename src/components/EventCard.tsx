@@ -3,6 +3,7 @@ import { Heart, MapPin, CalendarBlank } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 import { AvatarCluster } from './AvatarCluster';
+import { formatCompactPrice } from '../lib/formatters';
 
 export interface EventCardProps {
   id: string;
@@ -283,9 +284,7 @@ export const EventCard: React.FC<EventCardProps> = ({
           borderRadius: '12px',
           whiteSpace: 'nowrap'
         }}>
-          {(!price || price === '0' || price === '00' || price.toLowerCase() === 'free') 
-            ? 'Free' 
-            : (price.includes(currency || 'USD') ? price : `${price} ${currency || 'USD'}`)}
+          {formatCompactPrice(price, currency)}
         </div>
       </div>
     </div>
