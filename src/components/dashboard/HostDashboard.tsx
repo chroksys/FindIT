@@ -5,12 +5,12 @@ import type { HostProfile } from '../../context/UserContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, CheckCircle, Monitor } from '@phosphor-icons/react';
+import { Plus, PencilSimple, PauseCircle, PlayCircle, Trash, WarningCircle, UserCircle, ChartBar, CreditCard, LockKey, EnvelopeSimple, Moon, Sun, Question, SignOut, RocketLaunch, Tag, ChatCircleText, Translate, X, CheckCircle, Monitor, UsersThree } from '@phosphor-icons/react';
 import { ChangePasswordModal } from '../ChangePasswordModal';
 import { supabase } from '../../lib/supabase';
 
 export const HostDashboard: React.FC = () => {
-  const { events, deleteEvent, togglePauseEvent, getEventStatus } = useEventContext();
+  const { events, deleteEvent, togglePauseEvent, getEventStatus, respondToCollaboration } = useEventContext();
   const { getEventLimit, role, profile, logout } = useUserContext();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
@@ -88,9 +88,17 @@ export const HostDashboard: React.FC = () => {
 
   const hostProfile = profile as HostProfile;
 
-  // Filter events to only show ones belonging to the logged-in host
-  const userEvents = events.filter(e => e.organizer?.id === profile?.id);
-  const isLimitReached = userEvents.length >= getEventLimit();
+  // Filter events to show ones belonging to or co-hosted by the logged-in host
+  const userEvents = events.filter(e => 
+    e.organizer?.id === profile?.id || 
+    (e.coHosts || []).some(ch => ch.hostId === profile?.id && ch.status === 'accepted')
+  );
+  
+  const pendingCollaborations = events
+    .flatMap(e => (e.coHosts || []).map(ch => ({ ...ch, event: e })))
+    .filter(ch => ch.hostId === profile?.id && ch.status === 'pending');
+
+  const isLimitReached = userEvents.filter(e => e.organizer?.id === profile?.id).length >= getEventLimit();
 
   const getStatusColor = (status: string, isPaused: boolean) => {
     if (isPaused) return 'var(--color-muted-navy)';
@@ -131,6 +139,37 @@ export const HostDashboard: React.FC = () => {
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Verification Pending</h3>
             <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Our team is reviewing your documents. This usually takes 1-2 business days.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Pending Co-Host Invitations */}
+      {pendingCollaborations.length > 0 && (
+        <div style={{ backgroundColor: 'rgba(255, 107, 0, 0.08)', border: '1px solid var(--color-pin-orange)', borderRadius: 'var(--radius-card)', padding: '16px', marginBottom: 'var(--spacing-large)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <UsersThree size={22} color="var(--color-pin-orange)" weight="bold" />
+            <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Co-Host Invitations ({pendingCollaborations.length})</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {pendingCollaborations.map(pc => (
+              <div key={pc.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', borderRadius: '12px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <img src={pc.event.bannerUrl} alt={pc.event.title} style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover' }} />
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>{pc.event.title}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Invited by {pc.event.organizer?.name || 'a host'}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => respondToCollaboration(pc.id, 'accepted')} className="btn-primary" style={{ padding: '6px 14px', fontSize: '13px', backgroundColor: 'var(--color-success)', border: 'none', cursor: 'pointer' }}>
+                    Accept
+                  </button>
+                  <button onClick={() => respondToCollaboration(pc.id, 'declined')} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '13px', cursor: 'pointer' }}>
+                    Decline
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

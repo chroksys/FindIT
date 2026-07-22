@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey } from '@phosphor-icons/react';
+import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey, UsersThree, UserCheck, Crown, CheckCircle } from '@phosphor-icons/react';
 import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
@@ -8,15 +8,39 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Map } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { uploadFile } from '../lib/uploadFile';
+import { supabase } from '../lib/supabase';
 
 export const HostEvent: React.FC = () => {
   const { addEvent, updateEvent, events } = useEventContext();
   const { getEventLimit, role, profile } = useUserContext();
   const hostProfile = profile as HostProfile;
   const isVerified = hostProfile?.verificationStatus === 'verified';
+  const isPro = hostProfile?.subscriptionTier === 'Pro' || hostProfile?.subscriptionTier === 'Growth';
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = Boolean(id);
+  
+  const [availableHosts, setAvailableHosts] = useState<{ id: string; name: string; avatarUrl: string; verified: boolean }[]>([]);
+  const [selectedHostIds, setSelectedHostIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchVerifiedHosts = async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, name, avatar_url, verified')
+        .eq('role', 'host')
+        .neq('id', profile?.id || '');
+      if (data) {
+        setAvailableHosts(data.map((h: any) => ({
+          id: h.id,
+          name: h.name || 'Unknown Host',
+          avatarUrl: h.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Host',
+          verified: Boolean(h.verified)
+        })));
+      }
+    };
+    if (profile?.id) fetchVerifiedHosts();
+  }, [profile?.id]);
   
   const activeEventsCount = events.length; 
   const isLimitReached = !isEditing && activeEventsCount >= getEventLimit();
@@ -175,6 +199,10 @@ export const HostEvent: React.FC = () => {
     
     if (formData.collaborationEventId) {
       eventPayload.collaborations = [formData.collaborationEventId];
+    }
+
+    if (selectedHostIds.length > 0) {
+      eventPayload.invitedHostIds = selectedHostIds;
     }
 
     if (isEditing && id) {
@@ -473,6 +501,76 @@ export const HostEvent: React.FC = () => {
 
             {step === 4 && (
               <>
+                {/* Multi-Host Co-Hosting Section */}
+                <div className="form-group" style={{ marginBottom: 'var(--spacing-large)', backgroundColor: 'var(--bg-default)', padding: '20px', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <UsersThree size={24} color="var(--color-pin-orange)" weight="bold" />
+                      <div>
+                        <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Co-Host & Collaborate</h3>
+                        <p className="text-caption" style={{ color: 'var(--text-secondary)', margin: 0 }}>Invite other verified hosts to co-organize this event with you.</p>
+                      </div>
+                    </div>
+                    {isPro && isVerified ? (
+                      <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '12px', backgroundColor: 'rgba(46,213,115,0.15)', color: 'var(--color-success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <ShieldCheck size={14} /> Pro Verified Feature
+                      </span>
+                    ) : (
+                      <Link to="/pricing" style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '12px', backgroundColor: 'rgba(255,215,0,0.15)', color: '#e6c200', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Crown size={14} /> Requires Pro & Verified
+                      </Link>
+                    )}
+                  </div>
+
+                  {isPro && isVerified ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {availableHosts.length === 0 ? (
+                        <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>No other registered hosts available yet.</p>
+                      ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px', maxHeight: '180px', overflowY: 'auto', paddingRight: '4px' }}>
+                          {availableHosts.map(h => {
+                            const isSelected = selectedHostIds.includes(h.id);
+                            return (
+                              <div
+                                key={h.id}
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setSelectedHostIds(prev => prev.filter(id => id !== h.id));
+                                  } else {
+                                    setSelectedHostIds(prev => [...prev, h.id]);
+                                  }
+                                }}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '10px',
+                                  padding: '10px 12px',
+                                  borderRadius: '12px',
+                                  backgroundColor: isSelected ? 'rgba(255,107,0,0.1)' : 'var(--bg-card)',
+                                  border: isSelected ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                <img src={h.avatarUrl} alt={h.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{h.name}</div>
+                                  <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{h.verified ? 'Verified Host' : 'Host'}</div>
+                                </div>
+                                {isSelected ? <UserCheck size={18} color="var(--color-pin-orange)" weight="bold" /> : <div style={{ width: 18, height: 18, borderRadius: '50%', border: '1px solid var(--border-color)' }} />}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div style={{ padding: '12px 16px', backgroundColor: 'rgba(255,215,0,0.05)', borderRadius: '12px', border: '1px dashed rgba(255,215,0,0.3)', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                      Co-hosting allows 2 or more verified hosts to collaborate on an event. Upgrade your subscription to <strong>Pro</strong> and complete <strong>Organizer Verification</strong> to unlock co-hosting invitations!
+                    </div>
+                  )}
+                </div>
+
                 <div className="form-group" style={{ marginBottom: 'var(--spacing-large)' }}>
                   <label className="form-label">Official Collaboration / Cross-Promotion (Optional)</label>
                   <select name="collaborationEventId" value={formData.collaborationEventId} onChange={handleChange} className="input-field">

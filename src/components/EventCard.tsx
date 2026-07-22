@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MapPin, CalendarBlank } from '@phosphor-icons/react';
+import { Heart, MapPin, CalendarBlank, UsersThree } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 import { AvatarCluster } from './AvatarCluster';
@@ -13,10 +13,18 @@ export interface EventCardProps {
   distance: string;
   bannerUrl: string;
   organizer: {
+    id?: string;
     name: string;
     avatarUrl: string;
     verified: boolean;
   };
+  coHosts?: {
+    id: string;
+    name: string;
+    avatarUrl: string;
+    status: 'pending' | 'accepted' | 'declined';
+    verified: boolean;
+  }[];
   isLiveMode?: boolean;
   isBoosted?: boolean;
   price?: string;
@@ -32,6 +40,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   venue,
   bannerUrl,
   organizer,
+  coHosts = [],
   isLiveMode,
   price,
   currency,
@@ -40,6 +49,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   const navigate = useNavigate();
   const { role, savedEventIds, toggleSaveEvent } = useUserContext();
   const isSaved = savedEventIds?.includes(id);
+  const acceptedCoHosts = coHosts.filter(c => c.status === 'accepted');
 
   const handleAction = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -114,6 +124,26 @@ export const EventCard: React.FC<EventCardProps> = ({
             }}>
               <span style={{ width: '6px', height: '6px', backgroundColor: 'white', borderRadius: '50%', animation: 'livePulse 1.5s ease-in-out infinite' }}></span>
               LIVE
+            </div>
+          )}
+
+          {acceptedCoHosts.length > 0 && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              backgroundColor: 'rgba(255, 107, 0, 0.9)',
+              backdropFilter: 'blur(12px)',
+              padding: '6px 12px',
+              borderRadius: '999px',
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '12px',
+              border: '1px solid rgba(255,255,255,0.3)',
+              boxShadow: '0 4px 12px rgba(255, 107, 0, 0.3)'
+            }}>
+              <UsersThree size={14} weight="bold" />
+              Collab
             </div>
           )}
 

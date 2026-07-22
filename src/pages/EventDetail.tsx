@@ -258,18 +258,41 @@ export const EventDetail = () => {
             
             {event.organizer && (
               <div 
-                className="animate-fade-in-up hover-scale" 
-                style={{ animationDelay: '0.1s', display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '8px 16px', backgroundColor: 'rgba(25,25,45,0.6)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', marginTop: '8px', width: 'fit-content' }}
-                onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
+                className="animate-fade-in-up" 
+                style={{ animationDelay: '0.1s', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}
               >
-                <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                <div>
-                  <div className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', lineHeight: 1 }}>Hosted by</div>
-                  <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', lineHeight: 1.2 }}>
-                    {event.organizer.name}
-                    {event.organizer.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
+                <div 
+                  className="hover-scale"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', backgroundColor: 'rgba(25,25,45,0.7)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }}
+                  onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
+                >
+                  <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <div>
+                    <div className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '10px', lineHeight: 1 }}>Hosted by</div>
+                    <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', lineHeight: 1.2 }}>
+                      {event.organizer.name}
+                      {event.organizer.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
+                    </div>
                   </div>
                 </div>
+
+                {(event.coHosts || []).filter(c => c.status === 'accepted').map(c => (
+                  <div 
+                    key={c.id}
+                    className="hover-scale"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', backgroundColor: 'rgba(255,107,0,0.15)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--color-pin-orange)', cursor: 'pointer' }}
+                    onClick={() => navigate(`/organizer/${c.hostId}`)}
+                  >
+                    <img src={c.avatarUrl} alt={c.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <div>
+                      <div className="text-caption" style={{ color: 'var(--color-pin-orange)', fontSize: '10px', lineHeight: 1, fontWeight: 700 }}>Co-Host</div>
+                      <div className="text-body" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', lineHeight: 1.2 }}>
+                        {c.name}
+                        {c.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

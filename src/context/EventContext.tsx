@@ -45,6 +45,15 @@ export interface Event {
   promoCodes?: { code: string; discount: string; uses: number }[];
   earlyBird?: { deadline: string; price: string };
   collaborations?: string[];
+  coHosts?: {
+    id: string;
+    eventId: string;
+    hostId: string;
+    status: 'pending' | 'accepted' | 'declined';
+    name: string;
+    avatarUrl: string;
+    verified: boolean;
+  }[];
   rsvps?: { userId: string; status: 'going' | 'interested'; avatarUrl?: string }[];
   parentEventId?: string;
   subEvents?: Event[];
@@ -54,8 +63,8 @@ interface EventContextType {
   events: Event[];
   selectedCity: string;
   setSelectedCity: (city: string) => void;
-  addEvent: (event: Omit<Event, 'id' | 'isPaused' | 'organizer' | 'gallery' | 'reviews'>) => void;
-  updateEvent: (id: string, event: Partial<Event>) => void;
+  addEvent: (event: Omit<Event, 'id' | 'isPaused' | 'organizer' | 'gallery' | 'reviews'> & { invitedHostIds?: string[] }) => Promise<void>;
+  updateEvent: (id: string, event: Partial<Event> & { invitedHostIds?: string[] }) => Promise<void>;
   deleteEvent: (id: string) => void;
   duplicateEvent: (id: string) => void;
   togglePauseEvent: (id: string) => void;
@@ -65,6 +74,8 @@ interface EventContextType {
   followHost: (hostId: string, hostName?: string) => Promise<void>;
   unfollowHost: (hostId: string) => Promise<void>;
   rsvpToEvent: (eventId: string, status: 'going' | 'interested' | null) => Promise<void>;
+  inviteCollaborators: (eventId: string, hostIds: string[]) => Promise<void>;
+  respondToCollaboration: (collaborationId: string, status: 'accepted' | 'declined') => Promise<void>;
   loadingEvents: boolean;
 }
 
@@ -131,6 +142,11 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .select('*')
         .order('created_at', { ascending: false });
 
+      // Fetch all event collaborators
+      const { data: collabData } = await supabase
+        .from('event_collaborators')
+        .select('*, profiles!event_collaborators_host_id_fkey(id, name, avatar_url, verified)');
+
       // Use the override if provided (avoids stale closure), otherwise use current state
       const currentFollowedIds = overrideFollowedIds ?? followedHostIds;
 
@@ -175,6 +191,17 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         promoCodes: d.promo_codes || [],
         earlyBird: d.early_bird_deadline ? { deadline: d.early_bird_deadline, price: d.early_bird_price } : undefined,
         collaborations: d.collaborations || [],
+        coHosts: (collabData || [])
+          .filter((c: any) => c.event_id === d.id)
+          .map((c: any) => ({
+            id: c.id,
+            eventId: c.event_id,
+            hostId: c.host_id,
+            status: c.status,
+            name: c.profiles?.name || 'Unknown Host',
+            avatarUrl: c.profiles?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Host',
+            verified: c.profiles?.verified || false
+          })),
         coordinates: d.latitude && d.longitude ? { lat: Number(d.latitude), lng: Number(d.longitude) } : undefined,
         rsvps: (d.event_rsvps || []).map((r: any) => ({
           userId: r.user_id,
@@ -347,6 +374,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Notify all followers
     if (insertData && insertData[0]) {
       const newEvent = insertData[0];
+      if ((eventData as any).invitedHostIds?.length) {
+        await inviteCollaborators(newEvent.id, (eventData as any).invitedHostIds);
+      }
       const { data: followers } = await supabase.from('follows').select('follower_id').eq('host_id', profile.id);
       
       if (followers && followers.length > 0) {
@@ -473,6 +503,37 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     fetchEvents();
   };
 
+  const inviteCollaborators = async (eventId: string, hostIds: string[]) => {
+    if (!hostIds || hostIds.length === 0) return;
+    const payload = hostIds.map(hId => ({
+      event_id: eventId,
+      host_id: hId,
+      status: 'pending'
+    }));
+
+    const { error } = await supabase.from('event_collaborators').upsert(payload, { onConflict: 'event_id, host_id' });
+    if (error) console.error('Invite collaborators error:', error);
+
+    const event = events.find(e => e.id === eventId);
+    const notificationsPayload = hostIds.map(hId => ({
+      user_id: hId,
+      title: 'Co-Host Invitation',
+      type: 'event',
+      message: `${profile?.name || 'A host'} invited you to co-host "${event?.title || 'an event'}"`,
+      link: `/dashboard`,
+      read: false
+    }));
+    await supabase.from('notifications').insert(notificationsPayload);
+
+    await fetchEvents();
+  };
+
+  const respondToCollaboration = async (collaborationId: string, status: 'accepted' | 'declined') => {
+    const { error } = await supabase.from('event_collaborators').update({ status }).eq('id', collaborationId);
+    if (error) console.error('Respond to collaboration error:', error);
+    await fetchEvents();
+  };
+
   return (
     <EventContext.Provider value={{
       events,
@@ -489,6 +550,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       followHost,
       unfollowHost,
       rsvpToEvent,
+      inviteCollaborators,
+      respondToCollaboration,
       loadingEvents
     }}>
       {children}
