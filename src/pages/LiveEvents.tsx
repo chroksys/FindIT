@@ -18,12 +18,17 @@ export const LiveEvents = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)', paddingBottom: 'var(--spacing-xlarge)' }}>
-      {/* Header Section */}
-      <section className="page-with-nav" style={{ 
-        paddingBottom: 'var(--spacing-large)',
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      {/* Sticky Header Section */}
+      <section style={{ 
+        position: 'sticky',
+        top: 0,
+        zIndex: 500,
+        backgroundColor: 'var(--bg-page)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: '1px solid var(--border-color)',
+        paddingTop: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 8px)',
+        paddingBottom: '16px'
       }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--spacing-small)' }}>

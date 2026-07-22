@@ -11,6 +11,28 @@ export const Navbar: React.FC = () => {
   const { role, profile, unreadCount } = useUserContext();
   const { t } = useLanguage();
   
+  React.useEffect(() => {
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        document.body.classList.add('keyboard-open');
+      }
+    };
+    const handleFocusOut = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        document.body.classList.remove('keyboard-open');
+      }
+    };
+
+    window.addEventListener('focusin', handleFocusIn);
+    window.addEventListener('focusout', handleFocusOut);
+    return () => {
+      window.removeEventListener('focusin', handleFocusIn);
+      window.removeEventListener('focusout', handleFocusOut);
+    };
+  }, []);
+
   // Hide entire global navbar for immersive live pages and isolated pages
   if (location.pathname.startsWith('/live/') && location.pathname !== '/live') return null;
   if (location.pathname.startsWith('/host/live/')) return null;
