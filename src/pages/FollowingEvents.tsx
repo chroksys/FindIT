@@ -15,6 +15,7 @@ export const FollowingEvents: React.FC = () => {
     if (e.parentEventId) return false;
     const status = getEventStatus(e);
     if (status === 'Ended') return false;
+    // No city filter — following section shows from ANY city
     return e.organizer?.isFollowed;
   }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 

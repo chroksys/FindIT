@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, CheckCircle, CreditCard, DeviceMobile, Ticket, ArrowRight, Spinner, WarningCircle, Star } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useEventContext } from '../context/EventContext';
 import { PhoneInput } from './PhoneInput';
 import { formatCompactPrice } from '../lib/formatters';
 
@@ -19,6 +20,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
   const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card'>('momo');
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  const { rsvpToEvent } = useEventContext();
   useLanguage();
 
   const isUnverifiedHost = !event.organizer?.verified;
@@ -48,9 +50,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
 
   const handleCheckout = () => {
     if (isUnverifiedHost) {
-      // Unverified host: immediate gate pass reservation
+      // Unverified host: immediate gate pass reservation — save as RSVP 'going'
       setIsProcessing(true);
-      setTimeout(() => {
+      setTimeout(async () => {
+        await rsvpToEvent(event.id, 'going');
         setIsProcessing(false);
         setStep('success');
       }, 1000);
@@ -59,9 +62,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
 
     if (step === 'details') {
       if (unitPrice === 0) {
-        // Free ticket checkout
+        // Free ticket checkout — save as RSVP 'going'
         setIsProcessing(true);
-        setTimeout(() => {
+        setTimeout(async () => {
+          await rsvpToEvent(event.id, 'going');
           setIsProcessing(false);
           setStep('success');
         }, 1200);
@@ -70,7 +74,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
       }
     } else if (step === 'payment') {
       setIsProcessing(true);
-      setTimeout(() => {
+      setTimeout(async () => {
+        await rsvpToEvent(event.id, 'going');
         setIsProcessing(false);
         setStep('success');
       }, 1800);

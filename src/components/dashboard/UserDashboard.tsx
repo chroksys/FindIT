@@ -77,6 +77,12 @@ export const UserDashboard: React.FC = () => {
 
   // Data
   const savedEvents = events.filter(e => savedEventIds?.includes(e.id));
+  // My Tickets = events the user is 'going' to (RSVP'd after checkout / gate pass)
+  const myTickets = events.filter(e => {
+    if (!profile?.id) return false;
+    const myRsvp = e.rsvps?.find(r => r.userId === profile.id);
+    return myRsvp?.status === 'going';
+  });
   const attendedEvents: any[] = [];
 
   const handleLogout = () => {
@@ -109,8 +115,8 @@ export const UserDashboard: React.FC = () => {
       <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', textAlign: 'center' }}>
           <div style={{ borderRight: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{savedEvents.length}</div>
-            <div className="text-caption">Saved</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{myTickets.length}</div>
+            <div className="text-caption">Tickets</div>
           </div>
           <div style={{ borderRight: '1px solid var(--border-color)' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>{followedHostIds.length}</div>
@@ -149,33 +155,50 @@ export const UserDashboard: React.FC = () => {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-base)' }}>
           <h3 className="text-card-title">My Tickets</h3>
-          <button onClick={() => setViewAllData({title: 'My Tickets', items: savedEvents, type: 'ticket'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
+          <button onClick={() => setViewAllData({title: 'My Tickets', items: myTickets, type: 'ticket'})} className="btn-ghost text-caption hover-scale" style={{ color: 'var(--text-secondary)', fontWeight: 600, padding: 0 }}>View All</button>
         </div>
-        <div className="horizontal-scroll gap-base" style={{ paddingBottom: 'var(--spacing-base)', paddingTop: '8px' }}>
-          {savedEvents.map(event => (
-            <div key={`ticket-${event.id}`} className="hover-lift card-padding" onClick={() => setSelectedTicket(event)} style={{ 
-              width: '280px', 
-              backgroundColor: 'var(--bg-card)', 
-              borderRadius: 'var(--radius-card)', 
-              border: '1px dashed var(--color-pin-orange)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'var(--spacing-small)',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <h4 className="text-body" style={{ fontWeight: 600, marginBottom: '4px' }}>{event.title}</h4>
-                  <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.displayDate} • 1x General</div>
+        {myTickets.length === 0 ? (
+          <p className="text-caption" style={{ color: 'var(--text-secondary)', padding: 'var(--spacing-base) 0' }}>You haven't bought any tickets yet.</p>
+        ) : (
+          <div className="horizontal-scroll gap-base" style={{ paddingBottom: 'var(--spacing-base)', paddingTop: '8px' }}>
+            {myTickets.map(event => {
+              const isGatePass = !event.organizer?.verified;
+              return (
+                <div key={`ticket-${event.id}`} className="hover-lift card-padding" onClick={() => setSelectedTicket(event)} style={{ 
+                  width: '280px', 
+                  backgroundColor: 'var(--bg-card)', 
+                  borderRadius: 'var(--radius-card)', 
+                  border: `1px dashed ${isGatePass ? 'var(--color-primary)' : 'var(--color-pin-orange)'}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'var(--spacing-small)',
+                  cursor: 'pointer'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4 className="text-body" style={{ fontWeight: 600, marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event.title}</h4>
+                      <div className="text-caption" style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{event.displayDate}</div>
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: '99px',
+                        backgroundColor: isGatePass ? 'rgba(232,84,44,0.12)' : 'rgba(255,107,0,0.12)',
+                        color: isGatePass ? 'var(--color-primary)' : 'var(--color-pin-orange)'
+                      }}>
+                        {isGatePass ? '🎫 Gate Pass' : '🎟️ General Admission'}
+                      </span>
+                    </div>
+                    <div style={{ backgroundColor: 'var(--color-white)', padding: '4px', borderRadius: '4px', flexShrink: 0, marginLeft: '8px' }}>
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=ticket-${event.id}`} alt="QR" style={{ width: '40px', height: '40px' }} />
+                    </div>
+                  </div>
+                  <button className="btn-secondary" onClick={(e) => { e.stopPropagation(); setSelectedTicket(event); }} style={{ width: '100%', justifyContent: 'center', padding: '8px' }}>View Ticket</button>
                 </div>
-                <div style={{ backgroundColor: 'var(--color-white)', padding: '4px', borderRadius: '4px' }}>
-                  <img src={`https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=ticket-${event.id}`} alt="QR" style={{ width: '40px', height: '40px' }} />
-                </div>
-              </div>
-              <button className="btn-secondary" onClick={(e) => { e.stopPropagation(); setSelectedTicket(event); }} style={{ width: '100%', justifyContent: 'center', padding: '8px' }}>View Ticket</button>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Section 4: Saved Events */}

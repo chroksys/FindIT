@@ -23,7 +23,7 @@ export const Home = () => {
     if (e.parentEventId) return false; // Hide sub-events from main feed
     if (getEventStatus(e) === 'Ended') return false;   // Hide past events
     if (getEventStatus(e) === 'Live') return false;    // Live events belong on the Live page
-    if (selectedCity !== 'All' && e.city !== selectedCity) return false;
+    if (selectedCity !== 'All' && e.city?.toLowerCase() !== selectedCity.toLowerCase()) return false;
     return true;
   }).sort((a, b) => {
     let scoreA = 0;
@@ -63,7 +63,26 @@ export const Home = () => {
   ).length;
 
   const hottestEvents = filteredEvents.filter(e => e.isBoosted);
-  const followedEvents = filteredEvents.filter(e => e.organizer.isFollowed);
+
+  // Following section: ALWAYS show events from followed hosts regardless of selected city
+  const followedEvents = events.filter(e => {
+    if (e.isPaused) return false;
+    if (e.parentEventId) return false;
+    if (getEventStatus(e) === 'Ended') return false;
+    if (!e.organizer?.isFollowed) return false;
+    // Apply keyword search if active
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      return (
+        e.title.toLowerCase().includes(q) ||
+        e.venue.toLowerCase().includes(q) ||
+        (e.city && e.city.toLowerCase().includes(q)) ||
+        e.category.toLowerCase().includes(q) ||
+        (e.organizer?.name && e.organizer.name.toLowerCase().includes(q))
+      );
+    }
+    return true;
+  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>

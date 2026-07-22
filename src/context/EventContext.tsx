@@ -107,7 +107,12 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (profile?.id) {
       if (profile.city) {
-        setSelectedCity(profile.city);
+        // Case-insensitive match against actual event cities to avoid mismatch
+        const eventCities = events.map(e => e.city).filter(Boolean);
+        const matchedCity = eventCities.find(
+          c => c?.toLowerCase() === profile.city?.toLowerCase()
+        );
+        setSelectedCity(matchedCity || profile.city);
       }
       fetchFollowedHosts(profile.id).then(ids => fetchEvents(ids));
     } else {
