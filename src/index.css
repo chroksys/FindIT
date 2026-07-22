@@ -609,6 +609,10 @@ input:focus, textarea:focus, select:focus {
     border: 1px solid var(--border-color) !important;
     border-radius: var(--radius-card);
   }
+  .categories-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 16px !important;
+  }
 }
 
 @keyframes skeleton-loading {

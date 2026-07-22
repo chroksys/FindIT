@@ -143,29 +143,30 @@ export const Search = () => {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-medium)', paddingBottom: '180px' }}>
           <h1 style={{ fontSize: '32px', fontWeight: 700, margin: '16px 0', color: 'var(--text-primary)' }}>Choose Categories</h1>
           
-          <div style={{ 
+          <div className="categories-grid" style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', 
-            gap: '16px' 
+            gridTemplateColumns: 'repeat(2, 1fr)', 
+            gap: '12px' 
           }}>
             {CATEGORIES.map((cat, i) => (
               <div 
                 key={cat.name} 
                 onClick={() => setCategory(cat.name)}
-                className="category-card"
+                className="category-card hover-scale"
                 style={{
                   backgroundColor: 'var(--bg-card)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid var(--border-color)',
                   borderRadius: '24px',
-                  padding: '24px 16px',
+                  padding: '20px 12px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '12px',
+                  gap: '10px',
                   cursor: 'pointer',
-                  animationDelay: `${i * 0.05}s`
+                  textAlign: 'center',
+                  animationDelay: `${i * 0.03}s`
                 }}
               >
                 <div style={{ color: 'var(--text-primary)' }}>
