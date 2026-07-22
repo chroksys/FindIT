@@ -104,11 +104,7 @@ body {
   font-size: 16px;
 }
 
-@media (max-width: 768px) {
-  body:has(input:focus, textarea:focus) .navbar-bottom {
-    display: none !important;
-  }
-}
+
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);

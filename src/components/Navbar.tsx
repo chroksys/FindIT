@@ -166,13 +166,14 @@ export const Navbar: React.FC = () => {
             <span>{t('log_in')}</span>
           </Link>
         ) : (
-          <Link to="/dashboard" className="text-body hover-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: location.pathname === '/dashboard' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-              {profile?.avatarUrl ? (
-                <img src={profile.avatarUrl} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
-              ) : (
-                <UserCircle size={24} weight={location.pathname === '/dashboard' ? 'fill' : 'regular'} />
-              )}
-            </Link>
+          <Link to="/dashboard" className={`nav-item-mobile ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+            {profile?.avatarUrl ? (
+              <img src={profile.avatarUrl} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <UserCircle size={24} weight={location.pathname === '/dashboard' ? 'fill' : 'regular'} />
+            )}
+            <span>{t('profile')}</span>
+          </Link>
         )}
       </nav>
       )}
