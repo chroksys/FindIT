@@ -3,6 +3,7 @@ import { X, CheckCircle, CreditCard, DeviceMobile, Ticket, ArrowRight, Spinner, 
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useEventContext } from '../context/EventContext';
+import { useUserContext } from '../context/UserContext';
 import { PhoneInput } from './PhoneInput';
 import { formatCompactPrice } from '../lib/formatters';
 
@@ -20,10 +21,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
   const [paymentMethod, setPaymentMethod] = useState<'momo' | 'card'>('momo');
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  const { profile } = useUserContext();
   const { rsvpToEvent } = useEventContext();
   useLanguage();
 
   const isUnverifiedHost = !event.organizer?.verified;
+  const alreadyReserved = event.rsvps?.some((r: any) => r.userId === profile?.id && r.status === 'going');
 
   const parsePrice = (priceStr?: string) => {
     if (!priceStr || priceStr === '0' || priceStr.toLowerCase() === 'free') return 0;
@@ -134,28 +137,71 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
                 </div>
               </div>
 
-              {/* Unverified Host Warning Banner */}
-              {isUnverifiedHost && (
+              {/* Already Reserved Banner */}
+              {alreadyReserved ? (
                 <div style={{ 
                   borderRadius: '16px', 
                   border: '1px solid rgba(232, 84, 44, 0.4)', 
                   backgroundColor: 'rgba(232, 84, 44, 0.1)', 
-                  padding: '14px 16px',
+                  padding: '20px',
                   display: 'flex',
+                  flexDirection: 'column',
                   gap: '12px',
-                  alignItems: 'flex-start'
+                  alignItems: 'center',
+                  textAlign: 'center'
                 }}>
-                  <WarningCircle size={24} color="var(--color-pin-orange)" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <CheckCircle size={44} color="var(--color-pin-orange)" weight="fill" />
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-pin-orange)', marginBottom: '4px' }}>
-                      Unverified Host — Pay at Gate Only
+                    <div style={{ fontWeight: 800, fontSize: '17px', color: 'var(--color-pin-orange)', marginBottom: '6px' }}>
+                      Ticket Already Reserved
                     </div>
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
-                      Online payments are disabled for this event because the host is unverified. You can reserve your gate pass below and pay cash or Mobile Money at the entrance.
+                      You already hold a ticket / gate pass reservation for <strong>{event.title}</strong>. Each user is limited to 1 reservation per event to ensure accurate host analytics.
                     </p>
                   </div>
+                  <button 
+                    onClick={handleViewTickets}
+                    style={{
+                      width: '100%',
+                      backgroundColor: 'var(--color-pin-orange)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '12px 24px',
+                      borderRadius: '999px',
+                      fontWeight: 700,
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      marginTop: '8px'
+                    }}
+                    className="hover-scale"
+                  >
+                    View My Ticket in Profile
+                  </button>
                 </div>
-              )}
+              ) : (
+                <>
+                  {/* Unverified Host Warning Banner */}
+                  {isUnverifiedHost && (
+                    <div style={{ 
+                      borderRadius: '16px', 
+                      border: '1px solid rgba(232, 84, 44, 0.4)', 
+                      backgroundColor: 'rgba(232, 84, 44, 0.1)', 
+                      padding: '14px 16px',
+                      display: 'flex',
+                      gap: '12px',
+                      alignItems: 'flex-start'
+                    }}>
+                      <WarningCircle size={24} color="var(--color-pin-orange)" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-pin-orange)', marginBottom: '4px' }}>
+                          Unverified Host — Pay at Gate Only
+                        </div>
+                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+                          Online payments are disabled for this event because the host is unverified. You can reserve your gate pass below and pay cash or Mobile Money at the entrance.
+                        </p>
+                      </div>
+                    </div>
+                  )}
 
               {/* Ticket Type Selection */}
               <div>
@@ -270,6 +316,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
                   <span style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-pin-orange)' }}>{formatPrice(total)}</span>
                 </div>
               </div>
+              </>
+              )}
             </div>
           )}
 
@@ -356,7 +404,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose }) 
         </div>
 
         {/* Footer Actions */}
-        {step !== 'success' && (
+        {step !== 'success' && !alreadyReserved && (
           <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '12px' }}>
             {step === 'payment' && (
               <button className="btn-secondary hover-scale" onClick={() => setStep('details')} disabled={isProcessing} style={{ flex: 1, justifyContent: 'center', borderRadius: '999px' }}>

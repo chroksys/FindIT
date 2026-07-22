@@ -3,7 +3,7 @@ import { ChartBar, Users, Eye, ArrowUpRight, ArrowDownRight, CalendarBlank } fro
 import { useUserContext } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { supabase } from '../lib/supabase';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const Analytics = () => {
   const { profile } = useUserContext();
@@ -102,6 +102,9 @@ export const Analytics = () => {
     return data;
   }, [pageViews]);
 
+  const peakViews = useMemo(() => Math.max(...chartData.map(d => d.views), 0), [chartData]);
+  const avgViews = useMemo(() => (totalViews / 30).toFixed(1), [totalViews]);
+
   return (
     <div className="container section page-with-nav" style={{ 
       display: 'flex', 
@@ -125,8 +128,16 @@ export const Analytics = () => {
 
       {/* Chart Area */}
       <div className="card-padding animate-fade-in-up" style={{ animationDelay: '0.5s', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-large)' }}>
-          <h3 className="text-card-title">Event Page Views (Last 30 Days)</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: 'var(--spacing-large)' }}>
+          <h3 className="text-card-title" style={{ margin: 0 }}>Event Page Views (Last 30 Days)</h3>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', backgroundColor: 'rgba(232, 84, 44, 0.12)', color: 'var(--color-pin-orange)' }}>
+              Peak: {peakViews} views/day
+            </span>
+            <span style={{ fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', backgroundColor: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)' }}>
+              Avg: {avgViews}/day
+            </span>
+          </div>
         </div>
 
         <div style={{ flexGrow: 1, width: '100%', height: '300px' }}>
@@ -136,16 +147,53 @@ export const Analytics = () => {
             </div>
           ) : pageViews.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                <XAxis dataKey="date" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: 'var(--bg-page)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
-                  itemStyle={{ color: 'var(--color-primary)' }}
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, bottom: 5, left: -20 }}>
+                <defs>
+                  <linearGradient id="viewsAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#e8542c" stopOpacity={0.45} />
+                    <stop offset="95%" stopColor="#e8542c" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.08)" vertical={false} />
+                <XAxis 
+                  dataKey="date" 
+                  interval={4} 
+                  stroke="var(--text-secondary)" 
+                  fontSize={11} 
+                  tickLine={false} 
+                  axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }} 
                 />
-                <Line type="monotone" dataKey="views" name="Page Views" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 4, fill: 'var(--color-primary)', strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
-              </LineChart>
+                <YAxis 
+                  stroke="var(--text-secondary)" 
+                  fontSize={11} 
+                  tickLine={false} 
+                  axisLine={false} 
+                  allowDecimals={false}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'var(--bg-card)', 
+                    border: '1px solid var(--border-color)', 
+                    borderRadius: '12px', 
+                    color: 'var(--text-primary)',
+                    boxShadow: 'var(--shadow-soft)',
+                    fontSize: '13px',
+                    fontWeight: 600
+                  }}
+                  itemStyle={{ color: 'var(--color-pin-orange)' }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="views" 
+                  name="Page Views" 
+                  stroke="#e8542c" 
+                  strokeWidth={3} 
+                  fillOpacity={1} 
+                  fill="url(#viewsAreaGradient)" 
+                  dot={{ r: 3, fill: '#e8542c', stroke: '#ffffff', strokeWidth: 1 }}
+                  activeDot={{ r: 6, fill: '#e8542c', stroke: '#ffffff', strokeWidth: 2 }}
+                />
+              </AreaChart>
             </ResponsiveContainer>
           ) : (
              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary)' }}>

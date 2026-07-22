@@ -13,6 +13,7 @@ import { useUserContext } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 import { EventCard } from '../components/EventCard';
 import { CheckoutModal } from '../components/CheckoutModal';
+import { TicketModal } from '../components/TicketModal';
 import { AvatarCluster } from '../components/AvatarCluster';
 import { supabase } from '../lib/supabase';
 import { Share } from '@capacitor/share';
@@ -26,6 +27,7 @@ export const EventDetail = () => {
   const { t } = useLanguage();
   
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showTicketModal, setShowTicketModal] = useState(false);
   
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
@@ -37,6 +39,8 @@ export const EventDetail = () => {
   const [showCheckout, setShowCheckout] = useState(false);
 
   const event = events.find(e => e.id === id);
+  const myRsvp = event?.rsvps?.find(r => r.userId === profile?.id);
+  const isAlreadyGoing = myRsvp?.status === 'going';
   const collaborations = events.filter(e => event?.collaborations?.includes(e.id));
   const parentEvent = event?.parentEventId ? events.find(e => e.id === event.parentEventId) : null;
   const subEvents = events.filter(e => e.parentEventId === id);
@@ -712,7 +716,24 @@ export const EventDetail = () => {
           </div>
         </div>
 
-        {event.organizer?.verified ? (
+        {isAlreadyGoing ? (
+          <button 
+            className="hover-scale" 
+            onClick={() => setShowTicketModal(true)} 
+            style={{ 
+              backgroundColor: '#e8542c', 
+              color: '#ffffff', 
+              border: 'none', 
+              padding: '12px 28px', 
+              fontSize: '15px', 
+              fontWeight: 700, 
+              borderRadius: '999px',
+              cursor: 'pointer'
+            }}
+          >
+            🎫 View My Ticket
+          </button>
+        ) : event.organizer?.verified ? (
           event.ticketLink ? (
             <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
               <button 
@@ -771,6 +792,10 @@ export const EventDetail = () => {
 
       {showCheckout && event && (
         <CheckoutModal event={event} onClose={() => setShowCheckout(false)} />
+      )}
+
+      {showTicketModal && event && (
+        <TicketModal event={event} onClose={() => setShowTicketModal(false)} />
       )}
     </div>
   );
