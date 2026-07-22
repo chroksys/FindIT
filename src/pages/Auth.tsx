@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserOnboarding } from '../components/auth/UserOnboarding';
 import { HostOnboarding } from '../components/auth/HostOnboarding';
 import { Ticket, Storefront, ArrowRight, CaretLeft } from '@phosphor-icons/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 
 type AuthRole = 'none' | 'user' | 'host' | 'login';
@@ -22,7 +22,7 @@ const LoginView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     setErrorMsg('');
     try {
       await loginMock(email, password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (error: any) {
       setErrorMsg(error.message || 'Invalid login credentials');
     } finally {
@@ -71,7 +71,12 @@ const LoginView: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 };
 
 export const Auth: React.FC = () => {
+  const { role } = useUserContext();
   const [selectedRole, setSelectedRole] = useState<AuthRole>('none');
+
+  if (role !== 'guest') {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   if (selectedRole === 'user') {
     return <UserOnboarding onBack={() => setSelectedRole('none')} />;

@@ -65,7 +65,7 @@ export const HostAccount = () => {
     setIsSaved(true);
     setTimeout(() => {
       setIsSaved(false);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }, 1500);
   };
 

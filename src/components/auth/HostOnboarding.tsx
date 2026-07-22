@@ -94,7 +94,7 @@ export const HostOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         avatarUrl: logoUrl || undefined,
         verificationStatus: 'unverified',
       }, password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setErrorMsg(err.message || 'Registration failed. Please try again.');
       setStep(1);

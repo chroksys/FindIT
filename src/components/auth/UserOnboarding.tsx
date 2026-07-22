@@ -108,7 +108,7 @@ export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         gender,
         avatarUrl: avatarUrl || undefined,
       }, password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setErrorMsg(err.message || 'Registration failed. Please try again.');
       setStep(1); // Go back to credentials so user can fix the issue
