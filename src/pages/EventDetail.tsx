@@ -4,7 +4,7 @@ import Map, { Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { 
   MapPin, CalendarBlank, Star, CheckCircle, ThumbsUp, CaretLeft, 
-  ShareNetwork,
+  ShareNetwork, Ticket, WarningCircle,
   Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, SpinnerGap, NavigationArrow
 } from '@phosphor-icons/react';
 
@@ -410,6 +410,62 @@ export const EventDetail = () => {
               {event.rsvps && event.rsvps.length > 0 && (
                 <div style={{ marginTop: '12px', width: '100%', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
                   <AvatarCluster rsvps={event.rsvps} size={28} />
+                </div>
+              )}
+            </div>
+
+            {/* Tickets & Pricing Section Card */}
+            <div className="animate-fade-in-up card-padding" style={{ 
+              animationDelay: '0.22s', 
+              backgroundColor: 'var(--bg-card)', 
+              borderRadius: '18px', 
+              border: '1px solid var(--border-color)', 
+              marginBottom: '24px',
+              boxShadow: 'var(--shadow-soft)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                <Ticket size={22} color="var(--color-pin-orange)" weight="fill" />
+                <h3 className="text-card-title" style={{ margin: 0, fontSize: '18px' }}>{t('tickets') || 'Tickets & Pricing'}</h3>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '14px' }}>
+                {event.earlyBird && (
+                  <div style={{ backgroundColor: 'rgba(232, 84, 44, 0.1)', padding: '12px 16px', borderRadius: '14px', border: '1px solid var(--color-pin-orange)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ color: 'var(--color-pin-orange)', fontWeight: 700, fontSize: '14px' }}>Early Bird Offer</span>
+                      <span style={{ fontWeight: 800, fontSize: '16px', color: 'var(--text-primary)' }}>
+                        {event.earlyBird.price.includes(event.currency || 'USD') ? event.earlyBird.price : `${event.earlyBird.price} ${event.currency || 'USD'}`}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'var(--bg-page)', borderRadius: '14px', border: '1px solid var(--border-color)' }}>
+                  <span style={{ fontWeight: 600 }}>General Admission</span>
+                  <span style={{ fontWeight: 800 }}>
+                    {(!event.price || event.price === '0' || event.price === '00' || event.price.toLowerCase() === 'free') 
+                      ? 'Free' 
+                      : (event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`)}
+                  </span>
+                </div>
+                {event.vipPrice && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'rgba(255, 215, 0, 0.1)', borderRadius: '14px', border: '1px solid #ffd700' }}>
+                    <span style={{ fontWeight: 700, color: '#ffd700' }}>VIP Admission</span>
+                    <span style={{ fontWeight: 800, color: '#ffd700' }}>
+                      {event.vipPrice.includes(event.currency || 'USD') ? event.vipPrice : `${event.vipPrice} ${event.currency || 'USD'}`}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {!event.organizer?.verified && (
+                <div style={{ borderRadius: '14px', border: '1px solid rgba(232, 84, 44, 0.35)', backgroundColor: 'rgba(232, 84, 44, 0.08)', padding: '12px 16px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <WarningCircle size={20} color="var(--color-pin-orange)" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--color-pin-orange)', marginBottom: '2px' }}>Pay at the Gate</div>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+                      Host is unverified. Online payment is disabled; please pay cash or Mobile Money at the venue entrance.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
