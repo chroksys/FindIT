@@ -3,9 +3,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Map, { Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { 
-  MapPin, CalendarBlank, Star, Ticket, CheckCircle, ThumbsUp, CaretLeft, 
+  MapPin, CalendarBlank, Star, CheckCircle, ThumbsUp, CaretLeft, 
   ShareNetwork,
-  Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar, NavigationArrow
+  Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, SpinnerGap, NavigationArrow
 } from '@phosphor-icons/react';
 
 import { useEventContext } from '../context/EventContext';
@@ -33,40 +33,12 @@ export const EventDetail = () => {
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [reviewError, setReviewError] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
-  
-  const [timeLeft, setTimeLeft] = useState('');
-  const [promoCode, setPromoCode] = useState('');
-  const [promoStatus, setPromoStatus] = useState<null | 'success' | 'error'>(null);
   const [showCheckout, setShowCheckout] = useState(false);
 
   const event = events.find(e => e.id === id);
   const collaborations = events.filter(e => event?.collaborations?.includes(e.id));
   const parentEvent = event?.parentEventId ? events.find(e => e.id === event.parentEventId) : null;
   const subEvents = events.filter(e => e.parentEventId === id);
-
-  useEffect(() => {
-    if (event?.earlyBird?.deadline) {
-      const updateTimer = () => {
-        const now = new Date().getTime();
-        const deadline = new Date(event.earlyBird!.deadline).getTime();
-        const distance = deadline - now;
-        
-        if (distance < 0) {
-          setTimeLeft('Expired');
-        } else {
-          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-          setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-        }
-      };
-      
-      updateTimer();
-      const interval = setInterval(updateTimer, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [event]);
 
   useEffect(() => {
     if (id) {
@@ -84,15 +56,6 @@ export const EventDetail = () => {
       trackView();
     }
   }, [id, profile?.id]);
-
-  const handleApplyPromo = () => {
-    if (!promoCode) return;
-    if (event?.promoCodes?.find(p => p.code.toUpperCase() === promoCode.toUpperCase())) {
-      setPromoStatus('success');
-    } else {
-      setPromoStatus('error');
-    }
-  };
 
   const handleAction = (callback?: () => void) => {
     if (role === 'guest') {
@@ -207,16 +170,13 @@ export const EventDetail = () => {
   }
 
   return (
-    <div style={{ paddingBottom: '100px' }}>
-      {/* Top Header Bar */}
+    <div style={{ paddingBottom: '120px' }}>
+      {/* Top Header Bar - Scrollable with proper safe-area padding & unwrapped icon buttons */}
       <div style={{ 
-        position: 'sticky', 
-        top: 0, 
+        position: 'relative', 
         zIndex: 100, 
-        backgroundColor: 'var(--bg-navbar)', 
-        backdropFilter: 'blur(16px)', 
-        borderBottom: '1px solid var(--border-color)',
-        padding: '12px var(--spacing-medium)',
+        backgroundColor: 'transparent',
+        padding: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) var(--spacing-medium) 12px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -224,12 +184,11 @@ export const EventDetail = () => {
         <button 
           onClick={() => navigate(-1)} 
           className="hover-scale"
+          title="Back"
           style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '50%',
-            width: '40px',
-            height: '40px',
+            background: 'none',
+            border: 'none',
+            padding: '4px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -237,22 +196,21 @@ export const EventDetail = () => {
             color: 'var(--text-primary)'
           }}
         >
-          <CaretLeft size={20} weight="bold" />
+          <CaretLeft size={26} weight="bold" />
         </button>
 
-        <span style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text-primary)' }}>
+        <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
           Event Details
         </span>
 
         <button 
           onClick={handleShare}
           className="hover-scale"
+          title="Share Event"
           style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '50%',
-            width: '40px',
-            height: '40px',
+            background: 'none',
+            border: 'none',
+            padding: '4px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -260,18 +218,18 @@ export const EventDetail = () => {
             color: 'var(--text-primary)'
           }}
         >
-          <ShareNetwork size={20} weight="bold" />
+          <ShareNetwork size={26} weight="bold" />
         </button>
       </div>
 
-      {/* Banner / Hero Section */}
-      <div className="container" style={{ marginTop: 'var(--spacing-medium)' }}>
+      {/* Clean Banner / Hero Image (No overlay text) */}
+      <div className="container" style={{ marginTop: 'var(--spacing-small)' }}>
         <div style={{ 
           position: 'relative', 
           width: '100%', 
-          height: '45vh', 
-          minHeight: '300px', 
-          maxHeight: '500px',
+          height: '42vh', 
+          minHeight: '280px', 
+          maxHeight: '480px',
           borderRadius: '24px', 
           overflow: 'hidden',
           backgroundColor: 'var(--bg-card)',
@@ -283,93 +241,144 @@ export const EventDetail = () => {
             alt={event.title} 
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center' }} 
           />
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 100%)',
-            pointerEvents: 'none'
-          }}></div>
-          
-          {/* Category Badge, Title & Host Overlay */}
-          <div style={{ position: 'absolute', bottom: '20px', left: '20px', right: '20px', zIndex: 10 }}>
-            <span className="badge badge-default" style={{ backgroundColor: 'var(--color-pin-orange)', marginBottom: '8px', display: 'inline-block' }}>
-              {event.category}
-            </span>
-            <h1 style={{ color: '#ffffff', fontSize: 'clamp(24px, 5vw, 36px)', fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
-              {event.title}
-            </h1>
-
-            {event.organizer && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
-                <div 
-                  className="hover-scale"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(16px)', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer' }}
-                  onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
-                >
-                  <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
-                  <div>
-                    <div style={{ color: '#ffffff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px' }}>
-                      {event.organizer.name}
-                      {event.organizer.verified && <CheckCircle size={14} weight="fill" color="var(--color-success)" />}
-                    </div>
-                  </div>
-                </div>
-
-                {(event.coHosts || []).filter(c => c.status === 'accepted').map(c => (
-                  <div 
-                    key={c.id}
-                    className="hover-scale"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: 'rgba(255,107,0,0.2)', backdropFilter: 'blur(16px)', borderRadius: 'var(--radius-pill)', border: '1px solid var(--color-pin-orange)', cursor: 'pointer' }}
-                    onClick={() => navigate(`/organizer/${c.hostId}`)}
-                  >
-                    <img src={c.avatarUrl} alt={c.name} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <span style={{ color: '#ffffff', fontWeight: 600, fontSize: '13px' }}>{c.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
-      <div className="container" style={{ marginTop: 'var(--spacing-large)' }}>
-        <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-xlarge)', alignItems: 'start' }}>
+      {/* Event Details Content Container */}
+      <div className="container" style={{ marginTop: 'var(--spacing-base)' }}>
+        <div className="grid-responsive" style={{ display: 'grid', gap: 'var(--spacing-large)', alignItems: 'start' }}>
           
-          {/* Main Left Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)', minWidth: 0 }}>
+          {/* Main Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             
-            {/* Quick Details & Actions */}
-            <div style={{ 
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--spacing-base)',
-              backgroundColor: 'var(--bg-card)', padding: 'var(--spacing-large)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)',
+            {/* 1. Category and Title on the same line */}
+            <div className="animate-fade-in-up" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
+              <span className="badge badge-default" style={{ backgroundColor: 'var(--color-pin-orange)', color: '#ffffff', margin: 0, padding: '6px 14px', fontSize: '13px', borderRadius: '999px', fontWeight: 700 }}>
+                {event.category}
+              </span>
+              <h1 style={{ color: 'var(--text-primary)', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
+                {event.title}
+              </h1>
+            </div>
+
+            {/* 2. Description or About the Event */}
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.05s', marginBottom: '20px' }}>
+              <h2 className="text-section" style={{ fontSize: '18px', marginBottom: '8px' }}>{t('about_this_event')}</h2>
+              <p className="text-body" style={{ color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line', margin: 0 }}>
+                {event.description}
+              </p>
+            </div>
+
+            {/* 3. Date and Venue on the same line */}
+            <div className="animate-fade-in-up" style={{ 
+              animationDelay: '0.1s',
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              flexWrap: 'wrap', 
+              gap: '16px',
+              backgroundColor: 'var(--bg-card)', 
+              padding: '16px 20px', 
+              borderRadius: '18px', 
+              border: '1px solid var(--border-color)',
+              marginBottom: '20px',
               boxShadow: 'var(--shadow-soft)'
             }}>
-              <div style={{ display: 'flex', gap: 'var(--spacing-large)', color: 'var(--text-secondary)', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <CalendarBlank size={28} />
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{event.displayDate}</div>
-                    <div className="text-caption">{event.displayTime}</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <MapPin size={28} />
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{event.venue}</div>
-                    <div className="text-caption">Kampala, Uganda</div>
-                  </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <CalendarBlank size={26} color="var(--color-pin-orange)" weight="bold" />
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '15px' }}>{event.displayDate}</div>
+                  <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.displayTime}</div>
                 </div>
               </div>
-              
-              <div style={{ display: 'flex', gap: 'var(--spacing-small)', marginTop: 'var(--spacing-medium)', width: '100%', flexWrap: 'wrap' }}>
-                <div style={{ position: 'relative', flex: '1 1 auto', minWidth: '150px' }}>
-                  <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
-                    <CalendarPlus size={20} /> {t('add_to_calendar')}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <MapPin size={26} color="var(--color-pin-orange)" weight="fill" />
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '15px' }}>{event.venue}</div>
+                  <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.city || 'Kampala, Uganda'}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Host Card (Clickable button leading to Host Profile) */}
+            <div 
+              className="animate-fade-in-up hover-scale"
+              onClick={() => navigate(`/organizer/${(event.organizer as any).id || '1'}`)}
+              style={{ 
+                animationDelay: '0.15s',
+                backgroundColor: 'var(--bg-card)', 
+                borderRadius: '18px', 
+                border: '1px solid var(--border-color)', 
+                padding: '16px 20px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                cursor: 'pointer', 
+                marginBottom: '20px',
+                boxShadow: 'var(--shadow-soft)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '16px' }}>{event.organizer.name}</span>
+                    {event.organizer.verified && <CheckCircle size={16} weight="fill" color="var(--color-success)" />}
+                  </div>
+                  <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.organizer.followers.toLocaleString()} Followers</div>
+                </div>
+              </div>
+              <button 
+                className={followedHostIds.includes(event.organizer.id || '') ? 'btn-secondary' : 'btn-accent'} 
+                disabled={isFollowLoading}
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  if (role === 'guest') { navigate('/login'); return; }
+                  const hostId = event.organizer.id || '';
+                  if (!hostId) return;
+                  setIsFollowLoading(true);
+                  try {
+                    if (followedHostIds.includes(hostId)) {
+                      await unfollowHost(hostId);
+                    } else {
+                      await followHost(hostId, event.organizer.name);
+                    }
+                  } finally {
+                    setIsFollowLoading(false);
+                  }
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', fontSize: '13px', borderRadius: '999px', opacity: isFollowLoading ? 0.7 : 1 }}
+              >
+                {isFollowLoading ? (
+                  <><SpinnerGap size={16} style={{ animation: 'spin 1s linear infinite' }} /> Loading...</>
+                ) : followedHostIds.includes(event.organizer.id || '') ? (
+                  <><CheckCircle size={16} /> Following</>
+                ) : (
+                  <><Bell size={16} /> Follow</>
+                )}
+              </button>
+            </div>
+
+            {/* 5. Action Card (3 Buttons: Add to Calendar, Interested, Going) */}
+            <div className="animate-fade-in-up" style={{ 
+              animationDelay: '0.2s',
+              backgroundColor: 'var(--bg-card)', 
+              padding: '16px 20px', 
+              borderRadius: '18px', 
+              border: '1px solid var(--border-color)',
+              marginBottom: '24px',
+              boxShadow: 'var(--shadow-soft)'
+            }}>
+              <div style={{ display: 'flex', gap: '10px', width: '100%', flexWrap: 'wrap' }}>
+                <div style={{ position: 'relative', flex: '1 1 auto', minWidth: '130px' }}>
+                  <button className="btn-secondary hover-lift" onClick={() => handleAction(() => setShowCalendar(!showCalendar))} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 14px', fontSize: '13px' }}>
+                    <CalendarPlus size={18} /> {t('add_to_calendar')}
                   </button>
                   {showCalendar && (
                     <div className="glass-dropdown" style={{ left: 0, right: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '100%', top: '100%', marginTop: '8px' }}>
-                      <button className="btn-ghost" onClick={handleGoogleCalendar} style={{ justifyContent: 'flex-start' }}><GoogleLogo size={20} /> Google</button>
-                      <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><AppleLogo size={20} /> Apple</button>
-                      <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><MicrosoftOutlookLogo size={20} /> Outlook</button>
+                      <button className="btn-ghost" onClick={handleGoogleCalendar} style={{ justifyContent: 'flex-start' }}><GoogleLogo size={18} /> Google</button>
+                      <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><AppleLogo size={18} /> Apple</button>
+                      <button className="btn-ghost" onClick={handleICSDownload} style={{ justifyContent: 'flex-start' }}><MicrosoftOutlookLogo size={18} /> Outlook</button>
                     </div>
                   )}
                 </div>
@@ -382,16 +391,16 @@ export const EventDetail = () => {
                       <button 
                         className={userRsvp === 'interested' ? "btn-accent hover-lift" : "btn-secondary hover-lift"} 
                         onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'interested' ? null : 'interested'))} 
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flex: '1 1 auto', minWidth: '110px', padding: '10px 14px', fontSize: '13px' }}
                       >
-                        <ThumbsUp size={20} weight={userRsvp === 'interested' ? "fill" : "regular"} /> {t('interested')}
+                        <ThumbsUp size={18} weight={userRsvp === 'interested' ? "fill" : "regular"} /> {t('interested')}
                       </button>
                       <button 
                         className={userRsvp === 'going' ? "btn-accent hover-lift" : "btn-primary hover-lift"} 
                         onClick={() => handleAction(() => rsvpToEvent(event.id, userRsvp === 'going' ? null : 'going'))} 
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flex: '1 1 auto', minWidth: '120px' }}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flex: '1 1 auto', minWidth: '110px', padding: '10px 14px', fontSize: '13px' }}
                       >
-                        <CheckCircle size={20} weight={userRsvp === 'going' ? "fill" : "regular"} /> {t('going')}
+                        <CheckCircle size={18} weight={userRsvp === 'going' ? "fill" : "regular"} /> {t('going')}
                       </button>
                     </>
                   );
@@ -399,8 +408,8 @@ export const EventDetail = () => {
               </div>
 
               {event.rsvps && event.rsvps.length > 0 && (
-                <div style={{ marginTop: 'var(--spacing-medium)', width: '100%', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-medium)' }}>
-                  <AvatarCluster rsvps={event.rsvps} size={32} />
+                <div style={{ marginTop: '12px', width: '100%', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
+                  <AvatarCluster rsvps={event.rsvps} size={28} />
                 </div>
               )}
             </div>
@@ -418,18 +427,10 @@ export const EventDetail = () => {
               </Link>
             )}
 
-            {/* About Section */}
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>{t('about_this_event')}</h2>
-              <p className="text-body" style={{ color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
-                {event.description}
-              </p>
-            </div>
-
             {/* Sub-Events Section */}
             {subEvents.length > 0 && (
-              <div className="animate-fade-in-up" style={{ animationDelay: '0.15s', marginTop: 'var(--spacing-large)' }}>
-                <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>Schedule / Sub-Events</h2>
+              <div className="animate-fade-in-up" style={{ animationDelay: '0.25s', marginBottom: 'var(--spacing-large)' }}>
+                <h2 className="text-section" style={{ fontSize: '20px', marginBottom: 'var(--spacing-base)' }}>Schedule / Sub-Events</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-base)' }}>
                   {subEvents.map(subEvent => (
                     <EventCard key={subEvent.id} {...subEvent} />
@@ -440,8 +441,8 @@ export const EventDetail = () => {
 
             {/* Gallery Section */}
             {event.gallery && event.gallery.length > 0 && (
-              <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>{t('gallery')}</h2>
+              <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', marginBottom: 'var(--spacing-large)' }}>
+                <h2 className="text-section" style={{ fontSize: '20px', marginBottom: 'var(--spacing-base)' }}>{t('gallery')}</h2>
                 <div style={{ display: 'flex', gap: 'var(--spacing-base)', overflowX: 'auto', paddingBottom: 'var(--spacing-small)' }}>
                   {event.gallery.map((img, idx) => (
                     <img 
@@ -456,55 +457,13 @@ export const EventDetail = () => {
               </div>
             )}
 
-            {/* Organizer Section */}
-            <div className="animate-fade-in-up hover-lift card-padding" style={{ animationDelay: '0.3s', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-base)' }}>
-                <img src={event.organizer.avatarUrl} alt={event.organizer.name} style={{ width: '64px', height: '64px', borderRadius: 'var(--radius-pill)', objectFit: 'cover' }} />
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="text-card-title">{event.organizer.name}</span>
-                    {event.organizer.verified && <CheckCircle size={16} weight="fill" color="var(--color-success)" />}
-                  </div>
-                  <div className="text-caption">{event.organizer.followers.toLocaleString()} Followers</div>
-                </div>
-              </div>
-              <button 
-                className={followedHostIds.includes(event.organizer.id || '') ? 'btn-secondary' : 'btn-accent'} 
-                disabled={isFollowLoading}
-                onClick={async () => {
-                  if (role === 'guest') { navigate('/login'); return; }
-                  const hostId = event.organizer.id || '';
-                  if (!hostId) return;
-                  setIsFollowLoading(true);
-                  try {
-                    if (followedHostIds.includes(hostId)) {
-                      await unfollowHost(hostId);
-                    } else {
-                      await followHost(hostId, event.organizer.name);
-                    }
-                  } finally {
-                    setIsFollowLoading(false);
-                  }
-                }}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: isFollowLoading ? 0.7 : 1 }}
-              >
-                {isFollowLoading ? (
-                  <><SpinnerGap size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading...</>
-                ) : followedHostIds.includes(event.organizer.id || '') ? (
-                  <><CheckCircle size={20} /> Following</>
-                ) : (
-                  <><Bell size={20} /> Follow Organizer</>
-                )}
-              </button>
-            </div>
-
             {/* Reviews Section */}
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.35s', marginBottom: 'var(--spacing-large)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-small)', marginBottom: 'var(--spacing-base)' }}>
-                <h2 className="text-section" style={{ fontSize: '24px' }}>{t('reviews')}</h2>
+                <h2 className="text-section" style={{ fontSize: '20px' }}>{t('reviews')}</h2>
                 {event.reviews && event.reviews.length > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-warning)', gap: '4px' }}>
-                    <Star size={20} weight="fill" />
+                    <Star size={18} weight="fill" />
                     <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                       {(event.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / event.reviews.length).toFixed(1)}
                     </span>
@@ -594,10 +553,10 @@ export const EventDetail = () => {
               </div>
             </div>
 
-            {/* Collaborations Section */}
+            {/* Official Partners Section */}
             {collaborations.length > 0 && (
-              <div className="animate-fade-in-up" style={{ animationDelay: '0.5s', marginTop: 'var(--spacing-large)' }}>
-                <h2 className="text-section" style={{ fontSize: '24px', marginBottom: 'var(--spacing-base)' }}>{t('official_partners')}</h2>
+              <div className="animate-fade-in-up" style={{ animationDelay: '0.4s', marginBottom: 'var(--spacing-large)' }}>
+                <h2 className="text-section" style={{ fontSize: '20px', marginBottom: 'var(--spacing-base)' }}>{t('official_partners')}</h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--spacing-base)' }}>
                   {collaborations.map(collab => (
                     <EventCard key={collab.id} {...collab} date={collab.displayDate} />
@@ -606,117 +565,10 @@ export const EventDetail = () => {
               </div>
             )}
 
-          </div>
-
-          {/* Right Sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-large)' }}>
-            
-            {/* Tickets */}
-            <div className="hover-lift animate-fade-in-up card-padding" style={{ animationDelay: '0.2s', backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)', position: 'sticky', top: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: 'var(--spacing-base)' }}>
-                <Ticket size={24} color="var(--color-pin-orange)" />
-                <h3 className="text-card-title">{t('tickets')}</h3>
-              </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-small)', marginBottom: 'var(--spacing-large)' }}>
-                {event.earlyBird && timeLeft !== 'Expired' && (
-                  <div style={{ backgroundColor: 'rgba(255,107,0,0.1)', padding: '12px', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)', marginBottom: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                      <span style={{ color: 'var(--color-pin-orange)', fontWeight: 600 }}>{t('early_bird_offer')}</span>
-                      <span style={{ fontWeight: 700, fontSize: '18px' }}>
-                        {event.earlyBird.price.includes(event.currency || 'USD') ? event.earlyBird.price : `${event.earlyBird.price} ${event.currency || 'USD'}`}
-                      </span>
-                    </div>
-                    <div className="text-caption" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
-                      <Timer size={14} /> {t('ends_in')} <span style={{ fontWeight: 600, color: 'var(--color-pin-orange)', fontFamily: 'monospace' }}>{timeLeft}</span>
-                    </div>
-                  </div>
-                )}
-                {event.price && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--spacing-small)', borderBottom: '1px solid var(--border-color)' }}>
-                    <span>{t('general_admission')}</span>
-                    <span style={{ fontWeight: 600, textDecoration: (event.earlyBird && timeLeft !== 'Expired') ? 'line-through' : 'none', opacity: (event.earlyBird && timeLeft !== 'Expired') ? 0.5 : 1 }}>
-                      {event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`}
-                    </span>
-                  </div>
-                )}
-                {event.vipPrice && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ffd700', paddingTop: event.price ? 'var(--spacing-small)' : '0' }}>
-                    <span>VIP Admission</span>
-                    <span style={{ fontWeight: 600 }}>
-                      {event.vipPrice.includes(event.currency || 'USD') ? event.vipPrice : `${event.vipPrice} ${event.currency || 'USD'}`}
-                    </span>
-                  </div>
-                )}
-                {!event.price && !event.vipPrice && !event.earlyBird && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--spacing-small)', borderBottom: '1px solid var(--border-color)' }}>
-                    <span>General Admission</span>
-                    <span style={{ fontWeight: 600 }}>Free</span>
-                  </div>
-                )}
-              </div>
-              
-              {event.organizer.verified ? (
-                // Verified organizer: show online Buy Tickets button
-                event.ticketLink ? (
-                  <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>
-                    <button className="btn-accent hover-scale" style={{ width: '100%', padding: '16px', fontSize: '16px' }}>
-                      {t('buy_tickets')}
-                    </button>
-                  </a>
-                ) : (
-                  <button className="btn-accent hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ width: '100%', padding: '16px', fontSize: '16px' }}>
-                    {t('buy_tickets')}
-                  </button>
-                )
-              ) : (
-                // Unverified organizer: Pay at Gate only
-                <div style={{ borderRadius: 'var(--radius-card)', border: '1px solid rgba(255,107,0,0.35)', backgroundColor: 'rgba(255,107,0,0.07)', padding: '16px 20px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                    <CurrencyDollar size={22} color="var(--color-pin-orange)" weight="fill" />
-                    <span style={{ fontWeight: 700, fontSize: '15px', color: 'var(--color-pin-orange)' }}>Pay at the Gate</span>
-                  </div>
-                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-                    Online ticket sales are not available for this event. Purchase your ticket at the venue entrance on the event day.
-                  </p>
-                  {event.price && (
-                    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
-                      Entry: <span style={{ color: 'var(--color-pin-orange)' }}>
-                        {event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`}
-                      </span>
-                    </div>
-                  )}
-                  {event.vipPrice && (
-                    <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
-                      VIP: <span style={{ color: '#ffd700' }}>
-                        {event.vipPrice.includes(event.currency || 'USD') ? event.vipPrice : `${event.vipPrice} ${event.currency || 'USD'}`}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div style={{ marginTop: 'var(--spacing-base)' }}>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input 
-                    type="text" 
-                    placeholder={t('promo_code')} 
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="input-field" 
-                    style={{ flexGrow: 1, padding: '8px 12px' }}
-                  />
-                  <button onClick={handleApplyPromo} className="btn-secondary" style={{ padding: '8px 16px' }}>{t('apply')}</button>
-                </div>
-                {promoStatus === 'success' && <div className="text-caption" style={{ color: 'var(--color-success)', marginTop: '8px' }}><CheckCircle size={14} style={{ display: 'inline', verticalAlign: 'text-bottom' }}/> Promo code applied! 10% off.</div>}
-                {promoStatus === 'error' && <div className="text-caption" style={{ color: 'var(--color-error)', marginTop: '8px' }}>Invalid promo code.</div>}
-              </div>
-            </div>
-
-            {/* Map Embed Placeholder */}
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
-              <div style={{ padding: 'var(--spacing-base)', backgroundColor: 'var(--color-deep-navy)' }}>
-                <h3 className="text-card-title" style={{ fontSize: '16px' }}>Location</h3>
+            {/* Location Map Section */}
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.45s', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--border-color)', marginBottom: 'var(--spacing-large)' }}>
+              <div style={{ padding: 'var(--spacing-base)', backgroundColor: 'var(--bg-card)' }}>
+                <h3 className="text-card-title" style={{ fontSize: '16px' }}>Location Map</h3>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
                   <div className="text-caption">{event.venue}</div>
                   {(event as any).coordinates && (
@@ -732,7 +584,7 @@ export const EventDetail = () => {
                   )}
                 </div>
               </div>
-              <div style={{ height: '200px', backgroundColor: 'var(--color-muted-navy)', position: 'relative' }}>
+              <div style={{ height: '200px', backgroundColor: 'var(--bg-card)', position: 'relative' }}>
                 {(event as any).coordinates ? (
                   <Map
                     mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN || ''}
@@ -771,54 +623,93 @@ export const EventDetail = () => {
         </div>
       </div>
 
-      {/* Sticky Bottom Action Bar */}
+      {/* Floating Pill Ticket Bar (without touching screen edges, orange CTA button in light/dark mode) */}
       <div style={{
         position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: 'var(--bg-navbar)',
-        backdropFilter: 'blur(20px)',
-        borderTop: '1px solid var(--border-color)',
-        padding: '14px 24px calc(env(safe-area-inset-bottom, 12px) + 12px)',
+        bottom: 'calc(env(safe-area-inset-bottom, 12px) + 12px)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 32px)',
+        maxWidth: '560px',
+        backgroundColor: 'var(--bg-card)',
+        backdropFilter: 'blur(24px)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '999px',
+        padding: '10px 20px',
         zIndex: 900,
-        boxShadow: '0 -10px 40px rgba(0,0,0,0.3)'
+        boxShadow: '0 12px 40px rgba(0,0,0,0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '16px'
       }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px'
-        }}>
-          <div>
-            <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>Price</span>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
-              {(!event.price || event.price === '0' || event.price === '00' || event.price.toLowerCase() === 'free') 
-                ? 'Free' 
-                : (event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`)}
-            </div>
+        <div>
+          <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', lineHeight: 1 }}>Total Price</span>
+          <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+            {(!event.price || event.price === '0' || event.price === '00' || event.price.toLowerCase() === 'free') 
+              ? 'Free' 
+              : (event.price.includes(event.currency || 'USD') ? event.price : `${event.price} ${event.currency || 'USD'}`)}
           </div>
+        </div>
 
-          {event.organizer.verified ? (
-            event.ticketLink ? (
-              <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                <button className="btn-accent hover-scale" style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 700, borderRadius: '999px' }}>
-                  Buy Ticket
-                </button>
-              </a>
-            ) : (
-              <button className="btn-accent hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 700, borderRadius: '999px' }}>
+        {event.organizer.verified ? (
+          event.ticketLink ? (
+            <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+              <button 
+                className="hover-scale"
+                style={{ 
+                  backgroundColor: '#e8542c', 
+                  color: '#ffffff', 
+                  border: 'none', 
+                  padding: '12px 28px', 
+                  fontSize: '15px', 
+                  fontWeight: 700, 
+                  borderRadius: '999px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(232, 84, 44, 0.4)'
+                }}
+              >
                 Buy Ticket
               </button>
-            )
+            </a>
           ) : (
-            <button className="btn-primary hover-scale" onClick={() => handleAction(() => setShowCheckout(true))} style={{ padding: '14px 32px', fontSize: '16px', fontWeight: 700, borderRadius: '999px' }}>
-              RSVP / Join
+            <button 
+              className="hover-scale" 
+              onClick={() => handleAction(() => setShowCheckout(true))} 
+              style={{ 
+                backgroundColor: '#e8542c', 
+                color: '#ffffff', 
+                border: 'none', 
+                padding: '12px 28px', 
+                fontSize: '15px', 
+                fontWeight: 700, 
+                borderRadius: '999px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(232, 84, 44, 0.4)'
+              }}
+            >
+              Buy Ticket
             </button>
-          )}
-        </div>
+          )
+        ) : (
+          <button 
+            className="hover-scale" 
+            onClick={() => handleAction(() => setShowCheckout(true))} 
+            style={{ 
+              backgroundColor: '#e8542c', 
+              color: '#ffffff', 
+              border: 'none', 
+              padding: '12px 28px', 
+              fontSize: '15px', 
+              fontWeight: 700, 
+              borderRadius: '999px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 16px rgba(232, 84, 44, 0.4)'
+            }}
+          >
+            RSVP / Join
+          </button>
+        )}
       </div>
 
       {showCheckout && event && (

@@ -59,8 +59,19 @@ export const EventCard: React.FC<EventCardProps> = ({
     }
   };
 
-  // Extract short date display (e.g. "16 Dec" or "Sat, 24")
-  const formattedDate = date ? date.split(',')[0] : 'TBD';
+  // Extract formatted date display (e.g. "19 Jul")
+  const getFormattedBadgeDate = (dateStr: string) => {
+    if (!dateStr) return '19 Jul';
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      const day = d.getDate();
+      const month = d.toLocaleString('en-US', { month: 'short' });
+      return `${day} ${month}`;
+    }
+    return dateStr.split(',')[0];
+  };
+
+  const badgeDate = getFormattedBadgeDate(date);
 
   return (
     <div 
@@ -231,7 +242,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             lineHeight: 1.1,
             whiteSpace: 'nowrap'
           }}>
-            {formattedDate}
+            {badgeDate}
           </span>
         </div>
 
