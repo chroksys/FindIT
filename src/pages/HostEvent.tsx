@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey, UsersThree, UserCheck, Crown, CheckCircle } from '@phosphor-icons/react';
+import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, WarningCircle, ArrowRight, CaretLeft, Spinner, ShieldCheck, LockKey, UsersThree, UserCheck, Crown } from '@phosphor-icons/react';
 import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
@@ -15,7 +15,7 @@ export const HostEvent: React.FC = () => {
   const { getEventLimit, role, profile } = useUserContext();
   const hostProfile = profile as HostProfile;
   const isVerified = hostProfile?.verificationStatus === 'verified';
-  const isPro = hostProfile?.subscriptionTier === 'Pro' || hostProfile?.subscriptionTier === 'Growth';
+  const isPro = hostProfile?.subscription === 'Pro' || hostProfile?.subscription === 'Growth';
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = Boolean(id);
