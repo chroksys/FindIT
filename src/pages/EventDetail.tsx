@@ -4,7 +4,7 @@ import Map, { Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { 
   MapPin, CalendarBlank, Star, Ticket, CheckCircle, ThumbsUp, CaretLeft, 
-  ShareNetwork, WhatsappLogo, FacebookLogo, InstagramLogo, TwitterLogo, LinkedinLogo, EnvelopeSimple,
+  ShareNetwork,
   Bell, GoogleLogo, AppleLogo, MicrosoftOutlookLogo, CalendarPlus, Timer, SpinnerGap, CurrencyDollar, NavigationArrow
 } from '@phosphor-icons/react';
 
@@ -24,7 +24,6 @@ export const EventDetail = () => {
   const { role, profile } = useUserContext();
   const { t } = useLanguage();
   
-  const [showShare, setShowShare] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   
   const [isFollowLoading, setIsFollowLoading] = useState(false);
@@ -232,7 +231,7 @@ export const EventDetail = () => {
             <CaretLeft size={24} />
           </Link>
 
-          <div style={{ position: 'relative' }}>
+          <div>
             <button 
               className="hover-scale" 
               onClick={handleShare} 
@@ -244,16 +243,6 @@ export const EventDetail = () => {
             >
               <ShareNetwork size={22} />
             </button>
-            {showShare && (
-              <div className="glass-dropdown" style={{ display: 'flex', gap: '12px', right: 0, top: '54px' }}>
-                <button className="social-icon-btn"><WhatsappLogo size={24} /></button>
-                <button className="social-icon-btn"><FacebookLogo size={24} /></button>
-                <button className="social-icon-btn"><TwitterLogo size={24} /></button>
-                <button className="social-icon-btn"><InstagramLogo size={24} /></button>
-                <button className="social-icon-btn"><LinkedinLogo size={24} /></button>
-                <button className="social-icon-btn"><EnvelopeSimple size={24} /></button>
-              </div>
-            )}
           </div>
         </div>
         
