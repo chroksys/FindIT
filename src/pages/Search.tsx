@@ -11,26 +11,26 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 
 const CATEGORIES = [
-  { name: 'Birthday', icon: <Gift size={32} weight="fill" /> },
-  { name: 'Music', icon: <MusicNote size={32} weight="fill" /> },
-  { name: 'Nightlife & Party', icon: <Martini size={32} weight="fill" /> },
-  { name: 'Food & Drink', icon: <ForkKnife size={32} weight="fill" /> },
-  { name: 'Games', icon: <GameController size={32} weight="fill" /> },
-  { name: 'Comedy & Theatre', icon: <Smiley size={32} weight="fill" /> },
-  { name: 'Tech & Innovation', icon: <Laptop size={32} weight="fill" /> },
-  { name: 'Health & Fitness', icon: <Barbell size={32} weight="fill" /> },
-  { name: 'Fashion & Beauty', icon: <TShirt size={32} weight="fill" /> },
-  { name: 'Anniversary', icon: <Heart size={32} weight="fill" /> },
-  { name: 'Wedding', icon: <Wine size={32} weight="fill" /> },
-  { name: 'Art', icon: <Palette size={32} weight="fill" /> },
-  { name: 'Business', icon: <Briefcase size={32} weight="fill" /> },
-  { name: 'Travel', icon: <AirplaneTilt size={32} weight="fill" /> },
-  { name: 'Family', icon: <UsersThree size={32} weight="fill" /> },
-  { name: 'Sport', icon: <PersonSimpleRun size={32} weight="fill" /> },
-  { name: 'Hobbies', icon: <Star size={32} weight="fill" /> },
-  { name: 'Community', icon: <HandsClapping size={32} weight="fill" /> },
-  { name: 'Education', icon: <Books size={32} weight="fill" /> },
-  { name: 'Charity & Causes', icon: <HandHeart size={32} weight="fill" /> },
+  { name: 'Birthday', icon: <Gift size={28} weight="fill" /> },
+  { name: 'Music', icon: <MusicNote size={28} weight="fill" /> },
+  { name: 'Nightlife & Party', icon: <Martini size={28} weight="fill" /> },
+  { name: 'Food & Drink', icon: <ForkKnife size={28} weight="fill" /> },
+  { name: 'Games', icon: <GameController size={28} weight="fill" /> },
+  { name: 'Comedy & Theatre', icon: <Smiley size={28} weight="fill" /> },
+  { name: 'Tech & Innovation', icon: <Laptop size={28} weight="fill" /> },
+  { name: 'Health & Fitness', icon: <Barbell size={28} weight="fill" /> },
+  { name: 'Fashion & Beauty', icon: <TShirt size={28} weight="fill" /> },
+  { name: 'Anniversary', icon: <Heart size={28} weight="fill" /> },
+  { name: 'Wedding', icon: <Wine size={28} weight="fill" /> },
+  { name: 'Art', icon: <Palette size={28} weight="fill" /> },
+  { name: 'Business', icon: <Briefcase size={28} weight="fill" /> },
+  { name: 'Travel', icon: <AirplaneTilt size={28} weight="fill" /> },
+  { name: 'Family', icon: <UsersThree size={28} weight="fill" /> },
+  { name: 'Sport', icon: <PersonSimpleRun size={28} weight="fill" /> },
+  { name: 'Hobbies', icon: <Star size={28} weight="fill" /> },
+  { name: 'Community', icon: <HandsClapping size={28} weight="fill" /> },
+  { name: 'Education', icon: <Books size={28} weight="fill" /> },
+  { name: 'Charity & Causes', icon: <HandHeart size={28} weight="fill" /> },
 ];
 
 export const Search = () => {
@@ -145,8 +145,8 @@ export const Search = () => {
           
           <div className="categories-grid" style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(2, 1fr)', 
-            gap: '12px' 
+            gridTemplateColumns: 'repeat(3, 1fr)', 
+            gap: '10px' 
           }}>
             {CATEGORIES.map((cat, i) => (
               <div 
@@ -157,13 +157,13 @@ export const Search = () => {
                   backgroundColor: 'var(--bg-card)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: '24px',
-                  padding: '20px 12px',
+                  borderRadius: '20px',
+                  padding: '16px 6px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '10px',
+                  gap: '8px',
                   cursor: 'pointer',
                   textAlign: 'center',
                   animationDelay: `${i * 0.03}s`
@@ -172,7 +172,9 @@ export const Search = () => {
                 <div style={{ color: 'var(--text-primary)' }}>
                   {cat.icon}
                 </div>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '15px' }}>{cat.name}</span>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '13px', lineHeight: 1.2, wordBreak: 'break-word' }}>
+                  {cat.name}
+                </span>
               </div>
             ))}
           </div>
