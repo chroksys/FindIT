@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../context/UserContext';
 import { 
   ArrowRight, UserCircle, CheckCircle, Image as ImageIcon, CaretLeft, Spinner,
-  MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, HandsPraying, 
+  MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, 
   UsersThree, Martini, MicrophoneStage, Barbell, ForkKnife, Smiley, HandHeart
 } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
