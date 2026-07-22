@@ -20,6 +20,7 @@ import { Notifications } from './pages/Notifications';
 import { MapView } from './pages/Map';
 import { HottestEvents } from './pages/HottestEvents';
 import { FollowingEvents } from './pages/FollowingEvents';
+import { ScrollToTop } from './components/ScrollToTop';
 import { EventProvider } from './context/EventContext';
 import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -42,6 +43,7 @@ function App() {
         <UserProvider>
           <EventProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
             <Navbar />
             <main className="main-content" style={{ flexGrow: 1, minWidth: 0, width: '100%' }}>
