@@ -28,8 +28,8 @@ export const LiveEvents = () => {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--spacing-small)' }}>
             <div style={{ position: 'relative' }}>
-              <Broadcast size={32} color="var(--color-white)" weight="fill" style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.6))' }} />
-              <div style={{ position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', backgroundColor: 'var(--color-white)', borderRadius: '50%', border: '2px solid transparent', animation: 'pulse 2s infinite', boxShadow: '0 0 10px rgba(255,255,255,0.8)' }}></div>
+              <Broadcast size={32} color="var(--text-primary)" weight="fill" style={{ filter: 'drop-shadow(0 0 8px rgba(232,84,44,0.4))' }} />
+              <div style={{ position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', backgroundColor: 'var(--color-pin-orange)', borderRadius: '50%', border: '2px solid transparent', animation: 'pulse 2s infinite', boxShadow: '0 0 10px rgba(232, 84, 44, 0.9)' }}></div>
             </div>
             <h1 className="text-hero animate-fade-in-up" style={{ fontSize: '36px' }}>
               Live Right Now
