@@ -7,10 +7,150 @@ interface TicketModalProps {
 }
 
 import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Capacitor } from '@capacitor/core';
 
 export const TicketModal: React.FC<TicketModalProps> = ({ event, onClose }) => {
-  const handleDownload = () => {
-    alert('In the native app, this will save the ticket image to your camera roll/gallery.');
+  // Generate a mock ticket ID
+  const mockTicketId = `TKT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+
+  const handleDownload = async () => {
+    try {
+      // Create off-screen canvas element
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 900;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Card Background
+      ctx.fillStyle = '#121216';
+      ctx.fillRect(0, 0, 600, 900);
+
+      // Border Frame
+      ctx.strokeStyle = '#e8542c';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(16, 16, 568, 868);
+
+      // Header Brand
+      ctx.fillStyle = '#e8542c';
+      ctx.font = 'bold 28px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('FINDIT EVENT TICKET', 300, 65);
+
+      // Event Title
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 28px sans-serif';
+      const cleanTitle = (event.title || 'Event Ticket').substring(0, 32);
+      ctx.fillText(cleanTitle, 300, 120);
+
+      // Admission Badge
+      const isGatePass = !event.organizer?.verified;
+      ctx.fillStyle = isGatePass ? '#e8542c' : '#ff6b00';
+      ctx.beginPath();
+      ctx.roundRect(160, 145, 280, 40, 20);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(isGatePass ? '🎫 GATE PASS (PAY AT ENTRANCE)' : '🎟️ GENERAL ADMISSION', 300, 171);
+
+      // Event Details Box
+      ctx.fillStyle = '#1c1c24';
+      ctx.beginPath();
+      ctx.roundRect(40, 210, 520, 210, 16);
+      ctx.fill();
+
+      ctx.fillStyle = '#a1a1aa';
+      ctx.font = '16px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('DATE:', 70, 260);
+      ctx.fillText('TIME:', 70, 310);
+      ctx.fillText('VENUE:', 70, 360);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.fillText(event.displayDate || 'Upcoming Date', 160, 260);
+      ctx.fillText(event.displayTime || '6:00 PM', 160, 310);
+      ctx.fillText((event.venue || 'Venue Details').substring(0, 35), 160, 360);
+
+      // Dashed Separator Line
+      ctx.strokeStyle = '#333340';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 8]);
+      ctx.beginPath();
+      ctx.moveTo(40, 445);
+      ctx.lineTo(560, 445);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // QR Code
+      const qrImg = new Image();
+      qrImg.crossOrigin = 'anonymous';
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${mockTicketId}`;
+
+      await new Promise((resolve) => {
+        qrImg.onload = resolve;
+        qrImg.onerror = resolve;
+      });
+
+      // QR Code Background Box
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(200, 480, 200, 200, 12);
+      ctx.fill();
+
+      try {
+        ctx.drawImage(qrImg, 210, 490, 180, 180);
+      } catch (e) {
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(mockTicketId, 300, 580);
+      }
+
+      // Ticket ID Section
+      ctx.fillStyle = '#a1a1aa';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('TICKET SERIAL / ID', 300, 720);
+
+      ctx.fillStyle = '#e8542c';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText(mockTicketId, 300, 755);
+
+      // Footer
+      ctx.fillStyle = '#71717a';
+      ctx.font = '13px sans-serif';
+      ctx.fillText('Show this ticket QR code at entry gate for verification.', 300, 840);
+
+      const dataUrl = canvas.toDataURL('image/png');
+
+      if (Capacitor.isNativePlatform()) {
+        const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+        const filename = `FindIt_Ticket_${mockTicketId}.png`;
+        
+        const fileResult = await Filesystem.writeFile({
+          path: filename,
+          data: base64Data,
+          directory: Directory.Cache
+        });
+
+        await Share.share({
+          title: `Ticket - ${event.title}`,
+          text: `My FindIt ticket for ${event.title}`,
+          url: fileResult.uri,
+          dialogTitle: 'Save Ticket Image to Camera Roll / Gallery'
+        });
+      } else {
+        const link = document.createElement('a');
+        link.download = `FindIt-Ticket-${mockTicketId}.png`;
+        link.href = dataUrl;
+        link.click();
+      }
+    } catch (err: any) {
+      console.error('Save ticket error:', err);
+      alert('Saving ticket image failed: ' + (err?.message || 'Unknown error'));
+    }
   };
 
   const handleShare = async () => {
@@ -25,9 +165,6 @@ export const TicketModal: React.FC<TicketModalProps> = ({ event, onClose }) => {
       console.error('Error sharing:', err);
     }
   };
-
-  // Generate a mock ticket ID
-  const mockTicketId = `TKT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
   return (
     <div 

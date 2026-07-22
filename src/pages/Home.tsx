@@ -86,25 +86,32 @@ export const Home = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xlarge)' }}>
-      {/* Hero / Search Section */}
-      <section className="page-with-nav" style={{ 
-        paddingBottom: '0',
-        position: 'relative'
+      {/* Hero / Sticky Header Section */}
+      <section style={{ 
+        position: 'sticky',
+        top: 0,
+        zIndex: 500,
+        backgroundColor: 'var(--bg-page)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid var(--border-color)',
+        paddingTop: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 8px)',
+        paddingBottom: '4px'
       }}>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="container">
           
           {/* Top Bar: Location Header + Action Icons */}
           <div className="animate-fade-in-up" style={{ 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'space-between',
-            marginBottom: '20px',
+            marginBottom: '14px',
             position: 'relative',
             zIndex: 100
           }}>
             {/* Left: Location Picker with "Find events in" caption */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'relative' }}>
-              <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
+              <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 500 }}>
                 Find events in
               </span>
               
@@ -241,7 +248,7 @@ export const Home = () => {
             display: 'flex', 
             alignItems: 'center', 
             gap: '12px',
-            marginBottom: 'var(--spacing-medium)'
+            marginBottom: '10px'
           }}>
             {/* Working Search Input */}
             <div style={{
@@ -252,7 +259,7 @@ export const Home = () => {
               backgroundColor: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               borderRadius: '999px',
-              padding: '12px 18px',
+              padding: '10px 16px',
               boxShadow: 'var(--shadow-soft)'
             }}>
               <MagnifyingGlass size={20} color="var(--text-secondary)" weight="bold" />
@@ -304,8 +311,8 @@ export const Home = () => {
                 color: 'var(--bg-page)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '48px',
-                height: '48px',
+                width: '44px',
+                height: '44px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -314,7 +321,7 @@ export const Home = () => {
                 boxShadow: 'var(--shadow-soft)'
               }}
             >
-              <SlidersHorizontal size={22} weight="bold" />
+              <SlidersHorizontal size={20} weight="bold" />
             </button>
           </div>
         </div>

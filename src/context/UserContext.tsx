@@ -197,7 +197,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 {
                   title: newNotif.title || 'New FindIt Notification',
                   body: newNotif.message.replace('👤 ', ''),
-                  id: new Date().getTime(),
+                  id: Math.floor(Math.random() * 1000000),
                   schedule: { at: new Date(Date.now() + 1000) },
                   sound: undefined,
                   attachments: undefined,
