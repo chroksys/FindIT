@@ -456,20 +456,6 @@ export const Home = () => {
         <div className="container">
           <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-large)' }}>
             <h2 className="text-section">{t('discover_more')}</h2>
-            <button 
-              onClick={() => navigate('/search')}
-              className="hover-scale"
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--color-pin-orange)',
-                fontSize: '14px',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              See All
-            </button>
           </div>
           
           <div style={{ 

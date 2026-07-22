@@ -117,7 +117,11 @@ export const FollowingEvents: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
+            gap: 'var(--spacing-medium)' 
+          }}>
             {followedEvents.map(event => (
               <EventCard key={event.id} {...event} date={event.displayDate} />
             ))}
