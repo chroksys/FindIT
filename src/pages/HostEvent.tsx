@@ -477,9 +477,11 @@ export const HostEvent: React.FC = () => {
                   <label className="form-label">Official Collaboration / Cross-Promotion (Optional)</label>
                   <select name="collaborationEventId" value={formData.collaborationEventId} onChange={handleChange} className="input-field">
                     <option value="">None</option>
-                    {events.filter(e => e.id !== id).map(e => (
-                      <option key={e.id} value={e.id}>{e.title}</option>
-                    ))}
+                    {events
+                      .filter(e => e.organizer?.id === profile?.id && (!id || e.id !== id))
+                      .map(e => (
+                        <option key={e.id} value={e.id}>{e.title}</option>
+                      ))}
                   </select>
                   <span className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>Select another event to feature as an official partner or after-party.</span>
                 </div>
