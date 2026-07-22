@@ -4,13 +4,22 @@ import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import { EventCard } from '../components/EventCard';
 import { SkeletonCard } from '../components/SkeletonCard';
-import { MagnifyingGlass, Palette, Briefcase, AirplaneTilt, UsersThree, PersonSimpleRun, GameController, HandsClapping, Books, MusicNote, Star, Gift, Heart, Wine, CheckCircle } from '@phosphor-icons/react';
+import { 
+  MagnifyingGlass, Palette, Briefcase, AirplaneTilt, UsersThree, PersonSimpleRun, GameController, HandsClapping, Books, MusicNote, Star, Gift, Heart, Wine, CheckCircle,
+  Martini, ForkKnife, Smiley, Laptop, Barbell, TShirt, HandHeart
+} from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
 const CATEGORIES = [
   { name: 'Birthday', icon: <Gift size={32} weight="fill" /> },
   { name: 'Music', icon: <MusicNote size={32} weight="fill" /> },
+  { name: 'Nightlife & Party', icon: <Martini size={32} weight="fill" /> },
+  { name: 'Food & Drink', icon: <ForkKnife size={32} weight="fill" /> },
   { name: 'Games', icon: <GameController size={32} weight="fill" /> },
+  { name: 'Comedy & Theatre', icon: <Smiley size={32} weight="fill" /> },
+  { name: 'Tech & Innovation', icon: <Laptop size={32} weight="fill" /> },
+  { name: 'Health & Fitness', icon: <Barbell size={32} weight="fill" /> },
+  { name: 'Fashion & Beauty', icon: <TShirt size={32} weight="fill" /> },
   { name: 'Anniversary', icon: <Heart size={32} weight="fill" /> },
   { name: 'Wedding', icon: <Wine size={32} weight="fill" /> },
   { name: 'Art', icon: <Palette size={32} weight="fill" /> },
@@ -21,6 +30,7 @@ const CATEGORIES = [
   { name: 'Hobbies', icon: <Star size={32} weight="fill" /> },
   { name: 'Community', icon: <HandsClapping size={32} weight="fill" /> },
   { name: 'Education', icon: <Books size={32} weight="fill" /> },
+  { name: 'Charity & Causes', icon: <HandHeart size={32} weight="fill" /> },
 ];
 
 export const Search = () => {

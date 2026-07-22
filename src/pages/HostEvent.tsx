@@ -3,6 +3,7 @@ import { UploadSimple, MapPin, CalendarBlank, Link as LinkIcon, WarningCircle, A
 import type { HostProfile } from '../context/UserContext';
 import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
+import { CATEGORIES_LIST } from '../lib/categories';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Map } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -300,19 +301,9 @@ export const HostEvent: React.FC = () => {
                     <label className="form-label">Category</label>
                     <select name="category" value={formData.category} onChange={handleChange} required>
                       <option value="" disabled>Select category</option>
-                      <option value="Birthday">Birthday</option>
-                      <option value="Music">Music</option>
-                      <option value="Games">Games</option>
-                      <option value="Anniversary">Anniversary</option>
-                      <option value="Wedding">Wedding</option>
-                      <option value="Art">Art</option>
-                      <option value="Business">Business</option>
-                      <option value="Travel">Travel</option>
-                      <option value="Family">Family</option>
-                      <option value="Sport">Sport</option>
-                      <option value="Hobbies">Hobbies</option>
-                      <option value="Community">Community</option>
-                      <option value="Education">Education</option>
+                      {CATEGORIES_LIST.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
                     </select>
                   </div>
                 </div>

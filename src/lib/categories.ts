@@ -1,0 +1,22 @@
+export const CATEGORIES_LIST = [
+  'Birthday',
+  'Music',
+  'Nightlife & Party',
+  'Food & Drink',
+  'Games',
+  'Comedy & Theatre',
+  'Tech & Innovation',
+  'Health & Fitness',
+  'Fashion & Beauty',
+  'Anniversary',
+  'Wedding',
+  'Art',
+  'Business',
+  'Travel',
+  'Family',
+  'Sport',
+  'Hobbies',
+  'Community',
+  'Education',
+  'Charity & Causes'
+];

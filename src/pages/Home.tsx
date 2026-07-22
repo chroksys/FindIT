@@ -6,6 +6,7 @@ import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import type { UserProfile } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
+import { CATEGORIES_LIST } from '../lib/categories';
 
 export const Home = () => {
   const { events, selectedCity, setSelectedCity, getEventStatus } = useEventContext();
@@ -197,7 +198,7 @@ export const Home = () => {
             width: '100%',
             animationDelay: '0.2s' 
           }}>
-            {['All', 'Birthday', 'Music', 'Games', 'Anniversary', 'Wedding', 'Art', 'Business', 'Travel', 'Family', 'Sport', 'Hobbies', 'Community', 'Education'].map((cat) => {
+            {['All', ...CATEGORIES_LIST].map((cat) => {
               const isActive = selectedCategory === cat;
               return (
                 <button 

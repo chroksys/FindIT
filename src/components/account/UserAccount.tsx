@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useUserContext, type UserProfile } from '../../context/UserContext';
 import { EnvelopeSimple, MapPin, User, UploadSimple, ShieldCheck, Spinner,
   MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, HandsPraying, 
-  UsersThree, Martini, MicrophoneStage, Barbell } from '@phosphor-icons/react';
+  UsersThree, Martini, MicrophoneStage, Barbell, ForkKnife, Smiley, HandHeart } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
 import { useNavigate } from 'react-router-dom';
@@ -10,17 +10,19 @@ import { COUNTRIES } from '../../lib/countries';
 
 const INTERESTS = [
   { id: 'music', label: 'Music', icon: <MusicNotes size={16} /> },
+  { id: 'nightlife', label: 'Nightlife & Party', icon: <Martini size={16} /> },
+  { id: 'food', label: 'Food & Drink', icon: <ForkKnife size={16} /> },
   { id: 'sports', label: 'Sports', icon: <SoccerBall size={16} /> },
-  { id: 'tech', label: 'Tech', icon: <Laptop size={16} /> },
+  { id: 'comedy', label: 'Comedy & Theatre', icon: <Smiley size={16} /> },
+  { id: 'tech', label: 'Tech & Innovation', icon: <Laptop size={16} /> },
   { id: 'business', label: 'Business', icon: <Briefcase size={16} /> },
   { id: 'education', label: 'Education', icon: <Books size={16} /> },
-  { id: 'fashion', label: 'Fashion', icon: <TShirt size={16} /> },
+  { id: 'fashion', label: 'Fashion & Beauty', icon: <TShirt size={16} /> },
   { id: 'festivals', label: 'Festivals', icon: <Confetti size={16} /> },
-  { id: 'religious', label: 'Religious', icon: <HandsPraying size={16} /> },
   { id: 'community', label: 'Community', icon: <UsersThree size={16} /> },
-  { id: 'nightlife', label: 'Nightlife', icon: <Martini size={16} /> },
   { id: 'concerts', label: 'Concerts', icon: <MicrophoneStage size={16} /> },
-  { id: 'fitness', label: 'Fitness', icon: <Barbell size={16} /> },
+  { id: 'fitness', label: 'Health & Fitness', icon: <Barbell size={16} /> },
+  { id: 'charity', label: 'Charity & Causes', icon: <HandHeart size={16} /> },
 ];
 
 export const UserAccount = () => {

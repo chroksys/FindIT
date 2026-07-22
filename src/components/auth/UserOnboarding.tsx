@@ -4,7 +4,7 @@ import { useUserContext } from '../../context/UserContext';
 import { 
   ArrowRight, UserCircle, CheckCircle, Image as ImageIcon, CaretLeft, Spinner,
   MusicNotes, SoccerBall, Laptop, Briefcase, Books, TShirt, Confetti, HandsPraying, 
-  UsersThree, Martini, MicrophoneStage, Barbell 
+  UsersThree, Martini, MicrophoneStage, Barbell, ForkKnife, Smiley, HandHeart
 } from '@phosphor-icons/react';
 import { uploadFile } from '../../lib/uploadFile';
 import { PhoneInput } from '../PhoneInput';
@@ -12,17 +12,19 @@ import { COUNTRIES } from '../../lib/countries';
 
 const INTERESTS = [
   { id: 'music', label: 'Music', icon: <MusicNotes size={20} /> },
+  { id: 'nightlife', label: 'Nightlife & Party', icon: <Martini size={20} /> },
+  { id: 'food', label: 'Food & Drink', icon: <ForkKnife size={20} /> },
   { id: 'sports', label: 'Sports', icon: <SoccerBall size={20} /> },
-  { id: 'tech', label: 'Tech', icon: <Laptop size={20} /> },
+  { id: 'comedy', label: 'Comedy & Theatre', icon: <Smiley size={20} /> },
+  { id: 'tech', label: 'Tech & Innovation', icon: <Laptop size={20} /> },
   { id: 'business', label: 'Business', icon: <Briefcase size={20} /> },
   { id: 'education', label: 'Education', icon: <Books size={20} /> },
-  { id: 'fashion', label: 'Fashion', icon: <TShirt size={20} /> },
+  { id: 'fashion', label: 'Fashion & Beauty', icon: <TShirt size={20} /> },
   { id: 'festivals', label: 'Festivals', icon: <Confetti size={20} /> },
-  { id: 'religious', label: 'Religious', icon: <HandsPraying size={20} /> },
   { id: 'community', label: 'Community', icon: <UsersThree size={20} /> },
-  { id: 'nightlife', label: 'Nightlife', icon: <Martini size={20} /> },
   { id: 'concerts', label: 'Concerts', icon: <MicrophoneStage size={20} /> },
-  { id: 'fitness', label: 'Fitness', icon: <Barbell size={20} /> },
+  { id: 'fitness', label: 'Health & Fitness', icon: <Barbell size={20} /> },
+  { id: 'charity', label: 'Charity & Causes', icon: <HandHeart size={20} /> },
 ];
 
 export const UserOnboarding: React.FC<{ onBack: () => void }> = ({ onBack }) => {
