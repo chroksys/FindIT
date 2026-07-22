@@ -15,6 +15,7 @@ import { EventCard } from '../components/EventCard';
 import { CheckoutModal } from '../components/CheckoutModal';
 import { AvatarCluster } from '../components/AvatarCluster';
 import { supabase } from '../lib/supabase';
+import { Share } from '@capacitor/share';
 
 export const EventDetail = () => {
   const { id } = useParams();
@@ -122,21 +123,36 @@ export const EventDetail = () => {
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event?.title || 'FindIt Event',
-          text: event?.description || 'Check out this event!',
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.error('Error sharing', err);
+    try {
+      await Share.share({
+        title: event?.title || 'FindIt Event',
+        text: event?.description ? `${event.title} - ${event.description.substring(0, 100)}...` : 'Check out this event on FindIt!',
+        url: window.location.href,
+        dialogTitle: 'Share Event',
+      });
+    } catch (err: any) {
+      if (err?.name === 'AbortError' || err?.message?.includes('canceled') || err?.message?.includes('cancelled')) {
+        return;
       }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: event?.title || 'FindIt Event',
+            text: event?.description || 'Check out this event!',
+            url: window.location.href,
+          });
+          return;
+        } catch (webErr: any) {
+          if (webErr?.name === 'AbortError') return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      } catch (clipboardErr) {
+        console.error('Clipboard error:', clipboardErr);
+      }
     }
-    setShowShare(false);
   };
 
   const generateCalendarDates = () => {
@@ -219,7 +235,7 @@ export const EventDetail = () => {
           <div style={{ position: 'relative' }}>
             <button 
               className="hover-scale" 
-              onClick={() => handleAction(handleShare)} 
+              onClick={handleShare} 
               style={{ 
                 display: 'flex', alignItems: 'center', justifyContent: 'center', 
                 width: '44px', height: '44px', borderRadius: '50%', 
