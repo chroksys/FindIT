@@ -393,11 +393,11 @@ input:focus, textarea:focus, select:focus {
   }
 
   .page-with-nav {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 16px) !important;
+    padding-top: calc(max(env(safe-area-inset-top, 0px), 24px) + 16px) !important;
   }
 
   .page-no-nav {
-    padding-top: calc(env(safe-area-inset-top, 0px) + var(--spacing-base)) !important;
+    padding-top: calc(max(env(safe-area-inset-top, 0px), 24px) + 16px) !important;
   }
 
   .navbar-top {

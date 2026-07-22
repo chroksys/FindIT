@@ -6,12 +6,10 @@ import { useEventContext } from '../context/EventContext';
 import { useUserContext } from '../context/UserContext';
 import type { UserProfile } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useTheme } from '../context/ThemeContext';
 
 export const Home = () => {
   const { events, selectedCity, setSelectedCity, getEventStatus } = useEventContext();
   const { profile, unreadCount } = useUserContext();
-  const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
@@ -76,7 +74,7 @@ export const Home = () => {
       }}>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           
-          {/* Top Bar: Logo + Location Header + Action Icons */}
+          {/* Top Bar: Location Header + Action Icons */}
           <div className="animate-fade-in-up" style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -85,117 +83,106 @@ export const Home = () => {
             position: 'relative',
             zIndex: 100
           }}>
-            {/* Left: Brand Logo & Location Picker */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <img 
-                src={resolvedTheme === 'light' ? '/logo(Dark).svg' : '/logo(Light).svg'} 
-                alt="FindIt Logo" 
-                style={{ height: '36px', width: 'auto' }}
-              />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'relative' }}>
-                <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '11px', fontWeight: 500, lineHeight: 1 }}>
-                  Find events in
+            {/* Left: Location Picker with "Find events in" caption */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', position: 'relative' }}>
+              <span className="text-caption" style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
+                Find events in
+              </span>
+              
+              <div 
+                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+                style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '6px' }}
+              >
+                <MapPin size={18} color="var(--color-pin-orange)" weight="fill" />
+                <span style={{ 
+                  color: 'var(--text-primary)',
+                  fontSize: '18px',
+                  fontWeight: 700,
+                }}>
+                  {selectedCity === 'All' ? t('all_cities') : selectedCity}
                 </span>
-                
-                <div 
-                  onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
-                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '4px' }}
-                >
-                  <MapPin size={16} color="var(--color-pin-orange)" weight="fill" />
-                  <span style={{ 
-                    color: 'var(--text-primary)',
-                    fontSize: '16px',
-                    fontWeight: 700,
-                  }}>
-                    {selectedCity === 'All' ? t('all_cities') : selectedCity}
-                  </span>
-                  <CaretDown 
-                    size={12} 
-                    color="var(--text-primary)" 
-                    weight="bold" 
-                    style={{ 
-                      transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s ease'
-                    }} 
-                  />
-                </div>
-
-                {/* Custom Dropdown Menu */}
-                {isCityDropdownOpen && (
-                  <>
-                    <div 
-                      onClick={() => setIsCityDropdownOpen(false)} 
-                      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 90 }} 
-                    />
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      marginTop: '8px',
-                      backgroundColor: 'var(--bg-card)',
-                      backdropFilter: 'blur(20px)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: '16px',
-                      padding: '8px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      minWidth: '180px',
-                      zIndex: 100,
-                      boxShadow: 'var(--shadow-soft)'
-                    }}>
-                      {CITIES.map(city => (
-                        <button
-                          key={city}
-                          onClick={() => {
-                            setSelectedCity(city);
-                            setIsCityDropdownOpen(false);
-                          }}
-                          style={{
-                            background: selectedCity === city ? 'var(--color-deep-navy)' : 'transparent',
-                            border: 'none',
-                            color: selectedCity === city ? 'var(--text-primary)' : 'var(--text-secondary)',
-                            padding: '10px 16px',
-                            textAlign: 'left',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontWeight: selectedCity === city ? 700 : 500,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease'
-                          }}
-                          className="hover-scale"
-                        >
-                          {city === 'All' ? t('all_cities') : city}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
+                <CaretDown 
+                  size={14} 
+                  color="var(--text-primary)" 
+                  weight="bold" 
+                  style={{ 
+                    transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease'
+                  }} 
+                />
               </div>
+
+              {/* Custom Dropdown Menu */}
+              {isCityDropdownOpen && (
+                <>
+                  <div 
+                    onClick={() => setIsCityDropdownOpen(false)} 
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 90 }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: '8px',
+                    backgroundColor: 'var(--bg-card)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '16px',
+                    padding: '8px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    minWidth: '180px',
+                    zIndex: 100,
+                    boxShadow: 'var(--shadow-soft)'
+                  }}>
+                    {CITIES.map(city => (
+                      <button
+                        key={city}
+                        onClick={() => {
+                          setSelectedCity(city);
+                          setIsCityDropdownOpen(false);
+                        }}
+                        style={{
+                          background: selectedCity === city ? 'var(--color-deep-navy)' : 'transparent',
+                          border: 'none',
+                          color: selectedCity === city ? 'var(--text-primary)' : 'var(--text-secondary)',
+                          padding: '10px 16px',
+                          textAlign: 'left',
+                          borderRadius: '10px',
+                          fontSize: '14px',
+                          fontWeight: selectedCity === city ? 700 : 500,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        className="hover-scale"
+                      >
+                        {city === 'All' ? t('all_cities') : city}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Right: Bold Action Icons (Live & Notification Bell) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* Right: Standalone Action Icons (Live & Notification Bell) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button 
                 onClick={() => navigate('/live')}
                 className="hover-scale"
                 title="Live Events"
                 style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '50%',
-                  width: '46px',
-                  height: '46px',
+                  background: 'none',
+                  border: 'none',
+                  padding: '4px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  color: 'var(--text-primary)',
-                  position: 'relative',
-                  boxShadow: 'var(--shadow-soft)'
+                  position: 'relative'
                 }}
               >
-                <Broadcast size={24} color="var(--color-pin-orange)" weight="fill" />
+                <Broadcast size={28} color="var(--color-pin-orange)" weight="fill" />
               </button>
 
               <button 
@@ -203,31 +190,27 @@ export const Home = () => {
                 className="hover-scale"
                 title="Notifications"
                 style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '50%',
-                  width: '46px',
-                  height: '46px',
+                  background: 'none',
+                  border: 'none',
+                  padding: '4px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                   color: 'var(--text-primary)',
-                  position: 'relative',
-                  boxShadow: 'var(--shadow-soft)'
+                  position: 'relative'
                 }}
               >
-                <Bell size={24} weight="bold" />
+                <Bell size={28} weight="bold" />
                 {unreadCount > 0 && (
                   <span style={{
                     position: 'absolute',
-                    top: '6px',
-                    right: '6px',
-                    width: '10px',
-                    height: '10px',
+                    top: '2px',
+                    right: '2px',
+                    width: '8px',
+                    height: '8px',
                     backgroundColor: 'var(--color-pin-orange)',
-                    borderRadius: '50%',
-                    border: '2px solid var(--bg-card)'
+                    borderRadius: '50%'
                   }} />
                 )}
               </button>
