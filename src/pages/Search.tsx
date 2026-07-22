@@ -88,38 +88,55 @@ export const Search = () => {
   const isBrowsingCategories = category === 'All' && keyword === '';
 
   return (
-    <div className="container section page-with-nav" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-large)', paddingBottom: 'calc(var(--spacing-hero) * 2)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 'calc(var(--spacing-hero) * 2)' }}>
       
-      {/* Search Bar (Floating Style) */}
-      <div className="animate-fade-in-up" style={{ position: 'relative', maxWidth: '100%', zIndex: 10 }}>
-        <MagnifyingGlass size={24} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-        <input 
-          type="text" 
-          placeholder={t('search_events')} 
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          style={{ 
-            width: '100%',
-            padding: '20px 20px 20px 60px', 
-            fontSize: '18px', 
-            borderRadius: 'var(--radius-pill)', 
-            backgroundColor: 'var(--bg-card)', 
-            border: '1px solid var(--border-color)',
-            color: 'var(--text-primary)',
-            boxShadow: 'var(--shadow-soft)',
-            backdropFilter: 'blur(10px)',
-            outline: 'none'
-          }}
-        />
-        {keyword && (
-          <button 
-            onClick={() => setKeyword('')} 
-            style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}
-          >
-            Clear
-          </button>
-        )}
+      {/* Sticky Top Bar for Search */}
+      <div style={{ 
+        position: 'sticky',
+        top: 0,
+        zIndex: 500,
+        backgroundColor: 'var(--bg-page)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: '1px solid var(--border-color)',
+        paddingTop: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 8px)',
+        paddingBottom: '16px',
+        marginBottom: 'var(--spacing-large)'
+      }}>
+        <div className="container">
+          <div className="animate-fade-in-up" style={{ position: 'relative', maxWidth: '100%', zIndex: 10 }}>
+            <MagnifyingGlass size={24} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <input 
+              type="text" 
+              placeholder={t('search_events')} 
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              style={{ 
+                width: '100%',
+                padding: '16px 20px 16px 60px', 
+                fontSize: '17px', 
+                borderRadius: 'var(--radius-pill)', 
+                backgroundColor: 'var(--bg-card)', 
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-primary)',
+                boxShadow: 'var(--shadow-soft)',
+                backdropFilter: 'blur(10px)',
+                outline: 'none'
+              }}
+            />
+            {keyword && (
+              <button 
+                onClick={() => setKeyword('')} 
+                style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 600 }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
       </div>
+
+      <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-large)' }}>
 
       {isBrowsingCategories ? (
         /* Dribbble Style Categories Grid */
@@ -285,6 +302,7 @@ export const Search = () => {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };
