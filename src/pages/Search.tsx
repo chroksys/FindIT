@@ -257,14 +257,15 @@ export const Search = () => {
             </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-large)' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 700 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: 'var(--spacing-large)', width: '100%' }}>
+            <h2 className="text-section" style={{ margin: 0, fontSize: '22px', fontWeight: 800 }}>
               {category !== 'All' ? `${category} Events` : 'Events'}
             </h2>
             {category !== 'All' && (
               <button 
                 onClick={() => setCategory('All')}
-                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '14px', textDecoration: 'underline' }}
+                style={{ background: 'none', border: 'none', color: 'var(--color-pin-orange)', cursor: 'pointer', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}
+                className="hover-scale"
               >
                 View All Categories
               </button>
@@ -274,8 +275,9 @@ export const Search = () => {
           {isLoading ? (
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-              gap: 'var(--spacing-large)' 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+              gap: 'var(--spacing-large)',
+              width: '100%' 
             }}>
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} style={{ aspectRatio: '3/4', width: '100%' }}>
@@ -284,17 +286,38 @@ export const Search = () => {
               ))}
             </div>
           ) : filteredEvents.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
-              <MagnifyingGlass size={48} color="rgba(255,255,255,0.2)" style={{ marginBottom: '16px' }} />
-              <h3 style={{ fontSize: '20px', marginBottom: '8px' }}>No events found</h3>
-              <p style={{ color: 'var(--text-secondary)' }}>Try a different category or search term.</p>
-              <button onClick={() => { setKeyword(''); setCategory('All'); }} className="btn-secondary" style={{ marginTop: '24px' }}>Clear Filters</button>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '60px 24px', 
+              width: '100%',
+              boxSizing: 'border-box',
+              backgroundColor: 'var(--bg-card)', 
+              borderRadius: '24px', 
+              border: '1px dashed var(--border-color)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <MagnifyingGlass size={52} color="var(--text-secondary)" style={{ marginBottom: '16px', opacity: 0.6 }} />
+              <h3 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '8px', color: 'var(--text-primary)' }}>No events found</h3>
+              <p className="text-body" style={{ color: 'var(--text-secondary)', maxWidth: '360px', margin: '0 auto 24px' }}>
+                Try a different category or search term.
+              </p>
+              <button 
+                onClick={() => { setKeyword(''); setCategory('All'); }} 
+                className="btn-secondary hover-scale" 
+                style={{ padding: '12px 28px', borderRadius: '999px', fontWeight: 700 }}
+              >
+                Clear Filters
+              </button>
             </div>
           ) : (
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-              gap: 'var(--spacing-large)' 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+              gap: 'var(--spacing-large)',
+              width: '100%' 
             }}>
               {filteredEvents.map(event => (
                 <div key={event.id} className="animate-fade-in-up">
