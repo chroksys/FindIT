@@ -265,8 +265,23 @@ export const HostEvent: React.FC = () => {
         </div>
       ) : (
         <>
-          <div style={{ marginBottom: 'var(--spacing-xlarge)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <h1 className="text-hero animate-fade-in-up" style={{ marginBottom: 'var(--spacing-small)' }}>
+          {/* Sticky Header: Title, Progress Bar, and Step Indicator */}
+          <div style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 100,
+            backgroundColor: 'var(--bg-page)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            paddingTop: 'calc(max(env(safe-area-inset-top, 0px), 16px) + 8px)',
+            paddingBottom: '16px',
+            marginBottom: 'var(--spacing-large)',
+            borderBottom: '1px solid var(--border-color)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}>
+            <h1 className="text-hero" style={{ fontSize: 'clamp(24px, 4vw, 32px)', marginBottom: '4px', margin: 0 }}>
               {isEditing ? 'Edit your event' : 'Host your next event'}
             </h1>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -280,7 +295,7 @@ export const HostEvent: React.FC = () => {
                 }} />
               ))}
             </div>
-            <p className="text-caption animate-fade-in-up" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-caption" style={{ color: 'var(--text-secondary)', margin: 0 }}>
               Step {step} of 4: {step === 1 ? 'Basic Info' : step === 2 ? 'Logistics' : step === 3 ? 'Ticketing' : 'Promotion'}
             </p>
           </div>
