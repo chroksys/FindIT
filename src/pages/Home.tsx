@@ -413,7 +413,7 @@ export const Home = () => {
                 <EventCard {...event} date={event.displayDate} />
               </div>
             )) : (
-              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>No premium events matching this search or location.</p>
+              <p className="text-caption" style={{ paddingLeft: 'var(--spacing-base)' }}>No popular events matching this search or location.</p>
             )}
           </div>
         </div>

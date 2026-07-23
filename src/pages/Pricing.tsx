@@ -76,8 +76,8 @@ export const Pricing: React.FC = () => {
       description: 'Ultimate toolkit for top promoters, agencies & venues.',
       features: [
         'Everything in Growth',
-        'Featured "Hottest Events" boosted promotion',
-        'Dedicated Hottest page listing (/hottest)',
+        'Featured "Popular Events" boosted promotion',
+        'Dedicated Popular Events page listing (/hottest)',
         'Priority verified organizer placement',
         '24/7 dedicated organizer support'
       ],
@@ -112,8 +112,8 @@ export const Pricing: React.FC = () => {
       items: [
         { name: 'Live Control Center Broadcast Feed', free: false, starter: false, growth: true, pro: true },
         { name: 'Attendee Real-Time Live Mode', free: false, starter: false, growth: true, pro: true },
-        { name: 'Featured "Hottest Events" Promotion', free: false, starter: false, growth: false, pro: true },
-        { name: 'Dedicated Hottest Page Placement (/hottest)', free: false, starter: false, growth: false, pro: true }
+        { name: 'Featured "Popular Events" Promotion', free: false, starter: false, growth: false, pro: true },
+        { name: 'Dedicated Popular Events Page Placement (/hottest)', free: false, starter: false, growth: false, pro: true }
       ]
     },
     {

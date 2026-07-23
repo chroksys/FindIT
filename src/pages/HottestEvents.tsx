@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CaretLeft, RocketLaunch } from '@phosphor-icons/react';
+import { CaretLeft, Fire, Sparkle } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
 import { EventCard } from '../components/EventCard';
 
@@ -8,7 +8,7 @@ export const HottestEvents: React.FC = () => {
   const navigate = useNavigate();
   const { events, getEventStatus } = useEventContext();
 
-  const hottestEvents = events.filter(e => {
+  const popularEvents = events.filter(e => {
     if (e.isPaused) return false;
     if (e.parentEventId) return false;
     const status = getEventStatus(e);
@@ -51,20 +51,20 @@ export const HottestEvents: React.FC = () => {
             <CaretLeft size={26} weight="bold" />
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <RocketLaunch size={24} color="var(--color-pin-orange)" weight="fill" />
+            <Fire size={24} color="var(--color-pin-orange)" weight="fill" />
             <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 800, color: 'var(--text-primary)' }}>
-              Hottest Events
+              Popular Events
             </h1>
           </div>
         </div>
         <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: 'var(--text-secondary)', paddingLeft: '40px' }}>
-          Top promoted events from verified Pro hosts
+          Discover the most trending, highly anticipated, and talked-about experiences!
         </p>
       </div>
 
       {/* Events List */}
       <div className="container" style={{ paddingTop: '20px', paddingBottom: '32px', flex: 1 }}>
-        {hottestEvents.length === 0 ? (
+        {popularEvents.length === 0 ? (
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -73,12 +73,12 @@ export const HottestEvents: React.FC = () => {
             padding: '60px 20px',
             textAlign: 'center'
           }}>
-            <RocketLaunch size={56} color="var(--text-muted)" style={{ marginBottom: '16px', opacity: 0.5 }} />
+            <Sparkle size={56} color="var(--text-muted)" style={{ marginBottom: '16px', opacity: 0.5 }} />
             <h3 style={{ margin: 0, marginBottom: '8px', color: 'var(--text-primary)', fontSize: '20px', fontWeight: 700 }}>
-              No Boosted Events Yet
+              No Popular Events Right Now
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>
-              Promoted events from Pro hosts will appear here.
+              Stay tuned! Exciting and trending experiences will appear here soon.
             </p>
           </div>
         ) : (
@@ -87,7 +87,7 @@ export const HottestEvents: React.FC = () => {
             gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
             gap: 'var(--spacing-medium)' 
           }}>
-            {hottestEvents.map(event => (
+            {popularEvents.map(event => (
               <EventCard key={event.id} {...event} date={event.displayDate} />
             ))}
           </div>
