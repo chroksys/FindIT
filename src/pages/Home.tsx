@@ -467,8 +467,9 @@ export const Home = () => {
           
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-            gap: 'var(--spacing-medium)' 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
+            gap: 'var(--spacing-medium)',
+            width: '100%'
           }}>
             {filteredEvents.map(event => (
               <EventCard key={`trending-${event.id}`} {...event} date={event.displayDate} />
