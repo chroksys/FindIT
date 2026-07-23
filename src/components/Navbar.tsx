@@ -166,29 +166,29 @@ export const Navbar: React.FC = () => {
       {/* Mobile Bottom Navigation */}
       {!location.pathname.startsWith('/events/') && (
       <nav className="navbar-bottom hide-on-desktop">
-        <Link to="/" className={`nav-item-mobile ${location.pathname === '/' ? 'active' : ''}`}>
+        <Link to="/" replace className={`nav-item-mobile ${location.pathname === '/' ? 'active' : ''}`}>
           <Compass size={24} weight={location.pathname === '/' ? 'fill' : 'regular'} />
           <span>{t('discover')}</span>
         </Link>
-        <Link to="/calendar" className={`nav-item-mobile ${location.pathname === '/calendar' ? 'active' : ''}`}>
+        <Link to="/calendar" replace className={`nav-item-mobile ${location.pathname === '/calendar' ? 'active' : ''}`}>
           <CalendarBlank size={24} weight={location.pathname === '/calendar' ? 'fill' : 'regular'} />
           <span>Calendar</span>
         </Link>
-        <Link to="/host" className={`nav-item-mobile center-btn ${location.pathname.startsWith('/host') ? 'active' : ''}`}>
+        <Link to="/host" replace className={`nav-item-mobile center-btn ${location.pathname.startsWith('/host') ? 'active' : ''}`}>
           <Plus size={28} weight="bold" />
           <span>{t('host_event')}</span>
         </Link>
-        <Link to="/map" className={`nav-item-mobile ${location.pathname === '/map' ? 'active' : ''}`}>
+        <Link to="/map" replace className={`nav-item-mobile ${location.pathname === '/map' ? 'active' : ''}`}>
           <MapTrifold size={24} weight={location.pathname === '/map' ? 'fill' : 'regular'} />
           <span>Map</span>
         </Link>
         {role === 'guest' ? (
-          <Link to="/login" className={`nav-item-mobile ${location.pathname === '/login' ? 'active' : ''}`}>
+          <Link to="/login" replace className={`nav-item-mobile ${location.pathname === '/login' ? 'active' : ''}`}>
             <User size={24} weight={location.pathname === '/login' ? 'fill' : 'regular'} />
             <span>{t('log_in')}</span>
           </Link>
         ) : (
-          <Link to="/dashboard" className={`nav-item-mobile ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+          <Link to="/dashboard" replace className={`nav-item-mobile ${location.pathname === '/dashboard' ? 'active' : ''}`}>
             {profile?.avatarUrl ? (
               <img src={profile.avatarUrl} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
