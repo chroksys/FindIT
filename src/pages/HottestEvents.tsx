@@ -78,12 +78,7 @@ export const HottestEvents: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
-            gap: 'var(--spacing-medium)',
-            width: '100%'
-          }}>
+          <div className="responsive-events-grid">
             {popularEvents.map(event => (
               <EventCard key={event.id} {...event} date={event.displayDate} />
             ))}

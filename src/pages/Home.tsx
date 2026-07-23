@@ -465,12 +465,7 @@ export const Home = () => {
             <h2 className="text-section">{t('discover_more')}</h2>
           </div>
           
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
-            gap: 'var(--spacing-medium)',
-            width: '100%'
-          }}>
+          <div className="responsive-events-grid">
             {filteredEvents.map(event => (
               <EventCard key={`trending-${event.id}`} {...event} date={event.displayDate} />
             ))}

@@ -198,6 +198,19 @@ button:active, .social-icon-btn:active {
   padding: var(--spacing-xlarge) 0;
 }
 
+.responsive-events-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-medium);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .responsive-events-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
 .events-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -364,6 +377,11 @@ input:focus, textarea:focus, select:focus {
     padding: 0 var(--spacing-base);
   }
   
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
   .card-padding {
     padding: var(--spacing-base) !important;
   }
