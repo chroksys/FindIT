@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CaretLeft, Fire, Sparkle } from '@phosphor-icons/react';
+import { CaretLeft } from '@phosphor-icons/react';
 import { useEventContext } from '../context/EventContext';
 import { EventCard } from '../components/EventCard';
 
@@ -50,12 +50,9 @@ export const HottestEvents: React.FC = () => {
           >
             <CaretLeft size={26} weight="bold" />
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Fire size={24} color="var(--color-pin-orange)" weight="fill" />
-            <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 800, color: 'var(--text-primary)' }}>
-              Popular Events
-            </h1>
-          </div>
+          <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 800, color: 'var(--text-primary)' }}>
+            Popular Events
+          </h1>
         </div>
         <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: 'var(--text-secondary)', paddingLeft: '40px' }}>
           Discover the most trending, highly anticipated, and talked-about experiences!
@@ -73,7 +70,6 @@ export const HottestEvents: React.FC = () => {
             padding: '60px 20px',
             textAlign: 'center'
           }}>
-            <Sparkle size={56} color="var(--text-muted)" style={{ marginBottom: '16px', opacity: 0.5 }} />
             <h3 style={{ margin: 0, marginBottom: '8px', color: 'var(--text-primary)', fontSize: '20px', fontWeight: 700 }}>
               No Popular Events Right Now
             </h3>
