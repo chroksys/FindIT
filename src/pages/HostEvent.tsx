@@ -274,7 +274,7 @@ export const HostEvent: React.FC = () => {
                 <div key={i} style={{ 
                   flex: 1, 
                   height: '4px', 
-                  backgroundColor: step >= i ? 'var(--color-pin-orange)' : 'var(--border-color)',
+                  backgroundColor: step >= i ? 'var(--text-primary)' : 'var(--border-color)',
                   borderRadius: '2px',
                   transition: 'background-color 0.3s'
                 }} />
@@ -477,9 +477,9 @@ export const HostEvent: React.FC = () => {
                               padding: '4px 10px',
                               borderRadius: '12px',
                               fontSize: '12px',
-                              backgroundColor: formData.city === cityName ? 'var(--color-pin-orange)' : 'rgba(255, 255, 255, 0.08)',
+                              backgroundColor: formData.city === cityName ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)',
                               color: formData.city === cityName ? '#ffffff' : 'var(--text-secondary)',
-                              border: formData.city === cityName ? '1px solid var(--color-pin-orange)' : '1px solid rgba(255, 255, 255, 0.12)',
+                              border: formData.city === cityName ? '1px solid var(--text-primary)' : '1px solid rgba(255, 255, 255, 0.12)',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
@@ -509,7 +509,7 @@ export const HostEvent: React.FC = () => {
                       >
                         {/* Center marker indicating where the map is pointing */}
                         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -100%)', pointerEvents: 'none', zIndex: 10 }}>
-                          <MapPin size={36} weight="fill" color="var(--color-pin-orange)" />
+                          <MapPin size={36} weight="fill" color="var(--text-primary)" />
                         </div>
                       </Map>
                     ) : (
@@ -524,16 +524,15 @@ export const HostEvent: React.FC = () => {
 
             {step === 3 && (
               <>
-                {/* Verification gate banner */}
                 {!isVerified ? (
-                  <div style={{ backgroundColor: 'rgba(255, 107, 0, 0.08)', border: '1px solid rgba(255,107,0,0.4)', borderRadius: 'var(--radius-card)', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                    <LockKey size={32} color="var(--color-pin-orange)" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-card)', padding: '20px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                    <LockKey size={32} color="var(--text-primary)" weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <div>
-                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--color-pin-orange)', marginBottom: '6px' }}>Online Ticket Sales Locked</h3>
+                      <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>Online Ticket Sales Locked</h3>
                       <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                         Online ticket sales are exclusively available to <strong style={{ color: 'var(--text-primary)' }}>verified organizers</strong>. You can still publish this event — attendees will pay in cash / at the gate.
                       </p>
-                      <Link to="/verify" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '12px', color: 'var(--color-pin-orange)', fontWeight: 600, fontSize: '14px' }}>
+                      <Link to="/verify" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '12px', color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px', textDecoration: 'underline' }}>
                         <ShieldCheck size={16} /> Get Verified to Unlock
                       </Link>
                     </div>
@@ -596,7 +595,7 @@ export const HostEvent: React.FC = () => {
                 <div className="form-group" style={{ marginBottom: 'var(--spacing-large)', backgroundColor: 'var(--bg-default)', padding: '20px', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <UsersThree size={24} color="var(--color-pin-orange)" weight="bold" />
+                      <UsersThree size={24} color="var(--text-primary)" weight="bold" />
                       <div>
                         <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Co-Host & Collaborate</h3>
                         <p className="text-caption" style={{ color: 'var(--text-secondary)', margin: 0 }}>Invite other verified hosts to co-organize this event with you.</p>
@@ -637,8 +636,8 @@ export const HostEvent: React.FC = () => {
                                   gap: '10px',
                                   padding: '10px 12px',
                                   borderRadius: '12px',
-                                  backgroundColor: isSelected ? 'rgba(255,107,0,0.1)' : 'var(--bg-card)',
-                                  border: isSelected ? '1px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+                                  backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.1)' : 'var(--bg-card)',
+                                  border: isSelected ? '1px solid var(--text-primary)' : '1px solid var(--border-color)',
                                   cursor: 'pointer',
                                   transition: 'all 0.2s'
                                 }}
@@ -648,7 +647,7 @@ export const HostEvent: React.FC = () => {
                                   <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{h.name}</div>
                                   <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{h.verified ? 'Verified Host' : 'Host'}</div>
                                 </div>
-                                {isSelected ? <UserCheck size={18} color="var(--color-pin-orange)" weight="bold" /> : <div style={{ width: 18, height: 18, borderRadius: '50%', border: '1px solid var(--border-color)' }} />}
+                                {isSelected ? <UserCheck size={18} color="var(--text-primary)" weight="bold" /> : <div style={{ width: 18, height: 18, borderRadius: '50%', border: '1px solid var(--border-color)' }} />}
                               </div>
                             );
                           })}
@@ -681,7 +680,7 @@ export const HostEvent: React.FC = () => {
                     <div>
                       <h3 className="text-card-title" style={{ color: 'var(--color-error)', marginBottom: '4px' }}>Event Limit Reached</h3>
                       <p className="text-body" style={{ color: 'var(--text-primary)' }}>You have reached the maximum number of events allowed on your current subscription plan.</p>
-                      <Link to="/pricing" style={{ color: 'var(--color-pin-orange)', fontWeight: 600, display: 'inline-block', marginTop: '8px' }}>Upgrade Plan</Link>
+                      <Link to="/pricing" style={{ color: 'var(--text-primary)', fontWeight: 600, display: 'inline-block', marginTop: '8px', textDecoration: 'underline' }}>Upgrade Plan</Link>
                     </div>
                   </div>
                 )}

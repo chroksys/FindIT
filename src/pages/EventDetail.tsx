@@ -269,7 +269,7 @@ export const EventDetail = () => {
               <h1 style={{ color: 'var(--text-primary)', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: 0, lineHeight: 1.2, flex: '1 1 auto', minWidth: '200px' }}>
                 {event.title}
               </h1>
-              <span className="badge badge-default" style={{ backgroundColor: 'var(--color-pin-orange)', color: '#ffffff', margin: 0, padding: '6px 14px', fontSize: '13px', borderRadius: '999px', fontWeight: 700, flexShrink: 0 }}>
+              <span className="badge badge-default" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', margin: 0, padding: '6px 14px', fontSize: '13px', borderRadius: '999px', fontWeight: 700, flexShrink: 0 }}>
                 {event.category}
               </span>
             </div>
@@ -298,14 +298,14 @@ export const EventDetail = () => {
               boxShadow: 'var(--shadow-soft)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <CalendarBlank size={26} color="var(--color-pin-orange)" weight="bold" />
+                <CalendarBlank size={26} color="var(--text-primary)" weight="bold" />
                 <div>
                   <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '15px' }}>{event.displayDate}</div>
                   <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.displayTime}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <MapPin size={26} color="var(--color-pin-orange)" weight="fill" />
+                <MapPin size={26} color="var(--text-primary)" weight="fill" />
                 <div>
                   <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '15px' }}>{event.venue}</div>
                   <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{event.city || 'Kampala, Uganda'}</div>
@@ -698,7 +698,7 @@ export const EventDetail = () => {
                         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}
                         title="Get directions"
                       >
-                        <MapPin size={32} weight="fill" color="var(--color-pin-orange)" />
+                        <MapPin size={32} weight="fill" color="var(--text-primary)" />
                       </a>
                     </Marker>
                   </Map>

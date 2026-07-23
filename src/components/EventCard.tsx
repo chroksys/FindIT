@@ -202,7 +202,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             padding: 0
           }}
         >
-          <Heart size={18} weight={isSaved ? "fill" : "bold"} color={isSaved ? "var(--color-pin-orange)" : "white"} />
+          <Heart size={18} weight={isSaved ? "fill" : "bold"} color="#ffffff" />
         </button>
       </div>
 
@@ -234,7 +234,7 @@ export const EventCard: React.FC<EventCardProps> = ({
           minWidth: '50px',
           textAlign: 'center'
         }}>
-          <CalendarBlank size={16} color="var(--color-pin-orange)" weight="bold" />
+          <CalendarBlank size={16} color="var(--text-primary)" weight="bold" />
           <span style={{ 
             fontSize: '11px', 
             fontWeight: 700, 
@@ -269,15 +269,16 @@ export const EventCard: React.FC<EventCardProps> = ({
             fontSize: '12px',
             marginTop: '4px'
           }}>
-            <MapPin size={13} weight="bold" color="var(--color-pin-orange)" />
+            <MapPin size={13} weight="bold" color="var(--text-secondary)" />
             <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{venue}</span>
           </div>
         </div>
 
         {/* Right: Price Badge */}
         <div style={{
-          backgroundColor: 'var(--color-pin-orange)',
-          color: '#ffffff',
+          backgroundColor: 'rgba(255, 255, 255, 0.12)',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border-color)',
           fontWeight: 700,
           fontSize: '13px',
           padding: '6px 12px',

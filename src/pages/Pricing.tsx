@@ -132,7 +132,7 @@ export const Pricing: React.FC = () => {
       
       {/* Page Header */}
       <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto var(--spacing-xlarge)' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(232, 84, 44, 0.12)', color: 'var(--color-pin-orange)', padding: '6px 16px', borderRadius: '999px', fontSize: '13px', fontWeight: 700, marginBottom: '16px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-primary)', padding: '6px 16px', borderRadius: '999px', fontSize: '13px', fontWeight: 700, marginBottom: '16px' }}>
           <Sparkle size={18} weight="fill" />
           <span>HOST SUBSCRIPTION PLANS</span>
         </div>
@@ -148,8 +148,8 @@ export const Pricing: React.FC = () => {
           <button
             onClick={() => setBillingCycle('monthly')}
             style={{
-              background: billingCycle === 'monthly' ? 'var(--color-pin-orange)' : 'transparent',
-              color: billingCycle === 'monthly' ? '#ffffff' : 'var(--text-secondary)',
+              background: billingCycle === 'monthly' ? 'var(--text-primary)' : 'transparent',
+              color: billingCycle === 'monthly' ? 'var(--bg-page)' : 'var(--text-secondary)',
               border: 'none',
               borderRadius: '999px',
               padding: '8px 20px',
@@ -164,8 +164,8 @@ export const Pricing: React.FC = () => {
           <button
             onClick={() => setBillingCycle('yearly')}
             style={{
-              background: billingCycle === 'yearly' ? 'var(--color-pin-orange)' : 'transparent',
-              color: billingCycle === 'yearly' ? '#ffffff' : 'var(--text-secondary)',
+              background: billingCycle === 'yearly' ? 'var(--text-primary)' : 'transparent',
+              color: billingCycle === 'yearly' ? 'var(--bg-page)' : 'var(--text-secondary)',
               border: 'none',
               borderRadius: '999px',
               padding: '8px 20px',
@@ -193,15 +193,15 @@ export const Pricing: React.FC = () => {
               animationDelay: `${0.1 * (idx + 1)}s`,
               backgroundColor: 'var(--bg-card)', 
               borderRadius: '20px', 
-              border: plan.popular ? '2px solid var(--color-pin-orange)' : '1px solid var(--border-color)',
+              border: plan.popular ? '2px solid var(--text-primary)' : '1px solid var(--border-color)',
               display: 'flex',
               flexDirection: 'column',
               position: 'relative',
               overflow: 'hidden',
-              boxShadow: plan.popular ? '0 12px 32px rgba(232, 84, 44, 0.2)' : 'var(--shadow-soft)'
+              boxShadow: plan.popular ? '0 12px 32px rgba(255, 255, 255, 0.1)' : 'var(--shadow-soft)'
             }}>
               {plan.popular && (
-                <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', backgroundColor: 'var(--color-pin-orange)', color: 'white', padding: '4px 16px', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', backgroundColor: 'var(--text-primary)', color: 'var(--bg-page)', padding: '4px 16px', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   Most Popular
                 </div>
               )}
@@ -220,7 +220,7 @@ export const Pricing: React.FC = () => {
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   {plan.features.map((feature, fIdx) => (
                     <li key={fIdx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '14px' }}>
-                      <CheckCircle size={18} color="var(--color-pin-orange)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <CheckCircle size={18} color="var(--text-primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
                       <span style={{ color: 'var(--text-primary)', lineHeight: 1.4 }}>
                         {feature}
                       </span>
@@ -279,7 +279,7 @@ export const Pricing: React.FC = () => {
                 <th style={{ padding: '16px 20px', fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', width: '35%' }}>Features</th>
                 <th style={{ padding: '16px 12px', fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center', width: '15%' }}>Free</th>
                 <th style={{ padding: '16px 12px', fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center', width: '15%' }}>Starter</th>
-                <th style={{ padding: '16px 12px', fontSize: '14px', fontWeight: 700, color: 'var(--color-pin-orange)', textAlign: 'center', width: '17%' }}>Growth</th>
+                <th style={{ padding: '16px 12px', fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center', width: '17%' }}>Growth</th>
                 <th style={{ padding: '16px 12px', fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center', width: '18%' }}>Pro</th>
               </tr>
             </thead>
@@ -287,7 +287,7 @@ export const Pricing: React.FC = () => {
               {comparisonCategories.map((cat) => (
                 <React.Fragment key={cat.category}>
                   <tr style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', borderBottom: '1px solid var(--border-color)' }}>
-                    <td colSpan={5} style={{ padding: '12px 20px', fontSize: '13px', fontWeight: 800, color: 'var(--color-pin-orange)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <td colSpan={5} style={{ padding: '12px 20px', fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       {cat.category}
                     </td>
                   </tr>
@@ -308,7 +308,7 @@ export const Pricing: React.FC = () => {
                       </td>
                       <td style={{ padding: '14px 12px', textAlign: 'center', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600 }}>
                         {typeof item.growth === 'boolean' ? (
-                          item.growth ? <Check size={20} color="var(--color-pin-orange)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-secondary)" style={{ opacity: 0.3, margin: '0 auto' }} />
+                          item.growth ? <Check size={20} color="var(--color-success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-secondary)" style={{ opacity: 0.3, margin: '0 auto' }} />
                         ) : item.growth}
                       </td>
                       <td style={{ padding: '14px 12px', textAlign: 'center', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600 }}>

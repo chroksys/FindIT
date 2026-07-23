@@ -50,7 +50,7 @@ export const Notifications = () => {
       case 'review': return <Star size={24} color="var(--color-warning)" weight="fill" />;
       case 'chat': return <ChatCircleText size={24} color="var(--color-info)" />;
       case 'follow': return <UserCircle size={24} color="var(--color-info)" weight="fill" />;
-      default: return <Bell size={24} color="var(--color-pin-orange)" />;
+      default: return <Bell size={24} color="var(--text-primary)" />;
     }
   };
 
@@ -64,7 +64,7 @@ export const Notifications = () => {
         </Link>
         <h1 className="text-section" style={{ fontSize: '32px', margin: 0 }}>All Notifications</h1>
         {unreadCount > 0 && (
-          <span style={{ backgroundColor: 'var(--color-pin-orange)', color: 'white', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700 }}>
+          <span style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700 }}>
             {unreadCount}
           </span>
         )}
@@ -85,14 +85,14 @@ export const Notifications = () => {
               <button
                 onClick={() => setFilter('all')}
                 className={filter === 'all' ? 'btn-secondary' : 'btn-ghost'}
-                style={{ padding: '8px 16px', borderRadius: 'var(--radius-pill)', ...(filter === 'all' ? { backgroundColor: 'var(--color-pin-orange)', color: 'white', borderColor: 'var(--color-pin-orange)' } : {}) }}
+                style={{ padding: '8px 16px', borderRadius: 'var(--radius-pill)', ...(filter === 'all' ? { backgroundColor: 'var(--text-primary)', color: 'var(--bg-page)', borderColor: 'var(--text-primary)' } : {}) }}
               >
                 All
               </button>
               <button
                 onClick={() => setFilter('unread')}
                 className={filter === 'unread' ? 'btn-secondary' : 'btn-ghost'}
-                style={{ padding: '8px 16px', borderRadius: 'var(--radius-pill)', ...(filter === 'unread' ? { backgroundColor: 'var(--color-pin-orange)', color: 'white', borderColor: 'var(--color-pin-orange)' } : {}) }}
+                style={{ padding: '8px 16px', borderRadius: 'var(--radius-pill)', ...(filter === 'unread' ? { backgroundColor: 'var(--text-primary)', color: 'var(--bg-page)', borderColor: 'var(--text-primary)' } : {}) }}
               >
                 Unread {unreadCount > 0 && `(${unreadCount})`}
               </button>
@@ -106,7 +106,7 @@ export const Notifications = () => {
 
           {isLoading ? (
             <div style={{ textAlign: 'center', padding: 'var(--spacing-hero) 0' }}>
-              <SpinnerGap size={32} color="var(--color-pin-orange)" style={{ animation: 'spin 1s linear infinite' }} />
+              <SpinnerGap size={32} color="var(--text-primary)" style={{ animation: 'spin 1s linear infinite' }} />
             </div>
           ) : filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 'var(--spacing-hero) 0' }}>
@@ -129,9 +129,9 @@ export const Notifications = () => {
                   className="animate-fade-in-up hover-lift card-padding"
                   style={{
                     animationDelay: `${index * 0.05}s`,
-                    backgroundColor: notif.read ? 'var(--bg-card)' : 'rgba(255,107,0,0.05)',
+                    backgroundColor: notif.read ? 'var(--bg-card)' : 'rgba(128,128,128,0.05)',
                     borderRadius: 'var(--radius-card)',
-                    border: `1px solid ${notif.read ? 'var(--border-color)' : 'rgba(255,107,0,0.2)'}`,
+                    border: `1px solid ${notif.read ? 'var(--border-color)' : 'rgba(128,128,128,0.2)'}`,
                     display: 'flex',
                     gap: 'var(--spacing-base)',
                     alignItems: 'flex-start',
@@ -150,7 +150,7 @@ export const Notifications = () => {
                     </div>
                   </div>
                   {!notif.read && (
-                    <div style={{ width: '10px', height: '10px', backgroundColor: 'var(--color-pin-orange)', borderRadius: '50%', marginTop: '10px', flexShrink: 0 }} />
+                    <div style={{ width: '10px', height: '10px', backgroundColor: 'var(--text-primary)', borderRadius: '50%', marginTop: '10px', flexShrink: 0 }} />
                   )}
                 </div>
               ))}

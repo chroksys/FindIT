@@ -264,7 +264,7 @@ export const Search = () => {
             {category !== 'All' && (
               <button 
                 onClick={() => setCategory('All')}
-                style={{ background: 'none', border: 'none', color: 'var(--color-pin-orange)', cursor: 'pointer', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}
                 className="hover-scale"
               >
                 View All Categories

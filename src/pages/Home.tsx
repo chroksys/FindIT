@@ -119,7 +119,7 @@ export const Home = () => {
                 onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
                 style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '6px' }}
               >
-                <MapPin size={18} color="var(--color-pin-orange)" weight="fill" />
+                <MapPin size={18} color="var(--text-primary)" weight="fill" />
                 <span style={{ 
                   color: 'var(--text-primary)',
                   fontSize: '18px',
@@ -208,7 +208,7 @@ export const Home = () => {
                   position: 'relative'
                 }}
               >
-                <Broadcast size={28} color="var(--color-pin-orange)" weight="fill" />
+                <Broadcast size={28} color="var(--text-primary)" weight="fill" />
               </button>
 
               <button 
@@ -235,7 +235,7 @@ export const Home = () => {
                     right: '2px',
                     width: '8px',
                     height: '8px',
-                    backgroundColor: 'var(--color-pin-orange)',
+                    backgroundColor: 'var(--text-primary)',
                     borderRadius: '50%'
                   }} />
                 )}

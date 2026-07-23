@@ -166,7 +166,7 @@ export const OrganizerProfile: React.FC = () => {
             </div>
             <div>
               <div className="text-section" style={{ fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                {organizer.stats.rating} <Star size={20} weight="fill" color="var(--color-pin-orange)" />
+                {organizer.stats.rating} <Star size={20} weight="fill" color="var(--text-primary)" />
               </div>
               <div className="text-caption">Rating</div>
             </div>
@@ -208,7 +208,7 @@ export const OrganizerProfile: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--spacing-large)' }}>
             <h2 className="text-section" style={{ fontSize: '24px' }}>Reviews</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: 'var(--bg-card)', padding: '4px 12px', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-color)' }}>
-              <Star size={16} weight="fill" color="var(--color-pin-orange)" />
+              <Star size={16} weight="fill" color="var(--text-primary)" />
               <span style={{ fontWeight: 600 }}>{organizer.stats.rating}</span>
               <span className="text-caption">({organizer.stats.reviewCount} reviews)</span>
             </div>
@@ -220,14 +220,14 @@ export const OrganizerProfile: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={16} weight={i < review.rating ? "fill" : "regular"} color="var(--color-pin-orange)" />
+                      <Star key={i} size={16} weight={i < review.rating ? "fill" : "regular"} color="var(--text-primary)" />
                     ))}
                   </div>
                   <span className="text-caption" style={{ fontWeight: 600 }}>{review.name}</span>
                 </div>
                 <p className="text-body" style={{ margin: '12px 0', fontStyle: 'italic' }}>"{review.comment}"</p>
                 <div className="text-caption" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ color: 'var(--color-pin-orange)', fontWeight: 500 }}>{review.event}</span>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{review.event}</span>
                   <span>&middot;</span>
                   <span>{review.date}</span>
                 </div>

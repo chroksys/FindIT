@@ -210,22 +210,22 @@ export const TicketModal: React.FC<TicketModalProps> = ({ event, onClose }) => {
 
           <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-large)' }}>
             <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>{event.title}</h2>
-            <span className="badge" style={{ backgroundColor: 'rgba(255,107,0,0.1)', color: 'var(--color-pin-orange)', padding: '4px 12px', fontSize: '14px' }}>
+            <span className="badge" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '4px 12px', fontSize: '14px' }}>
               General Admission (1x)
             </span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: 'var(--spacing-xlarge)' }}>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', color: 'var(--text-secondary)' }}>
-              <CalendarBlank size={20} color="var(--color-pin-orange)" />
+              <CalendarBlank size={20} color="var(--text-primary)" />
               <span className="text-body">{event.displayDate}</span>
             </div>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', color: 'var(--text-secondary)' }}>
-              <Clock size={20} color="var(--color-pin-orange)" />
+              <Clock size={20} color="var(--text-primary)" />
               <span className="text-body">{event.displayTime || '6:00 PM'}</span>
             </div>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', color: 'var(--text-secondary)' }}>
-              <MapPin size={20} color="var(--color-pin-orange)" />
+              <MapPin size={20} color="var(--text-primary)" />
               <span className="text-body">{event.venue}</span>
             </div>
           </div>

@@ -198,10 +198,10 @@ export const HostAccount = () => {
 
         {/* Subscription Sidebar */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', position: 'sticky', top: '24px' }}>
-          <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--color-pin-orange)' }}>
+          <div className="card-padding" style={{ backgroundColor: 'var(--bg-card)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-color)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-base)' }}>
               <h2 className="text-section" style={{ fontSize: '18px' }}>Current Plan</h2>
-              <span className="badge" style={{ backgroundColor: 'var(--color-pin-orange)', color: 'white' }}>{hostProfile?.subscription || 'Free Trial'}</span>
+              <span className="badge" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}>{hostProfile?.subscription || 'Free Trial'}</span>
             </div>
 
             <p className="text-body" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-large)' }}>
