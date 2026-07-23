@@ -34,7 +34,7 @@ export const FollowingEvents: React.FC = () => {
         backgroundColor: 'var(--bg-card)',
         borderBottom: '1px solid var(--border-color)',
         backdropFilter: 'blur(12px)',
-        padding: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) var(--spacing-medium) 12px'
+        padding: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 16px 12px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <button
@@ -63,7 +63,7 @@ export const FollowingEvents: React.FC = () => {
       </div>
 
       {/* Events List */}
-      <div className="container" style={{ paddingTop: '20px', paddingBottom: '32px', flex: 1 }}>
+      <div className="container" style={{ paddingTop: '20px', paddingBottom: '32px', flex: 1, paddingLeft: '16px', paddingRight: '16px' }}>
         {role === 'guest' ? (
           <div style={{
             display: 'flex',
@@ -114,7 +114,7 @@ export const FollowingEvents: React.FC = () => {
         ) : (
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', 
             gap: 'var(--spacing-medium)' 
           }}>
             {followedEvents.map(event => (
