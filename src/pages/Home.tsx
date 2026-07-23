@@ -391,7 +391,7 @@ export const Home = () => {
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'var(--color-pin-orange)',
+                color: 'var(--text-primary)',
                 fontSize: '14px',
                 fontWeight: 600,
                 cursor: 'pointer'
@@ -430,7 +430,7 @@ export const Home = () => {
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'var(--color-pin-orange)',
+                color: 'var(--text-primary)',
                 fontSize: '14px',
                 fontWeight: 600,
                 cursor: 'pointer'
